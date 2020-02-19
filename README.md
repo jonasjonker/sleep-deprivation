@@ -15,19 +15,46 @@ To work on this project on your own machine you should clone it
 git clone https://github.com/jonasjonker/sleep-deprivation.git
 ``` 
 
-If you want to change a file in sthis project it is generally a good idea to: create a new branch, start working in that branch, make/change files, and then send a pull request. After code review the changes can be merged into the master branch. Since this project is quit small, you should feel free to just add new files direclty to the master branch if you don't want your code reviewed.
+If you want to change a file in sthis project it is generally a good idea to: create a new branch, start working in that branch, make/change files, and then send a pull request. After code review the changes can be merged into the master branch. Since this project is quit small, you should feel free to just add new files direclty to the master branch if you don't want your code reviewed. 
+
+So step by step the procedure should be:
+
+##### make a new branch
 ```bash
 # make a new branch
 git branch <branch_name>
 
-# set branch to work in
+# change the branch you are working in
 git checkout <branch_name>
 
-# show branches available
-git branch --all
+### add, remove, change things to some file(s)
+
+# add and commit files
+git add <file_name>
+git add .              # all changed files at once
+git commit -m "short descriptive message"
+
+# push files to origin (or to another remote)
+git push origin <branch_name>
+
+### repeat add, commit push cycle until happy with result
+
+### go to github page and click on "create pull request" to add your files to the master branch.
 ```
+
+Some usefull commands
 ```bash
-s
+# check if there are files that need adding or committing
+git status
+
+# get changes with original
+git fetch
+
+# show differences between your file(s) and the original
+git diff <branch_name> origin/<branch_name>
+
+# check for changes in original and update your files
+git pull
 ```
 
 
