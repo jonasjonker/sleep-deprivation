@@ -1,0 +1,25 @@
+---
+title: "R Notebook"
+output: rmarkdown::github_document
+---
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Ctrl+Shift+Enter*. 
+
+```{r}
+library(tidyverse)
+
+sleep <- readr::read_tsv("sleep.txt",
+                         col_names  = c("id", "reaction", "days", "subject"),
+                         col_types  = cols(
+                           reaction = col_double(),
+                           days     = col_integer(),
+                           subject  = col_factor()
+                           ),
+                         skip = 1,
+                         ) %>% dplyr::select(reaction, days, subject)
+sleep
+
+```
+
