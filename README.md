@@ -8,6 +8,9 @@ Reports are written in [R Notebooks](https://rmarkdown.rstudio.com/lesson-10.htm
 
 Additional documentation (like this document) are written in normal [Markdown](https://guides.github.com/features/mastering-markdown/)
 
+## Style guide
+To make R code look uniform (and therefore readable) you should try to adhere to the [Tidyverse styleguide](https://style.tidyverse.org/)
+
 ## basics git workflow
 To work on this project on your own machine you should clone it
 
