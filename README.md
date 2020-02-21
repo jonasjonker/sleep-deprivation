@@ -18,7 +18,7 @@ To work on this project on your own machine you should clone it
 git clone https://github.com/jonasjonker/sleep-deprivation.git
 ``` 
 
-If you want to change a file in sthis project it is generally a good idea to: create a new branch, start working in that branch, make/change files, and then send a pull request. After code review the changes can be merged into the master branch. Since this project is quite small, you should feel free to just add new files direclty to the master branch if you don't want your code reviewed. 
+If you want to change a file in this project it is generally a good idea to: create a new branch, start working in that branch, make/change files, and then send a pull request. After code review the changes can be merged into the master branch. Since this project is quite small, you should feel free to just add new files direclty to the master branch if you don't want your code reviewed. 
 
 So step by step the procedure should be:
 
