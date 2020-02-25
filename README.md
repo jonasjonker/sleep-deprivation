@@ -5,6 +5,7 @@ A statistics project on sleep deprivation.
 For this project we use R for all statistical analysis. Within R the use of packages from the [Tidyverse](https://www.tidyverse.org/) package collection is prefered for data wrangling, analysis and visualization.
 
 Reports are written in [R Notebooks](https://rmarkdown.rstudio.com/lesson-10.html) using [R Markdown](https://rmarkdown.rstudio.com/lesson-1.html).
+https://r4ds.had.co.nz/r-markdown.html (an introduction chapter)
 
 Additional documentation (like this document) are written in normal [Markdown](https://guides.github.com/features/mastering-markdown/)
 
