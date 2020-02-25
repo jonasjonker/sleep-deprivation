@@ -6,8 +6,6 @@ For this project we use R for all statistical analysis. Within R the use of pack
 
 Reports are written in [R Notebooks](https://rmarkdown.rstudio.com/lesson-10.html) using [R Markdown](https://rmarkdown.rstudio.com/lesson-1.html).
 
-https://r4ds.had.co.nz/r-markdown.html (an introduction chapter)
-
 Additional documentation (like this document) are written in normal [Markdown](https://guides.github.com/features/mastering-markdown/)
 
 ## Style guide
@@ -68,5 +66,6 @@ git pull
 - [git tutorial series (youtube)](https://www.youtube.com/watch?v=BCQHnlnPusY)
 - [git cheatsheet](https://github.github.com/training-kit/downloads/github-git-cheat-sheet.pdf)
 - [git documentation](https://git-scm.com/book/en/v2/Git-Basics-Getting-a-Git-Repository)
+- [Introduction to Markdown](https://r4ds.had.co.nz/r-markdown.html)
 - [markdown cheatsheet](https://guides.github.com/features/mastering-markdown/)
 - [paper on sleep deprivation](https://onlinelibrary.wiley.com/doi/epdf/10.1046/j.1365-2869.2003.00337.x)
