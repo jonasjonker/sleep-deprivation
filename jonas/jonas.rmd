@@ -45,12 +45,13 @@ sleepf <- readr::read_tsv("sleep.txt",
         dplyr::select(reaction, days, subject)
 
 # descriptive data
-sleep_descr_stats <- sleep %>%
+sleep_descr_stats <- sleepf %>%
   dplyr::group_by(days) %>%
   dplyr::summarise(reaction_mean  = mean(reaction),
                    reaction_sd    = sd(reaction)) %>% 
   dplyr::mutate(reaction_upper_se = reaction_mean + reaction_sd,
-                reaction_lower_se = reaction_mean - reaction_sd)
+                reaction_lower_se = reaction_mean - reaction_sd) %>% 
+  dplyr::ungroup()
 
 ### 
 # lm(reaction ~ days) on each subject
@@ -72,7 +73,7 @@ ggplot2::ggplot(sleepf) +
             alpha=.8,
             show.legend=FALSE) +
   scale_colour_grey() +
-  geom_line(data = day_means,
+  geom_line(data = sleep_descr_stats,
             aes(x=days, y=reaction_mean, group=1),
             size=1.5) +
   labs(title = "Spaghetti plot",
