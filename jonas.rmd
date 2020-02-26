@@ -1,21 +1,41 @@
 ---
 title: "R Notebook"
-output: html_notebook
+author: Jonas Jonker
+output:
+  md_document:
+    variant: markdown_github
 ---
 ```{r project setup, include=FALSE}
-library(cowplot)   
+library(cowplot)
 library(knitr)     
 library(tidyverse)
 ```
 
 ```{r global_options, include=FALSE}
 # default code blocks options. Echo=false removes code in final file.
-knitr::opts_chunk$set(fig.width=12, fig.height=8, fig.path='Figs/', echo=FALSE)
+knitr::opts_chunk$set(fig.width=12,
+                      fig.height=8,
+                      fig.path='Figs/',
+                      echo=FALSE)
+
+ggplot2::theme_set(theme_classic())
 ```
 
 ```{r data wrangling}
-# tidy
+# TODO: some figures requie days to be a factor others require it to be continous. find elegant solution.
+
+# tidy data
 sleep <- readr::read_tsv("sleep.txt",
+                         col_names    = c("id", "reaction", "days", "subject"),
+                         col_types    = cols(
+                             reaction = col_double(),
+                             days     = col_double(),
+                             subject  = col_factor()),
+                         skip         = 1) %>%
+        dplyr::select(reaction, days, subject)
+
+# tidy data
+sleepf <- readr::read_tsv("sleep.txt",
                          col_names    = c("id", "reaction", "days", "subject"),
                          col_types    = cols(
                              reaction = col_double(),
@@ -23,14 +43,31 @@ sleep <- readr::read_tsv("sleep.txt",
                              subject  = col_factor()),
                          skip         = 1) %>%
         dplyr::select(reaction, days, subject)
+
+# descriptive data
+sleep_descr_stats <- sleep %>%
+  dplyr::group_by(days) %>%
+  dplyr::summarise(reaction_mean  = mean(reaction),
+                   reaction_sd    = sd(reaction)) %>% 
+  dplyr::mutate(reaction_upper_se = reaction_mean + reaction_sd,
+                reaction_lower_se = reaction_mean - reaction_sd)
+
+### 
+# lm(reaction ~ days) on each subject
+sleep_lm <- sleep %>%
+  dplyr::group_by(subject) %>%
+  dplyr::do(lm_object = lm(reaction ~ days, data=.)) %>%
+  broom::tidy(lm_object)
+# 
+# column per subject
+# sleep_per_subject <- sleep %>%
+#   tidyr::spread(subject, reaction) %>%
+#  dplyr::rename_at(vars(-days), funs(paste("reaction", ., sep="")))
+# sleep_per_subject
 ```
 
-```{r spagettiplot, echo=FALSE}
-day_means <- sleep %>%
-  group_by(days) %>%
-  summarise(reaction_mean = mean(reaction))
-
-ggplot2::ggplot(sleep) +
+```{r spagettiplot}
+ggplot2::ggplot(sleepf) +
   geom_line(aes(x=days, y=reaction, group=subject, color=subject),
             alpha=.8,
             show.legend=FALSE) +
@@ -42,11 +79,125 @@ ggplot2::ggplot(sleep) +
        subtitle = "an italian specialty",
        y="reaction time in ms",
        x="days of sleep-deprivation",
-       caption="No such thing as a fish")
+       caption="Spot the special spaghetti. Or isn't there one?")
 ```
 
-```{r boxplot, echo=FALSE}
-sleep %>% 
+```{r boxplot}
+sleepf %>% 
   ggplot2::ggplot() +
-  geom_boxplot(aes(x=days, y=reaction))
+  geom_boxplot(aes(x=days, y=reaction)) +
+  labs(title = "Box plot",
+     subtitle = "There is a nice general trend",
+     y="reaction time in ms",
+     x="days of sleep-deprivation",
+     caption="Reaction times go up, when subjects continue to be subjected to sleep deprivation.\n However the bottom quartile seems to be relatively stable. Is there a pattern?")
+```
+
+
+```{r}
+sleep_descr_stats %>% 
+  ggplot2::ggplot() +
+  geom_line(aes(x=days, y=reaction_mean, group=1),
+            size=1) +
+  geom_errorbar(aes(x=days, ymin=reaction_lower_se, ymax=reaction_upper_se),
+                size=.4,
+                alpha=.6) +
+  labs(title = "Mean reactiontime",
+     subtitle = "errobars indicate standard deviation",
+     y="reaction time in ms",
+     x="days of sleep-deprivation",
+     caption="Does the mean tell more then the median?")
+```
+
+```{r Trellis graph}
+# order subjects according to estimates y-intercept
+ordered_subjects <- sleep_lm %>%
+  dplyr::ungroup() %>% 
+  dplyr::filter(term=="(Intercept)") %>%
+  dplyr::arrange(desc(estimate)) %>% 
+  dplyr::mutate(subject = as.character(subject)) %>% 
+  dplyr::mutate(subject = forcats::as_factor(subject)) %>% 
+  dplyr::ungroup() %>% 
+  dplyr::pull(subject)
+
+# refactor subjects levels in sleep
+sleep_trellis <- sleep
+sleep_trellis$subject <- factor(ordered_subjects)
+
+# Trellis graph
+ggplot2::ggplot(sleep_trellis, aes(days, reaction)) +
+  geom_point() +
+  stat_smooth(method = "lm", se = FALSE) +
+  facet_wrap(~subject) +
+    labs(title = "Trellis graph",
+       subtitle = "subjects are descendingly arranged based on their y-intercept",
+       y="reaction time in ms",
+       x="days of sleep-deprivation",
+       caption="No clear pattern? Maybe relativly quick and relativly\nslow subjects are less suceptible to change?")
+```
+
+```{r Subject variability}
+subj_intercepts <- sleep_lm %>% 
+  dplyr::filter(term=="(Intercept)") %>% 
+  ggplot2::ggplot() +
+  geom_histogram(aes(estimate),
+                 binwidth = 10) +
+  labs(title = "y-intercept histogram",
+     subtitle = "y-intercept not normally distributed",
+     y="count",
+     x="estimate y-intercept of reactiontime in ms",
+     caption="What to do with data that is not normally distributed?")
+subj_intercepts 
+```
+
+```{r Histograms}
+# TODO: get the actual R squared
+# TODO: get good binwidths
+# TODO: make look better
+
+subj_intercepts <- sleep_lm %>% 
+  dplyr::filter(term=="(Intercept)") %>% 
+  ggplot2::ggplot() +
+  geom_histogram(aes(estimate), binwidth=10) +
+  labs(x="y-intercept")
+subj_slopes <- sleep_lm %>% 
+  dplyr::filter(term=="days") %>% 
+  ggplot2::ggplot() +
+  geom_histogram(aes(estimate), binwidth=3) +
+  labs(x="slope")
+subj_Rsquared <- sleep_lm %>% 
+  dplyr::filter(term=="(Intercept)") %>% 
+  ggplot2::ggplot() +
+  geom_histogram(aes(std.error), binwidth=4) +
+  labs(x="std error of slope (should be r squared)")
+
+title <- cowplot::ggdraw() +
+   draw_label(
+    "A bunch of desciptive histograms. (wotk in progresso)",
+    fontface = 'bold',
+    x = 0,
+    hjust = 0
+  ) +
+  theme(
+    # add margin on the left of the drawing canvas,
+    # so title is aligned with left edge of first plot
+    plot.margin = margin(0, 0, 0, 7)
+  )
+
+
+
+figure <- cowplot::plot_grid(
+  subj_intercepts,
+  subj_slopes,
+  subj_Rsquared,
+  labels = "AUTO",
+  ncol = 1
+)
+
+cowplot::plot_grid(
+  title,
+  figure,
+  ncol = 1,
+  rel_heights = c(0.1, 1)
+)
 ```
