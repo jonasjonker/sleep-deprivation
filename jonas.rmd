@@ -1,0 +1,52 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+```{r project setup, include=FALSE}
+library(cowplot)   
+library(knitr)     
+library(tidyverse)
+```
+
+```{r global_options, include=FALSE}
+# default code blocks options. Echo=false removes code in final file.
+knitr::opts_chunk$set(fig.width=12, fig.height=8, fig.path='Figs/', echo=FALSE)
+```
+
+```{r data wrangling}
+# tidy
+sleep <- readr::read_tsv("sleep.txt",
+                         col_names    = c("id", "reaction", "days", "subject"),
+                         col_types    = cols(
+                             reaction = col_double(),
+                             days     = col_factor(),
+                             subject  = col_factor()),
+                         skip         = 1) %>%
+        dplyr::select(reaction, days, subject)
+```
+
+```{r spagettiplot, echo=FALSE}
+day_means <- sleep %>%
+  group_by(days) %>%
+  summarise(reaction_mean = mean(reaction))
+
+ggplot2::ggplot(sleep) +
+  geom_line(aes(x=days, y=reaction, group=subject, color=subject),
+            alpha=.8,
+            show.legend=FALSE) +
+  scale_colour_grey() +
+  geom_line(data = day_means,
+            aes(x=days, y=reaction_mean, group=1),
+            size=1.5) +
+  labs(title = "Spaghetti plot",
+       subtitle = "an italian specialty",
+       y="reaction time in ms",
+       x="days of sleep-deprivation",
+       caption="No such thing as a fish")
+```
+
+```{r boxplot, echo=FALSE}
+sleep %>% 
+  ggplot2::ggplot() +
+  geom_boxplot(aes(x=days, y=reaction))
+```
