@@ -1,0 +1,153 @@
+---
+title: "Nina_sleep"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+```{r, include=F}
+library(tidyverse)
+library(lattice)
+#library(car)
+library(lme4)
+library(arm)
+#library(pkbrtest)
+```
+
+### Exploratory analysis
+
+```{r}
+sleep <- read.table('sleep.txt')
+```
+
+### Spaghetti Plot
+
+
+```{r cars}
+n <- sleep$Subject %>% unique %>% length
+interaction.plot(sleep$Days, sleep$Subject, sleep$Reaction, xlab="Days", ylab="Reaction", col=c(1:n), legend=F, main='Spaghetti Plot') 
+```
+
+###  Descriptive Statistics
+
+#### Overview
+```{r, echo=T}
+sleep.mean <- tapply(sleep$Reaction, list(sleep$Days), mean)
+sleep.sd <- tapply(sleep$Reaction, list(sleep$Days), sd)
+sleep.var <- tapply(sleep$Reaction, list(sleep$Days), var)
+sleep.n <- table(sleep$Days)
+
+overview <- cbind(c(0:9), sleep.mean, sleep.sd, sleep.var, sleep.n)
+colnames(overview) <- c('Days', 'Mean', 'SD', 'Var', 'n')
+round(overview, 2)
+```
+
+#### Boxplot
+```{r , echo=T}
+boxplot(Reaction~Days, data=sleep, xlab='Days', ylab='Reaction', col=2)
+```
+
+
+### Mean evolution
+```{r}
+# General function to plot error bars
+errbar=function(x,y,height,width,lty=1,col="black"){
+arrows(x,y,x,y+height,angle=90,length=width,lty=lty, col=col)
+arrows(x,y,x,y-height,angle=90,length=width,lty=lty, col=col)}
+
+
+## Plotting mean evolution
+plot(c(0:9), overview[,2] ,type="b",xlim=c(0,10), ylim=c(150,480),xlab="Days",ylab="Reaction",axes=F, main="Mean evolution (with 1 SE intervals)")
+axis(side=1,at=c(0:9),labels=c(0:9))
+axis(side=2,at=seq(200,450,50))
+
+box()
+points(c(0:9), overview[,2],type="b",col="red")
+errbar(c(0:9),overview[,2], sleep.sd, 0.1, col="red")
+
+
+```
+
+### Correlations
+```{r}
+## Reshaping the data into a wide form
+sleep.resh <- reshape(sleep, timevar = "Days", idvar = c("Subject"), direction = "wide")
+sleep.resh
+
+## Correlation between the Reaction scores at different days
+cor(sleep.resh[, 2:11])
+
+```
+
+
+### Regression per person
+```{r}
+## Trellis graph
+## Displaying the linear regression per person
+
+cf <-sapply(sleep$Subject, function(x) coef(lm(Reaction~Days, data=subset(sleep, Subject==x))))
+
+Sx <-reorder(sleep$Subject, cf[1,]) 
+# 
+xyplot(Reaction ~ Days|Sx, data=sleep, type=c('p', 'r'), auto.key=T,aspect="xy", par.settings=list(axis.text=list(cex=0.6), fontsize=list(text=8, points=10)), scales=list(x=list(at=c(0:9),labels=c("0","1","2", "3", "4", "5", "6", "7", "8", "9"))))
+
+
+
+```
+
+### Between subject variability
+
+```{r}
+## Linear regression per participant of Reaction on Days
+
+## Coefficients
+lin.reg.coef <- by(sleep, sleep$Subject, function(data) coef(lm(Reaction ~ Days, data=data)))
+lin.reg.coef1 <- unlist(lin.reg.coef)
+names(lin.reg.coef1) <- NULL
+lin.reg.coef2=matrix(lin.reg.coef1,length(lin.reg.coef1)/2,2,byrow = TRUE)
+
+## R squared
+lin.reg.r.squared <- by(sleep, sleep$Subject, function(data) summary(lm(Reaction ~ Days, data=data))$r.squared )
+lin.reg.r.squared1<- as.vector(unlist(lin.reg.r.squared))
+
+## Histograms
+par(mfrow=c(3,1))
+hist(lin.reg.coef2[,1],xlab="Intercept",col="lightblue",main="Histogram of individual intercepts")
+hist(lin.reg.coef2[,2],xlab="Slope",col="lightblue",main="Histogram of individual slopes")
+hist(lin.reg.r.squared1,xlab="R squared",col="lightblue",main="Histogram of individual R squared")
+
+```
+
+
+### Fitting the model - with REML
+```{r}
+sleep.reml <- lmer(formula = Reaction ~ 1+Days + (1 + Days|Subject), data=sleep)
+summary(sleep.reml)
+
+
+```
+
+### Testing fixed effects
+
+```{r}
+
+confint(sleep.reml,  par=5:6, method='Wald', oldNames=F)
+
+confint(sleep.reml, method='boot', boot.type='perc', oldNames=F, nsim=500)
+
+
+confint(sleep.reml, level=0.95, method='profile',   oldNames=F)
+
+
+
+```
+
+
+
+
+
+
+
