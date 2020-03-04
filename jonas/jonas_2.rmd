@@ -1,0 +1,73 @@
+---
+title: "R Notebook"
+author: Jonas Jonker
+output:
+  md_document:
+    variant: markdown_github
+---
+
+```{r p173}
+sleep <- read.table("../sleep.txt",
+                    header=T,
+                    sep="\t")
+
+interaction.plot(sleep$Days,
+                 sleep$Subject,
+                 sleep$Reaction,
+                 xlab="Days with slep deprivation",
+                 ylab="Reaction time in ms",
+                 legend=F)
+```
+
+```{r p174}
+sleep_mean <- tapply(sleep$Reaction, sleep$Days, mean)
+sleep_sd   <- tapply(sleep$Reaction, sleep$Days, sd)
+sleep_var  <- tapply(sleep$Reaction, sleep$Days, var)
+sleep_n    <- nrow(sleep)
+sleep_mean 
+sleep_sd  
+sleep_var  
+sleep_n 
+```
+
+```{r p177}
+boxplot(sleep$Reaction~sleep$Days,
+        xlab="Age (in years)",
+        ylab="IQ")
+```
+
+```{r p180}
+errbar <- function (x, y, height, width, lty=1, col="black") {
+  arrows(x, y, x, y+height,
+         angle=90,
+         length=width, 
+         lty=lty,
+         col=col)
+  arrows(x, y, x, y-height,
+         angle=90,
+         length=width, 
+         lty=lty,
+         col=col)
+}
+
+plot(sleep$Days[1:10], sleep_mean,
+     type="b",
+     ylim=c(200,440),
+     xlab="x",
+     ylab="y",
+     axes=T,
+     main="title")
+
+box()
+points(sleep$Days[1:10], sleep_mean,
+       type="b")
+errbar(sleep$Days[1:10], sleep_mean, sleep_sd, .1)
+```
+
+```{r p181}
+sleep2 <- reshape(sleep,
+                  timevar = "Days",
+                  idvar = c("Reaction", "Subject"),
+                  direction = "wide")
+sleep2
+```
