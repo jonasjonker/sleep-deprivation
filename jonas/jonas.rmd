@@ -9,6 +9,9 @@ output:
 library(cowplot)
 library(knitr)     
 library(tidyverse)
+library(lme4)
+library(arm)
+library(pbkrtest)
 ```
 
 ```{r global_options, include=FALSE}
@@ -25,7 +28,7 @@ ggplot2::theme_set(theme_classic())
 # TODO: some figures requie days to be a factor others require it to be continous. find elegant solution.
 
 # tidy data
-sleep <- readr::read_tsv("sleep.txt",
+sleep <- readr::read_tsv("../sleep.txt",
                          col_names    = c("id", "reaction", "days", "subject"),
                          col_types    = cols(
                              reaction = col_double(),
@@ -35,7 +38,7 @@ sleep <- readr::read_tsv("sleep.txt",
         dplyr::select(reaction, days, subject)
 
 # tidy data
-sleepf <- readr::read_tsv("sleep.txt",
+sleepf <- readr::read_tsv("../sleep.txt",
                          col_names    = c("id", "reaction", "days", "subject"),
                          col_types    = cols(
                              reaction = col_double(),
@@ -130,11 +133,11 @@ ggplot2::ggplot(sleep_trellis, aes(days, reaction)) +
   geom_point() +
   stat_smooth(method = "lm", se = FALSE) +
   facet_wrap(~subject) +
-    labs(title = "Trellis graph",
-       subtitle = "subjects are descendingly arranged based on their y-intercept",
-       y="reaction time in ms",
-       x="days of sleep-deprivation",
-       caption="No clear pattern? Maybe relativly quick and relativly\nslow subjects are less suceptible to change?")
+  labs(title = "Trellis graph",
+     subtitle = "subjects are descendingly arranged based on their y-intercept",
+     y="reaction time in ms",
+     x="days of sleep-deprivation",
+     caption="No clear pattern? Maybe relativly quick and relativly\nslow subjects are less suceptible to change?")
 ```
 
 ```{r Subject variability}
@@ -174,7 +177,7 @@ subj_Rsquared <- sleep_lm %>%
 
 title <- cowplot::ggdraw() +
    draw_label(
-    "A bunch of desciptive histograms. (wotk in progresso)",
+    "A bunch of desciptive histograms. (work in progress)",
     fontface = 'bold',
     x = 0,
     hjust = 0
@@ -201,4 +204,45 @@ cowplot::plot_grid(
   ncol = 1,
   rel_heights = c(0.1, 1)
 )
+```
+
+```{r mle}
+#  reaction = intercept + days + (random effects in subject and intercept)
+sleep_lmer <- lmer(formula = reaction~1+days+(1+days|subject),
+                   data=sleep,
+                   REML = FALSE)
+summary(sleep_lmer)
+```
+```
+
+Formula: reaction ~ 1 + days + (1 + days | subject)
+   Data: sleep
+
+     AIC      BIC   logLik deviance df.resid 
+  1763.9   1783.1   -876.0   1751.9      174 
+
+Scaled residuals: 
+    Min      1Q  Median      3Q     Max 
+-3.9416 -0.4656  0.0289  0.4636  5.1793 
+
+Random effects:
+ Groups   Name        Variance Std.Dev. Corr
+ subject  (Intercept) 565.48   23.780                          # intercept
+          days         32.68    5.717   0.08  
+ Residual             654.95   25.592       
+Number of obs: 180, groups:  subject, 18
+
+Fixed effects:
+            Estimate Std. Error t value
+(Intercept)  251.405      6.632  37.907
+days          10.467      1.502   6.968
+
+Correlation of Fixed Effects:
+     (Intr)
+days -0.138
+``` {r reml}
+sleep_reml <- lmer(formula = reaction~1+days+(1|subject),
+                   data=sleep,
+                   REML = TRUE)
+sleep_reml
 ```
