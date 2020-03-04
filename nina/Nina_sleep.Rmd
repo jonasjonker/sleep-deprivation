@@ -1,5 +1,5 @@
 ---
-title: "Nina_sleep"
+title: "Ninas_sleep"
 output:
   pdf_document: default
   html_document: default
@@ -17,10 +17,10 @@ library(arm)
 #library(pkbrtest)
 ```
 
-### Exploratory analysis
+## Exploratory analysis
 
 ```{r}
-sleep <- read.table('sleep.txt')
+sleep <- read.table('../sleep.txt')
 ```
 
 ### Spaghetti Plot
@@ -30,6 +30,8 @@ sleep <- read.table('sleep.txt')
 n <- sleep$Subject %>% unique %>% length
 interaction.plot(sleep$Days, sleep$Subject, sleep$Reaction, xlab="Days", ylab="Reaction", col=c(1:n), legend=F, main='Spaghetti Plot') 
 ```
+
+Already from this plot you can assume that the reaction time is increasing with increasing number of days of sleep deprivation.
 
 ###  Descriptive Statistics
 
@@ -50,6 +52,7 @@ round(overview, 2)
 boxplot(Reaction~Days, data=sleep, xlab='Days', ylab='Reaction', col=2)
 ```
 
+It seems as if there's a linear trend between the number of days of sleep deprivation and the reaction time. Also the variance of the reaction time seems to increase with increasing days of sleep deprivation. (at Day 9: 5 outliers)
 
 ### Mean evolution
 ```{r}
@@ -71,16 +74,34 @@ errbar(c(0:9),overview[,2], sleep.sd, 0.1, col="red")
 
 ```
 
+Here again you see both phenomena: The linear trend - increasing reaction time with increasing number of days. Bigger errorbars with increasing number of days.
+
 ### Correlations
 ```{r}
 ## Reshaping the data into a wide form
 sleep.resh <- reshape(sleep, timevar = "Days", idvar = c("Subject"), direction = "wide")
 sleep.resh
 
+
+# check normality of variables Reaction.X
+for (i in c(2:11)){
+  print(shapiro.test(sleep.resh[,i]))
+}
+```
+
+The last column (Reaction.9) is not normally distributed. So we use the 'spearman' method for correlation. (We could also use 'pearson' for all except the correlations for Reaction.9.)
+
+```{r}
 ## Correlation between the Reaction scores at different days
-cor(sleep.resh[, 2:11])
+cor(sleep.resh[, 2:11], method='spearman')
+
+pairs(sleep.resh[, 2:11])
+
+
 
 ```
+
+There seem to be high linear correlations between two following days (e.g. between Day 8 and 9, between Day 3 and 4, ...). The further the 'second' Days is apart, the lower the correlation (e.g. low correlation between Day 1 and Day 8). This appears quite 'logic', as we expect a linear trend between the number of Days and the reaction time.
 
 
 ### Regression per person
@@ -97,6 +118,9 @@ xyplot(Reaction ~ Days|Sx, data=sleep, type=c('p', 'r'), auto.key=T,aspect="xy",
 
 
 ```
+
+Subjects with very low reaction time at the start seem to have bigger slopes (the reaction time increases faster with increasing days of sleep deprivation).
+
 
 ### Between subject variability
 
@@ -121,14 +145,31 @@ hist(lin.reg.r.squared1,xlab="R squared",col="lightblue",main="Histogram of indi
 
 ```
 
+The individual intercepts don't seem to bee normally distributed. The slopes seem to follow a normal distribution. The majority of the individual models seem to fit the individual data well (high R squared), but there are also some models that don't fit the data very well.
 
 ### Fitting the model - with REML
 ```{r}
 sleep.reml <- lmer(formula = Reaction ~ 1+Days + (1 + Days|Subject), data=sleep)
 summary(sleep.reml)
-
-
 ```
+#### Values
+$\gamma_{00}$ or $\gamma_{0}$  = 251.405
+$\gamma_{10}$ or $\gamma_{1}$  = 10.467
+
+
+$\sigma_{\epsilon}^{2}$ = 654.94
+$\sigma_{0}^{2}$ = 611.90
+$\sigma_{1}^{2}$ = 35.08
+corr($b_{0i}$, $b_{1i}$) = 0.07
+
+
+
+
+
+$\sigma \Sigma$
+
+
+
 
 ### Testing fixed effects
 
