@@ -17,6 +17,9 @@ library(arm)
 #library(pkbrtest)
 ```
 
+## Description of Data Set and Questions
+TODO!
+
 ## Exploratory analysis
 
 ```{r}
@@ -30,6 +33,7 @@ sleep <- read.table('../sleep.txt')
 n <- sleep$Subject %>% unique %>% length
 interaction.plot(sleep$Days, sleep$Subject, sleep$Reaction, xlab="Days", ylab="Reaction", col=c(1:n), legend=F, main='Spaghetti Plot') 
 ```
+ TODO: add mean
 
 Already from this plot you can assume that the reaction time is increasing with increasing number of days of sleep deprivation.
 
@@ -74,7 +78,8 @@ errbar(c(0:9),overview[,2], sleep.sd, 0.1, col="red")
 
 ```
 
-Here again you see both phenomena: The linear trend - increasing reaction time with increasing number of days. Bigger errorbars with increasing number of days.
+Here again you see both phenomena: The linear trend - increasing reaction time with increasing number of days. 
+Bigger errorbars with increasing number of days.
 
 ### Correlations
 ```{r}
@@ -149,7 +154,7 @@ The individual intercepts don't seem to bee normally distributed. The slopes see
 
 ### Fitting the model - with REML
 ```{r}
-sleep.reml <- lmer(formula = Reaction ~ 1+Days + (1 + Days|Subject), data=sleep)
+sleep.reml <- lmer(formula = Reaction ~ 1 + Days + (1 + Days|Subject), data=sleep)
 summary(sleep.reml)
 ```
 #### Values
@@ -188,7 +193,23 @@ TO BE CONTINUED....
 
 ```
 
+TODO: check if residuals are normally distributed
+```{r}
+resid <- residuals(sleep.reml)
+shapiro.test(residuals(sleep.reml))
+hist(resid)
+```
+
+### OLS vs LMM estimates
 
 
+
+
+
+```{r}
+sleep.o <- ranef(sleep.reml)$Subject
+sleep.o
+
+```
 
 
