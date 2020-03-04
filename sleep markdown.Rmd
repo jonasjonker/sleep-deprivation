@@ -1,0 +1,136 @@
+---
+title: "SleepD"
+author: "Ben De Maesschalck"
+date: "2-3-2020"
+output: html_document
+---
+
+
+```{r include=F}
+library(openxlsx)
+library(devtools)
+library(export)
+library(afex)
+library(car)
+library(lattice)
+library(MASS)
+library(effects)
+library(doBy)
+library(ggplot2)
+library(ggthemes)
+library(scales)
+library(Rmisc)
+library(stats)
+library(BayesTree)
+library(UsingR)
+library(doBy)
+library(reshape)
+library(qcc)
+library(grid)
+library(Hmisc)
+library(tidyverse)
+library(dplyr)
+library(nycflights13)
+library(rmarkdown)
+library(pbkrtest)
+```
+
+loading and adding variables to path
+```{r}
+
+sleep.int1 <- read.table("sleep.txt", header = T, sep = "\t")
+attach(sleep.int1)
+```
+---
+Descriptive analysis
+---
+
+spaghettiplot
+```{r}
+n = length(unique(Subject))
+interaction.plot(Days, Subject, Reaction, xlab = "Days with reduced sleep", ylab = "Reaction time (ms)", legend=F)
+```
+
+summary of the data
+```{r}
+Sleep.summary <- summarySE(sleep.int1, measurevar="Reaction", groupvars="Days")
+Sleep.summary
+```
+
+
+boxplot of summary
+```{r}
+boxplot(Reaction~Days, xlab = "Days with reduced sleep", ylab = "Reaction time (ms)")
+```
+
+mean evolutions
+```{r}
+ggplot(Sleep.summary, aes(x=Days, y=Reaction)) + 
+  geom_errorbar(aes(ymin=Reaction-se, ymax=Reaction+se), width=.1) +
+  geom_line() +
+  geom_point()
+```
+
+Reshaping
+```{r}
+sleep.int2 <- reshape(sleep.int1, timevar = "Days", idvar = "Subject", direction = "wide")
+sleep.int2
+```
+
+correlations
+```{r}
+cor(sleep.int2[,2:11])
+```
+
+trellis graph
+```{r}
+cf<-sapply(Subject, function(x) + coef(lm(Reaction~Days, data = subset(sleep.int1, Subject==x))))
+Sx<- reorder(Subject, cf[1,])
+xyplot(Reaction~Days|Sx, data = sleep.int1, type = c("p", "r"))
+```
+no correlation between intercept and slope
+
+r-squared values of individual truckers
+```{r}
+lin.reg.coef <- by(sleep.int1, Subject, function(sleep.int1) coef(lm(Reaction~Days, data = sleep.int1)))
+lin.reg.coef1 <- unlist(lin.reg.coef)
+names(lin.reg.coef1) <- NULL
+lin.reg.coef2 = matrix(lin.reg.coef1, length(lin.reg.coef1)/2,2, byrow = T)
+
+lin.reg.r.squared <- by(sleep.int1, Subject, function(sleep.int1) summary(lm(Reaction~Days, data = sleep.int1))$r.squared)
+lin.reg.r.squared1 <- as.vector(unlist(lin.reg.r.squared))
+lin.reg.r.squared1
+
+par(mfrow=c(3,1))
+hist(lin.reg.coef2[,1], main = "individual intercepts")
+hist(lin.reg.coef2[,2], main = "individual slopes")
+hist(lin.reg.r.squared1, main = "r-squared")
+```
+level 1 model: Y=PI0 + PI1(Days) + error
+PI0 = gamma0 + b0
+PI1 = gamma1 + b1
+```{r}
+sleep.lmer1 <- lmer(Reaction~Days+(Days|Subject), REML = T, data=sleep.int1)
+summary(sleep.lmer1)
+anova(sleep.lmer1)
+```
+gamma0 = 251.41
+gamma1 = 10.47
+sigma 0² = 611.90
+sigma 1² = 35.08
+sigma01 = ?
+
+generating p-values
+```{r}
+sleep.lmer1.df.KR <- get_Lb_ddf(sleep.lmer1, fixef(sleep.lmer1))
+sleep.lmer1.coef <- coef(summary(sleep.lmer1))
+sleep.lmer1.p.KR <- cbind(sleep.lmer1.coef,2 * (1-pt(abs(sleep.lmer1.coef[,3]), sleep.lmer1.df.KR)))
+sleep.lmer1.p.KR
+```
+p values are significant
+
+yeet variables from path
+```{r}
+detach(sleep.int1)
+
+```
