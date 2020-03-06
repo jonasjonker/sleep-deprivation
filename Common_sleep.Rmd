@@ -16,6 +16,7 @@ library(lattice)
 library(lme4)
 library(arm)
 #library(pkbrtest)
+library(ggplot2)
 ```
 
 ## Description of Data Set and Questions
@@ -31,8 +32,12 @@ sleep <- read.table('../sleep.txt')
 
 
 ```{r cars}
-n <- sleep$Subject %>% unique %>% length
-interaction.plot(sleep$Days, sleep$Subject, sleep$Reaction, xlab="Days", ylab="Reaction", col=c(1:n), legend=F, main='Spaghetti Plot') 
+average_reaction_time<- sleep %>%
+  group_by(Days) %>%
+  summarise(mean_reaction_time=mean(Reaction), median_reaction_time=median(Reaction), sd_reaction_time=sd(Reaction))
+
+sleep_spag_plot<-ggplot(sleep) + geom_line(aes(Days, Reaction, colour=factor(Subject)), show.legend=FALSE) + geom_line(data=average_reaction_time, aes(Days, mean_reaction_time),colour="BLACK", size=1.4) + labs(title=" Spaghetti Plot", caption= "mean in black")
+sleep_spag_plot
 ```
  TODO: add mean
 
@@ -54,7 +59,7 @@ round(overview, 2)
 
 #### Boxplot
 ```{r , echo=T}
-boxplot(Reaction~Days, data=sleep, xlab='Days', ylab='Reaction', col=2)
+ggplot(sleep) + geom_boxplot(aes(Days, Reaction, colour=factor(Days)),show.legend=FALSE) + labs(title="Boxplot") +geom_line(data=average_reaction_time, aes(Days, mean_reaction_time),colour="black", size=0.5)
 ```
 
 It seems as if there's a linear trend between the number of days of sleep deprivation and the reaction time. Also the variance of the reaction time seems to increase with increasing days of sleep deprivation. (at Day 9: 5 outliers)
