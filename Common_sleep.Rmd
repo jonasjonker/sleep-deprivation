@@ -149,14 +149,14 @@ points(c(0:9), overview[,2],
 errbar(c(0:9), overview[,2], sleep.sd, 0.1,
        col="red")
 ```
-
-Here again you see both phenomena: The linear trend - increasing reaction time with increasing number of days. 
-Bigger errorbars with increasing number of days.
-
+To further supports our previous findings, we looked at the mean evolution.
+Here, an increasing trend of reaction time with increasing number of days is also observed, together with expanding standard deviation (errorbars).
 
 
 
-## Correlations
+
+
+## Correlation
 ```{r}
 ## Reshaping the data into a wide form
 sleep.resh <- reshape(sleep,
@@ -165,30 +165,24 @@ sleep.resh <- reshape(sleep,
                       direction = "wide")
 knitr::kable(sleep.resh, "pandoc")
 ```
-## shapiro
 ```{r}
 # check normality of variables Reaction.X
 for (i in c(2:11)){
   print(shapiro.test(sleep.resh[,i]))
 }
 ```
-
-The last column (Reaction.9) is not normally distributed. So we use the 'spearman' method for correlation. (We could also use 'pearson' for all except the correlations for Reaction.9.)
-
-## spearman
 ```{r spearman, fig.align="center", out.width="80%"}
 ## Correlation between the Reaction scores at different days
 cor(sleep.resh[, 2:11], method='spearman')
 
 pairs(sleep.resh[, 2:11])
-
-
-
+##TODO add cor + colours fancy plot
 ```
 
-There seem to be high linear correlations between two following days (e.g. between Day 8 and 9, between Day 3 and 4, ...). The further the 'second' Days is apart, the lower the correlation (e.g. low correlation between Day 1 and Day 8). This appears quite 'logic', as we expect a linear trend between the number of Days and the reaction time.
+The shapiro test revealed a non normal distribution of day 9. Thus, we performed the spearman correlation method instead of pearson.
 
-With reaction time as a continious variable for multiple subjects on different days, we modelled this longitudial data with a multilevel
+There is a correlation higher then 0.6 between subsequent days (e.g. between Day 8 and 9, between Day 3 and 4, ...). The further the days are apart, the lower the correlation (e.g. low correlation between Day 1 and Day 8). Aligning nicely with our previous results, there is a linear trend between the number of Days and reaction time.
+
 ## Regression per person
 ```{r trellis, fig.align="center", out.width="80%"}
 ## Trellis graph
@@ -208,8 +202,9 @@ xyplot(Reaction ~ Days|Sx,
                            fontsize=list(text=8, points=10)),
        scales=list(x = list(at = c(0:9), labels = c("0","1","2", "3", "4", "5", "6", "7", "8", "9"))))
 ```
+We made a trellis graph to visualise individual trends and slopes. In addition, this reveals pontential interaction between intercept and slope. This graph suggests that slope and intercepts are independent of each other, due to no observable trend between increasing slope and intercept. All subjects have a positive slope beside subject 335. The linear regression lines fit the datapoints closely, suggesting  that a linear model is appropriate to represent this dataset.
 
-Subjects with very low reaction time at the start seem to have bigger slopes (the reaction time increases faster with increasing days of sleep deprivation).
+TO DISCUSS: correlation between slope/intercept?
 
 ## Between subject variability
 
