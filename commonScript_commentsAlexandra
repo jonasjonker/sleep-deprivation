@@ -1,0 +1,282 @@
+---
+title: "Sleep deprivation"
+output:
+pdf_document: default
+html_document: default
+---
+  
+  ```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r, include=F}
+library(tidyverse)
+library(lattice)
+#library(car)
+library(lme4)
+library(arm)
+#library(pkbrtest)
+library(ggplot2)
+```
+
+## Description of Data Set and Questions
+We are anlysing the effect of sleep depravation on reaction time of long-distance truck drivers.
+
+There are 18 subjects in the dataset and for each subject the reaction time was measured for ten days.
+The subjects were allowed only a limited amount of sleep each night.
+
+The question we are trying to answer is if there is any relationship between the number of days of sleep deprivation and reaction time.
+  
+First is to try to understand the data and draw initial conclusion by looking at descriptive statistics  
+  
+  ## Exploratory analysis
+  
+  ```{r}
+sleep <- read.table('sleep.txt')
+head(sleep)
+```
+As we have multiple measurments over time on each Subject we can conclude that this is a longitudinal study.
+The measurments are made in days and the dataset is balanced.
+
+The response variable is Reaction and is a nationally normed scale??!
+
+The covariates are Days - the number of days of sleep depravation and Subject, the identifier of the subject on which the observation was made.
+### Spaghetti Plot
+
+
+```{r cars}
+average_reaction_time<- sleep %>%
+  group_by(Days) %>%
+  summarise(mean_reaction_time=mean(Reaction), median_reaction_time=median(Reaction), sd_reaction_time=sd(Reaction))
+sleep_spag_plot<-ggplot(sleep) + geom_line(aes(Days, Reaction, colour=factor(Subject)), show.legend=FALSE) + geom_line(data=average_reaction_time, aes(Days, mean_reaction_time),colour="BLACK", size=1.4) + labs(title=" Spaghetti Plot", caption= "mean in black")
+sleep_spag_plot
+```
+
+By observing the Spaghetti plot we can easily notice that most of the Subjects have an increasing reaction time by increasing the number of days without sleep.
+We can notice as well that the variation of Reaction time around the mean is lower in Day 0 than the data variation around the mean after 5 days of sleep depravation.Even though at Day 0 the subjects are starting with different values we can oberve that we can expect some outliers.
+
+###  Descriptive Statistics
+
+#### Overview
+```{r, echo=T}
+sleep.mean <- tapply(sleep$Reaction, list(sleep$Days), mean)
+sleep.sd <- tapply(sleep$Reaction, list(sleep$Days), sd)
+sleep.var <- tapply(sleep$Reaction, list(sleep$Days), var)
+sleep.n <- table(sleep$Days)
+overview <- cbind(c(0:9), sleep.mean, sleep.sd, sleep.var, sleep.n)
+colnames(overview) <- c('Days', 'Mean', 'SD', 'Var', 'n')
+round(overview, 2)
+```
+
+From calculating the mean,standard deviation,variance for each Day on all Subjects we can conclude the same as from the spaghetti plot: the mean increases once we add more days withou sleep and the variance  in Day 10 is much higher than in Day0.
+
+#### Boxplot
+```{r , echo=T}
+ggplot(sleep) + geom_boxplot(aes(Days, Reaction, colour=factor(Days)),show.legend=FALSE) + labs(title="Boxplot") +geom_line(data=average_reaction_time, aes(Days, mean_reaction_time),colour="black", size=0.5)
+```
+
+From these boxplots we can easily observe that in the tenth day there are many outliers and we can also see clearly that the mean has a liniar increase over days.
+
+### Mean evolution
+```{r}
+# General function to plot error bars
+errbar=function(x,y,height,width,lty=1,col="black"){
+arrows(x,y,x,y+height,angle=90,length=width,lty=lty, col=col)
+arrows(x,y,x,y-height,angle=90,length=width,lty=lty, col=col)}
+## Plotting mean evolution
+plot(c(0:9), overview[,2] ,type="b",xlim=c(0,10), ylim=c(150,480),xlab="Days",ylab="Reaction",axes=F, main="Mean evolution (with 1 SE intervals)")
+axis(side=1,at=c(0:9),labels=c(0:9))
+axis(side=2,at=seq(200,450,50))
+box()
+points(c(0:9), overview[,2],type="b",col="red")
+errbar(c(0:9),overview[,2], sleep.sd, 0.1, col="red")
+```
+
+Here again you see both phenomena: The linear trend - increasing reaction time with increasing number of days. 
+Bigger errorbars with increasing number of days.We can conclude that the Subjects are having a much bigger difference in reaction with the increasing days with sleep depravation.
+
+### Correlations
+```{r}
+## Reshaping the data into a wide form
+sleep.resh <- reshape(sleep, timevar = "Days", idvar = c("Subject"), direction = "wide")
+sleep.resh
+# check normality of variables Reaction.X
+for (i in c(2:11)){
+  print(shapiro.test(sleep.resh[,i]))
+}
+```
+
+The last column (Reaction.9) is not normally distributed. So we use the 'spearman' method for correlation. (We could also use 'pearson' for all except the correlations for Reaction.9.)
+
+```{r}
+## Correlation between the Reaction scores at different days
+cor(sleep.resh[, 2:11], method='spearman')
+pairs(sleep.resh[, 2:11])
+```
+
+There seem to be high linear correlations between two following days (e.g. between Day 8 and 9, between Day 3 and 4, ...). The further the 'second' Days is apart, the lower the correlation (e.g. low correlation between Day 1 and Day 8). This appears quite 'logic', as we expect a linear trend between the number of Days and the reaction time.
+
+
+
+### Regression per person
+```{r}
+## Trellis graph
+## Displaying the linear regression per person
+cf <-sapply(sleep$Subject, function(x) coef(lm(Reaction~Days, data=subset(sleep, Subject==x))))
+Sx <-reorder(sleep$Subject, cf[1,]) 
+# 
+xyplot(Reaction ~ Days|Sx, data=sleep, type=c('p', 'r'), auto.key=T,aspect="xy", par.settings=list(axis.text=list(cex=0.6), fontsize=list(text=8, points=10)), scales=list(x=list(at=c(0:9),labels=c("0","1","2", "3", "4", "5", "6", "7", "8", "9"))))
+```
+
+Subjects with very low reaction time at the start seem to have bigger slopes (the reaction time increases faster with increasing days of sleep deprivation).
+
+Most subjects seem to have liniar correlation between reaction time and days without sleep.
+We can also observe that the slopes for each Subject are different and for one of the subjects it is decreasing(Subject 350).
+In some cases the slope is abrupt and in some cases is growing slowly.
+The correlation is a positive one, b the passing days without sleep the slope goes up.
+The slope gives the evolution over time of each individual and the intercept gives us the starting point of each individual.
+
+Maybe we should answer to this question: What model generated these data?
+
+Liniar regression per Subject looks like this:
+
+Model for subject i:
+$Y_{00}$= $\pi_{0i}$ + $\pi_{1i}$* $Days_{ij}$ + $\epsilon_{ij}$
+
+$Y_{00}$ denotes the Reaction time for subject i at Day ij
+$\pi_{0i}$ intercept for subje i at Dayij=0 - Mean value of Reaction in the first day of measurment,the initial status -> this can be interpreted as the real Reaction time which cannot be measured because is contaminated by the error: so we avarage all the results
+$\pi_{1i}$ slope for subject i - The daily increase in the mean of Reaction
+$\epsilon_{ij}$j error term  $\epsilon_{ij}$ ~ N(0,$\sigma{\epsilon}^2$) - the deviation of Subject i from his mean of evolution(Measurment error)
+
+It looks like there is a correlation between initial status and the rate of change because the slopes show a slitghly increasing trend 
+
+### Between subject variability
+
+```{r}
+## Linear regression per participant of Reaction on Days
+## Coefficients
+lin.reg.coef <- by(sleep, sleep$Subject, function(data) coef(lm(Reaction ~ Days, data=data)))
+lin.reg.coef1 <- unlist(lin.reg.coef)
+names(lin.reg.coef1) <- NULL
+lin.reg.coef2=matrix(lin.reg.coef1,length(lin.reg.coef1)/2,2,byrow = TRUE)
+## R squared
+lin.reg.r.squared <- by(sleep, sleep$Subject, function(data) summary(lm(Reaction ~ Days, data=data))$r.squared )
+lin.reg.r.squared1<- as.vector(unlist(lin.reg.r.squared))
+## Histograms
+par(mfrow=c(3,1))
+hist(lin.reg.coef2[,1],xlab="Intercept",col="lightblue",main="Histogram of individual intercepts")
+hist(lin.reg.coef2[,2],xlab="Slope",col="lightblue",main="Histogram of individual slopes")
+hist(lin.reg.r.squared1,xlab="R squared",col="lightblue",main="Histogram of individual R squared")
+```
+
+The individual intercepts don't seem to bee normally distributed. The slopes seem to follow a normal distribution. The majority of the individual models seem to fit the individual data well (high R squared), but there are also some models that don't fit the data very well.
+
+### Fitting the model - with REML
+```{r}
+sleep.reml <- lmer(formula = Reaction ~ 1 + Days + (1 + Days|Subject), data=sleep)
+summary(sleep.reml)
+```
+#### Values
+$\gamma_{00}$ or $\gamma_{0}$  = 251.405
+$\gamma_{10}$ or $\gamma_{1}$  = 10.467
+
+
+$\sigma_{\epsilon}^{2}$ = 654.94
+$\sigma_{0}^{2}$ = 611.90
+$\sigma_{1}^{2}$ = 35.08
+corr($b_{0i}$, $b_{1i}$) = 0.07
+
+Level 1 model explains the evolution of Reaction time for each subject
+$Y_{ij}$= $\pi_{0i}$ + $\pi_{1i}$* $Days_{ij}$ + $\epsilon_{ij}$
+
+Level 2 model tries to explain why the Subjects differ from each other
+$\pi_{0i}$ = $\gamma_{00}$ + $b_{0i}$
+$\pi_{1i}$ = $\gamma_{10}$ + $b_{1i}$
+
+$\sigma_{0}^{2}$ - Level 2 residual variance in true intercept π0i across all individuals in the population
+$\sigma_{1}^{2}$ - Level 2 residual variance in true slope π1i across all individuals in the population
+With level 2 model we are trying to see why there is variation between individuals by looking at the intercept and at the slope.
+$b_{0i}$ and $b_{1i}$ are the unexplained variability
+
+The single model:
+$Y_{ij}$ = $\gamma_{00}$ + $b_{0i}$ + $\gamma_{10}$* $Days_{ij}$ - fixed effects
+          + $b_{0i}$ + $b_{1i}$*$Days_{ij}$ - random effects
+          + $\epsilon_{ij}$ - error
+-this model discribes the evolution in the first spaghetti plot
+E($Y_{ij}$) = $\gamma_{00}$ + $\gamma_{10}$* $Days_{ij}$ - this is the average evolution
+
+###Fitting the model
+Stage 1 model describes the variability within the subjects
+Stage 2 model describes between-subject variability
+
+The general liniar mixed model is given by:
+$Y_{i}$ = $X_{i}\beta$ + $Z_{i}b_{i}$ + $\epsilon_{i}$
+$b_{i}$ ~ N(0,D) , $\epsilon_{i}$ ~ N(0,$\Sigma{i}$)
+$b_{1}...,b_{N}$,$\epsilon_{1}...,\epsilon_{N}$ independent
+
+So we have the hierarchical model:
+A model for $Y_{i}$ given $b_{i}$ 
+A model for $b_{i}$
+
+As we have a small dataset: 18 Subjects we prefer the method Restricted maximum likelihood for $\alpha$
+
+$\alpha$ is a vector of all variance components in D and $\Sigma{i}$
+
+1 + Days|Subject - this is the subject specific part: $b_{0i}$ + $b_{1i}$*$Days_{ij}$ 
+1 + Days  - the intercept
+$\gamma_{00}$ + $\gamma_{10}$* $Days_{ij}$ - fixed effects
+
+
+### Testing fixed effects
+
+#### with Wald
+```{r}
+confint(sleep.reml,  par=5:6, method='Wald', oldNames=F)
+```
+Both confidence intervals do not contain 0 => Intercept != 0, Days effect != 0
+
+The fixed effect seem to be significant.?
+
+#### with bootstrap and profile likelihood
+```{r}
+confint(sleep.reml, method='boot', boot.type='perc', oldNames=F, nsim=500)
+confint(sleep.reml, level=0.95, method='profile',   oldNames=F)
+```
+same result: Both confidence intervals do not contain 0 => Intercept != 0, Days effect != 0
+
+
+#### likelihood ratio test with anova - 
+This test is not useful for our model..
+```{r}
+```
+
+TODO: check if residuals are normally distributed
+```{r}
+resid <- residuals(sleep.reml)
+shapiro.test(residuals(sleep.reml))
+hist(resid)
+```
+
+Conclusions level 2 model 
+
+$\pi_{0i}$ = 251.405+ $b_{0i}$ - how they start
+$\pi_{1i}$ = 10.467 + $b_{1i}$ - how they evolve
+
+### OLS vs LMM estimates
+
+```{r}
+sleep.o <- ranef(sleep.reml)$Subject
+sleep.o
+plot(sleep.o, main="Random intercept (b0i) versus random slope (b1i)")
+```
+
+-bi are not observed and we assume that has a normal distrib.
+
+The random effects reflect how the evolution of the Subject deviates from the average evolution in the population: the random effect will explain why some line is going down more sharply than the average.
+
+Subjects are not averages: to predict the evolution of a specific Subject we can use bi
+
+### Scientific question:
+Is there a relationship between reaction time and the number of days of sleep deprivation?
+
+As shown in the previous analysis there is a correlation between days of sleep depravation and reaction time.
