@@ -4,10 +4,10 @@ output: slidy_presentation
 ---
 
 ```{r setup, include=FALSE}
-# knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = FALSE)
 ```
 
-```{r, include=F}
+```{r libraries, include=F}
 library(tidyverse)
 library(lattice)
 library(lme4)
@@ -21,13 +21,13 @@ TODO!
 
 ## Exploratory analysis
 
-```{r}
+```{r data_wrangling}
 sleep <- read.table('sleep.txt')
 ```
 
 ## Spaghetti Plot
 
-```{r spaghetti, echo=FALSE}
+```{r spaghetti, echo=FALSE, fig.align="center", out.width="80%", out.height="60% "}
 average_reaction_time <- sleep %>%
   group_by(Days) %>%
   summarise(mean_reaction_time   = mean(Reaction),
@@ -47,19 +47,19 @@ sleep_spag_plot
 ```
 
 ## Descriptive Statistics
-```{r, echo=T}
+```{r descriptive_stats, fig.align="center"}
 sleep.mean <- tapply(sleep$Reaction, list(sleep$Days), mean)
-sleep.sd <- tapply(sleep$Reaction, list(sleep$Days), sd)
-sleep.var <- tapply(sleep$Reaction, list(sleep$Days), var)
-sleep.n <- table(sleep$Days)
+sleep.sd   <- tapply(sleep$Reaction, list(sleep$Days), sd)
+sleep.var  <- tapply(sleep$Reaction, list(sleep$Days), var)
+sleep.n    <- table(sleep$Days)
 
-overview <- cbind(c(0:9), sleep.mean, sleep.sd, sleep.var, sleep.n)
+overview   <- cbind(c(0:9), sleep.mean, sleep.sd, sleep.var, sleep.n)
 colnames(overview) <- c('Days', 'Mean', 'SD', 'Var', 'n')
-round(overview, 2)
+knitr::kable(round(overview, 2), "pandoc")
 ```
 
 ## Boxplot
-```{r , echo=T}
+```{r boxplot, fig.align="center", out.width="80%"}
 ggplot(sleep) + 
   geom_boxplot(aes(Days, Reaction, colour=factor(Days)),
                show.legend = FALSE) +
@@ -72,7 +72,7 @@ ggplot(sleep) +
 ```
 
 ## Mean evolution
-```{r mean_err, echo=FALSE}
+```{r mean_err, fig.align="center", out.width="80%"}
 ## TODO? change to ggplot instead of plot?
 ## example:
 # sleep_descr_stats <- sleepf %>%
@@ -135,8 +135,10 @@ sleep.resh <- reshape(sleep,
                       timevar   = "Days",
                       idvar     = c("Subject"),
                       direction = "wide")
-sleep.resh
-
+knitr::kable(sleep.resh, "pandoc")
+```
+## shapiro
+```{r}
 # check normality of variables Reaction.X
 for (i in c(2:11)){
   print(shapiro.test(sleep.resh[,i]))
@@ -145,7 +147,8 @@ for (i in c(2:11)){
 
 The last column (Reaction.9) is not normally distributed. So we use the 'spearman' method for correlation. (We could also use 'pearson' for all except the correlations for Reaction.9.)
 
-```{r}
+## spearman
+```{r spearman, fig.align="center", out.width="80%"}
 ## Correlation between the Reaction scores at different days
 cor(sleep.resh[, 2:11], method='spearman')
 
@@ -158,8 +161,8 @@ pairs(sleep.resh[, 2:11])
 There seem to be high linear correlations between two following days (e.g. between Day 8 and 9, between Day 3 and 4, ...). The further the 'second' Days is apart, the lower the correlation (e.g. low correlation between Day 1 and Day 8). This appears quite 'logic', as we expect a linear trend between the number of Days and the reaction time.
 
 
-### Regression per person
-```{r}
+## Regression per person
+```{r trellis, fig.align="center", out.width="80%"}
 ## Trellis graph
 ## Displaying the linear regression per person
 
@@ -180,10 +183,9 @@ xyplot(Reaction ~ Days|Sx,
 
 Subjects with very low reaction time at the start seem to have bigger slopes (the reaction time increases faster with increasing days of sleep deprivation).
 
-
 ## Between subject variability
 
-```{r}
+```{r histograms, fig.align="center", out.width="80%"}
 ## Linear regression per participant of Reaction on Days
 
 ## Coefficients
@@ -224,7 +226,7 @@ The individual intercepts don't seem to bee normally distributed. The slopes see
 ```{r}
 sleep.reml <- lmer(formula = Reaction ~ 1 + Days + (1 + Days|Subject),
                    data=sleep)
-summary(sleep.reml)
+summary(sleep.reml) 
 ```
 ## Values
 $$\begin{align}
@@ -237,17 +239,13 @@ $$\begin{align}
 corr(b_{0i}, b_{1i}) &= 0.07
 \end{align}$$
 
-## Testing fixed effects
-
-## with Wald
+## Testing fixed effects - with Wald
 ```{r}
 confint(sleep.reml,  par=5:6, method='Wald', oldNames=F)
 ```
 Both confidence intervals do not contain 0 => Intercept != 0, Days effect != 0
 
-
-
-## with bootstrap and profile likelihood
+## Testing fixed effects - with bootstrap and profile likelihood
 ```{r}
 confint(sleep.reml,
         method    = 'boot',
@@ -277,15 +275,7 @@ hist(resid)
 ```
 
 ## OLS vs LMM estimates
-
-
-
-
-
 ```{r}
 sleep.o <- ranef(sleep.reml)$Subject
-sleep.o
-
+knitr::kable(head(sleep.o), format = "pandoc")
 ```
-
-
