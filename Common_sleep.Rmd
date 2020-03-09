@@ -243,7 +243,12 @@ hist(lin.reg.r.squared1,
 
 ```
 
-The individual intercepts don't seem to bee normally distributed. The slopes seem to follow a normal distribution. The majority of the individual models seem to fit the individual data well (high R squared), but there are also some models that don't fit the data very well.
+The individual intercepts correspond to the initial reaction time and are non normally distributed. Given the small data set, this is not surprising as it shows a variety of their initial reaction time. However, if this data came from a large dataset, it would be surprising that even the initial data points are not normally distributed and could suggest a wrong data sample compared to the population. 
+
+Looking at the histogram of individual slopes, we see a normal distribution. As seen on the previous graph showcasing the individual linear regressions, very little slopes are negative. This shows again that reaction time increases by days of sleep deprivation. 
+
+Finally, looking at the histogram of R squared, we see that the majority of subjects have a R squared of above 0.6. This shows that the linear model is appropriate for this data set. However, sometimes the individual linear model does not fit the specific data of some subjects, specifically 7 of the 18 subjects.
+
 
 ## Fitting the model - with REML
 ```{r}
