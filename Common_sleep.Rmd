@@ -1,6 +1,7 @@
 ---
-title: "Sleep deprivation"
-output: slidy_presentation
+title: "Patterns of performance degradation during sleep restriction of long distance truck drivers "
+output: 
+pdf_document:default
 ---
 
 ```{r setup, include=FALSE}
@@ -16,16 +17,31 @@ library(arm)
 library(ggplot2)
 ```
 
-## Description of Data Set and Questions
-TODO!
+## Presentation of the case study
+We are analysing the effect of sleep deprivation on reaction time of long distance truck drivers. There are 18 subjects in the dataset and for each subject, the reaction time was measured for 10 days. The subjects were allowed only a limited amount of sleep for 10 subsequent days.
+Each subjects reaction time was measured several times on each day of the trial.
+
+Reaction time is measured with a psychomotor vigilance task (PVT), which measures the speed with which subjects respond to a visual stimulus.
+
+Is there any relation between reaction time and the number of days of sleep deprivation?
+
+
 
 ## Exploratory analysis
 
 ```{r data_wrangling}
 sleep <- read.table('sleep.txt')
+head(sleep, 12)
 ```
+This dataset contains multiple measurements for each subject on consecutive days, with as response variable the continuous variable reaction time and explanatory variable Days. Since there are 10 measurements for each subject, it is a longitudinal study.
+The dataset of 18 subjects is balanced with an equal amount of measurements for each subject.
 
-## Spaghetti Plot
+
+### Spaghetti Plot
+To visualise the individual reaction times and how they compare to the mean, a spaghetti plot was made.
+This revealed that there was variation in intercept or starting reaction time on day 0, this variation increased with subsequent days.
+For most subjects, the reaction time increased with amount of days of sleep deprivation. This increase is also visible in the mean.
+
 
 ```{r spaghetti, echo=FALSE, fig.align="center", out.width="80%", out.height="60% "}
 average_reaction_time <- sleep %>%
@@ -160,7 +176,7 @@ pairs(sleep.resh[, 2:11])
 
 There seem to be high linear correlations between two following days (e.g. between Day 8 and 9, between Day 3 and 4, ...). The further the 'second' Days is apart, the lower the correlation (e.g. low correlation between Day 1 and Day 8). This appears quite 'logic', as we expect a linear trend between the number of Days and the reaction time.
 
-
+With reaction time as a continious variable for multiple subjects on different days, we modelled this longitudial data with a multilevel
 ## Regression per person
 ```{r trellis, fig.align="center", out.width="80%"}
 ## Trellis graph
