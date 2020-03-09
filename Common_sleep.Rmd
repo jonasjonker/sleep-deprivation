@@ -28,7 +28,6 @@ Is there any relation between reaction time and the number of days of sleep depr
 
 
 ## Exploratory analysis
-
 ```{r data_wrangling}
 sleep <- read.table('sleep.txt')
 head(sleep, 12)
@@ -60,21 +59,14 @@ sleep_spag_plot <- ggplot(sleep) +
   labs(title   = "Spaghetti Plot",
        caption = "Already from this plot you can assume that the reaction time is increasing with increasing number of days of sleep deprivation.")
 sleep_spag_plot
-```
 
-## Descriptive Statistics
-```{r descriptive_stats, fig.align="center"}
-sleep.mean <- tapply(sleep$Reaction, list(sleep$Days), mean)
-sleep.sd   <- tapply(sleep$Reaction, list(sleep$Days), sd)
-sleep.var  <- tapply(sleep$Reaction, list(sleep$Days), var)
-sleep.n    <- table(sleep$Days)
-
-overview   <- cbind(c(0:9), sleep.mean, sleep.sd, sleep.var, sleep.n)
-colnames(overview) <- c('Days', 'Mean', 'SD', 'Var', 'n')
-knitr::kable(round(overview, 2), "pandoc")
+# TODO axes benoemen
 ```
 
 ## Boxplot
+Boxplots were made to get a quick summary of the datasets characteristics. The mean and median seem to show a similar increase throughout the study. For day nr 6, 7 and 10, outliers are observed.  The variance increases with an increase in days of sleep deprivation, the interquartile range appears to increase not as strong as the minimum and maximum of the boxplot. To put together, some subjects deviate more from the mean with an increase in in days of sleep deprivation resulting.
+The violin plot supports these above observations of the distribution of the data.
+
 ```{r boxplot, fig.align="center", out.width="80%"}
 ggplot(sleep) + 
   geom_boxplot(aes(Days, Reaction, colour=factor(Days)),
@@ -85,7 +77,24 @@ ggplot(sleep) +
             size   = 0.5) +
   labs(title   = "Boxplot",
        caption = "It seems as if there's a linear trend between the number of days of sleep deprivation and the reaction time. Also the variance of the reaction time seems to increase with increasing days of sleep deprivation. (at Day 9: 5 outliers)")
+       
+       ##TODO add violin plot, add axis      
 ```
+
+## Summary
+```{r descriptive_stats, fig.align="center"}
+sleep.mean <- tapply(sleep$Reaction, list(sleep$Days), mean)
+sleep.sd   <- tapply(sleep$Reaction, list(sleep$Days), sd)
+sleep.var  <- tapply(sleep$Reaction, list(sleep$Days), var)
+sleep.n    <- table(sleep$Days)
+
+overview   <- cbind(c(0:9), sleep.mean, sleep.sd, sleep.var, sleep.n)
+colnames(overview) <- c('Days', 'Mean', 'SD', 'Var', 'n')
+knitr::kable(round(overview, 2), "pandoc")
+```
+Calculation of the mean, standard deviation and variance for each day on all subjects, further support our exploratory plots: an increase in the mean and variance with more days of sleep deprivation.
+
+
 
 ## Mean evolution
 ```{r mean_err, fig.align="center", out.width="80%"}
@@ -143,6 +152,9 @@ errbar(c(0:9), overview[,2], sleep.sd, 0.1,
 
 Here again you see both phenomena: The linear trend - increasing reaction time with increasing number of days. 
 Bigger errorbars with increasing number of days.
+
+
+
 
 ## Correlations
 ```{r}
