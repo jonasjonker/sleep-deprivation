@@ -68,6 +68,7 @@ sleep_lm <- sleep %>%
 #   tidyr::spread(subject, reaction) %>%
 #  dplyr::rename_at(vars(-days), funs(paste("reaction", ., sep="")))
 # sleep_per_subject
+sleep_descr_stats
 ```
 
 ```{r spagettiplot}
@@ -209,38 +210,12 @@ cowplot::plot_grid(
 ```{r mle}
 #  reaction = intercept + days + (random effects in subject and intercept)
 sleep_lmer <- lmer(formula = reaction~1+days+(1+days|subject),
-                   data=sleep,
-                   REML = FALSE)
+                   data=sleep)
 summary(sleep_lmer)
 ```
 ```
 
-Formula: reaction ~ 1 + days + (1 + days | subject)
-   Data: sleep
-
-     AIC      BIC   logLik deviance df.resid 
-  1763.9   1783.1   -876.0   1751.9      174 
-
-Scaled residuals: 
-    Min      1Q  Median      3Q     Max 
--3.9416 -0.4656  0.0289  0.4636  5.1793 
-
-Random effects:
- Groups   Name        Variance Std.Dev. Corr
- subject  (Intercept) 565.48   23.780                          # intercept
-          days         32.68    5.717   0.08  
- Residual             654.95   25.592       
-Number of obs: 180, groups:  subject, 18
-
-Fixed effects:
-            Estimate Std. Error t value
-(Intercept)  251.405      6.632  37.907
-days          10.467      1.502   6.968
-
-Correlation of Fixed Effects:
-     (Intr)
-days -0.138
-``` {r reml}
+```{r }
 sleep_reml <- lmer(formula = reaction~1+days+(1|subject),
                    data=sleep,
                    REML = TRUE)
