@@ -215,12 +215,14 @@ xyplot(Reaction ~ Days|Sx,
                            fontsize=list(text=8, points=10)),
        scales=list(x = list(at = c(0:9), labels = c("0","1","2", "3", "4", "5", "6", "7", "8", "9"))))
 ```
-We performed linear regression models on each subject's 
-We made a trellis graph to visualise the intercepts and slopes from the subject-specific linear regression models.   
+We performed a linear regression model on each subject based on the function: reaction time = b0 + bi* Days. 
 
-The graph suggests that the slope and intercept of one subject's linear model are independent of each other, due to no observable trend between increasing slope and intercept. Overall, all subjects have a positive slope besides subject 335. 
+We then created a trellis graph to visualise the intercepts and slopes of these subject-specific linear regression models.   
 
-The linear regression lines fit the datapoints closely, suggesting  that a linear model is appropriate to represent this dataset.
+The graph suggests that the slope and intercept of each subject's linear model are independent of each other as there is no observable trend between the height of the intercept and the steepness of the slope. 
+Overall, all subjects have a positive slope besides subject 335. 
+
+The linear regression lines fit the datapoints closely, suggesting that a linear model is appropriate to represent this dataset.
 
 TO DISCUSS: correlation between slope/intercept?
 
@@ -261,7 +263,7 @@ hist(lin.reg.r.squared1,
 
 ```
 
-The individual intercepts correspond to the initial reaction time and are non normally distributed. Given the small data set, this is not surprising as it shows a variety of their initial reaction time. However, if this data came from a large dataset, it would be surprising that even the initial data points are not normally distributed and could suggest a wrong data sample compared to the population. 
+The individual intercepts shown in the first histogram correspond to the initial reaction time and are non normally distributed. Given the small data set, this is not surprising as it shows a variety of their initial reaction time. However, if this data came from a large dataset, it would be surprising that even the initial data points are not normally distributed and could suggest a wrong data sample compared to the population. 
 
 Looking at the histogram of individual slopes, we see a normal distribution. As seen on the previous graph showcasing the individual linear regressions, very little slopes are negative. This shows again that reaction time increases by days of sleep deprivation. 
 
