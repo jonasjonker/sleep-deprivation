@@ -4,6 +4,9 @@ title: 'Patterns of performance degradation during sleep restriction of long dis
 output:
   html_document:
     df_print: paged
+  word_document: default
+  md_document:
+    variant: markdown_github
 ---
 
 ```{r setup, include=FALSE}
@@ -15,7 +18,6 @@ library(tidyverse)
 library(lattice)
 library(lme4)
 library(arm)
-#library(pkbrtest)
 library(ggplot2)
 ```
 
@@ -27,8 +29,6 @@ Reaction time is measured with a psychomotor vigilance task (PVT), which measure
 
 Is there any relation between reaction time and the number of days of sleep deprivation?
 
-
-
 ## Exploratory analysis
 ```{r data_wrangling}
 sleep <- read.table('sleep.txt')
@@ -37,14 +37,10 @@ head(sleep, 12)
 This dataset contains multiple measurements for each subject on consecutive days, with as response variable the continuous variable reaction time and explanatory variable Days. Since there are 10 measurements for each subject, it is a longitudinal study.
 The dataset of 18 subjects is balanced with an equal amount of measurements for each subject.
 
-
 ### Spaghetti Plot
-To visualise the individual reaction times and how they compare to the mean, a spaghetti plot was created.
-This revealed that there was a variation in intercepts or starting reaction times on day 0 between subjects. 
-This variation increased with subsequent days. 
+To visualise the individual reaction times and how they compare to the mean, a spaghetti plot was created. This revealed that there was a variation in intercepts or starting reaction times on day 0 between subjects. This variation increased with subsequent days. 
 
 For most subjects, the reaction time increased with the amount of days of sleep deprivation. This increase is also visible in the mean.
-
 
 ```{r spaghetti, echo=FALSE, fig.align="center", out.width="80%", out.height="60% "}
 average_reaction_time <- sleep %>%
@@ -54,9 +50,9 @@ average_reaction_time <- sleep %>%
             sd_reaction_time     = sd(Reaction))
 
 sleep_spag_plot <- ggplot(sleep) +
-  geom_line(aes(Days, Reaction, colour=factor(Subject)),
-            show.legend=FALSE) +
-  geom_line(data= average_reaction_time,
+  geom_line(aes(Days, Reaction, colour = factor(Subject)),
+            show.legend = FALSE) +
+  geom_line(data = average_reaction_time,
             aes(Days, mean_reaction_time),
             colour = "BLACK",
             size   = 1.4) + 
@@ -291,9 +287,19 @@ Level 1 model explains the evolution of Reaction time for each subject
 $Y_{ij}$= $\pi_{0i}$ + $\pi_{1i}$* $Days_{ij}$  -> how do individuals evolve
           + $\epsilon_{ij}$  -> how the individuals deviate from their own evolution
 
+$$\begin{align}
+Y_{ij}&= \pi_{0i} + \pi_{1i}* \text{Days}_{ij} && \text{how do individuals evolve} \\
+          &+ \epsilon_{ij} &&\text{how the individuals deviate from their own evolution}
+\end{align}$$
+
 Level 2 model tries to explain why the Subjects differ from each other
 $\pi_{0i}$ = $\gamma_{0}$ + $b_{0i}$ - model for explaining the intercept
 $\pi_{1i}$ = $\gamma_{1}$ + $b_{1i}$ - model for explaining the slope
+
+$$\begin{align}
+π_{0i} &= γ_{0} + b_{0i} &&\text{model for explaining the intercept} \\
+π_{1i} &= γ_{1} + b_{1i} &&\text{model for explaining the slope}
+\end{align}$$
 
 
 $\sigma_{0}^{2}$ - Level 2 residual variance in true intercept $\pi_{0i}$ across all individuals in the population
@@ -307,6 +313,21 @@ $Y_{ij}$ = $\gamma_{0}$ + $b_{0i}$ + $\gamma_{1}$* $Days_{ij}$ - fixed effects
           + $b_{0i}$ + $b_{1i}$*$Days_{ij}$ - random effects
           + $\epsilon_{ij}$ - error
 
+$$\begin{align}
+Y_{ij} =& γ_{0} + b_{0i} + γ_{1}* \text{Days}_{ij} &&\text{fixed effects}\\
+          &+ b_{0i} + b_{1i}*\text{Days}_{ij} &&\text{random effect}\\
+          &+ \epsilon_{ij} &&\text{error}
+\end{align}$$
+
+$$
+\begin{cases}
+Y_{ij}&= π_{0i} + π_{1i}* \text{Days}_{ij} + ε_{ij} \\
+π_{0i} &= γ_{0} + b_{0i} &&\text{intercept} \\
+<!-- π_{1i} &= γ_{1} + b_{1i} &&\text{slope} -->
+\end{cases}
+$$
+
+
 Following is the average evolution of the population:
 E($Y_{ij}$) = $\gamma_{0}$ + $\gamma_{1}$* $Days_{ij}$ 
 
@@ -318,6 +339,12 @@ $b_{ 1}...,b_{N}$,$\epsilon_{1}...,\epsilon_{N}$ independent
 
 $$Y_i \tilde{} N(X_i\beta, Z_iDZ_i'+\Sigma_i)$$
 ###todo:write the model with values given by R
+
+$$\begin{align}
+Y_i = X_i\beta + Z_i b_i + ε_i \\ 
+b_i \sim N(0,D)\text{, }ε_i \sim N(0,Σ_i) \\ 
+b_1\cdots,b_N, ε_1\cdots,ε_N \text{independent}
+\end{align}$$
 
 R uses the marginal model and our calcuation are based on that.
 Next step is to check if the values we retrieved are actually significant so does the number of days have a significant effect on the reaction time?

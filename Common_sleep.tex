@@ -50,7 +50,7 @@
 % Allow footnotes in longtable head/foot
 \IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
 \makesavenoteenv{longtable}
-\usepackage{graphicx,grffile}
+\usepackage{graphicx}
 \makeatletter
 \def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
 \def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
@@ -67,11 +67,27 @@
 \providecommand{\tightlist}{%
   \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
 \setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+% https://github.com/rstudio/rmarkdown/issues/337
+\let\rmarkdownfootnote\footnote%
+\def\footnote{\protect\rmarkdownfootnote}
 
-\title{Patterns of performance degradation during sleep restriction of long
-distance truck drivers}
+% https://github.com/rstudio/rmarkdown/pull/252
+\usepackage{titling}
+\setlength{\droptitle}{-2em}
+
+\pretitle{\vspace{\droptitle}\centering\huge}
+\posttitle{\par}
+
+\preauthor{\centering\large\emph}
+\postauthor{\par}
+
+\predate{\centering\large\emph}
+\postdate{\par}
+
+\title{Patterns of performance degradation during sleep restriction of
+long distance truck drivers}
 \author{}
-\date{\vspace{-2.5em}}
+\date{}
 
 \begin{document}
 \maketitle
@@ -127,34 +143,21 @@ mean, a spaghetti plot was created. This revealed that there was a
 variation in intercepts or starting reaction times on day 0 between
 subjects. This variation increased with subsequent days.
 
---\textgreater{} what is meant by variation? shouldnt we define it as
-the difference between the minimum and maximum??
-
 For most subjects, the reaction time increased with the amount of days
 of sleep deprivation. This increase is also visible in the mean.
 
-\textbackslash begin\{center\}\textbackslash includegraphics{[}width=0.8\linewidth,height=60\%
-{]}\{Common\_sleep\_files/figure-latex/spaghetti-1\}
-\textbackslash end\{center\}
+\begin{center}\includegraphics[width=0.8\linewidth,height=60% ]{Common_sleep_files/figure-latex/spaghetti-1} \end{center}
 
-\hypertarget{boxplot}{%
-\subsection{Boxplot}\label{boxplot}}
+## Boxplot
+The following boxplot was created to get a quick summary of the dataset's characteristics. 
+The mean and median seem to show a similar increase throughout the study. 
+For day nr 6, 7 and 10, outliers are observed.  
+The variance increases with an increase in days of sleep deprivation but the interquartile range appears to expand not as strongly as the minimum and maximum of the boxplot. 
 
-The following boxplot was created to get a quick summary of the
-dataset's characteristics. The mean and median seem to show a similar
-increase throughout the study. For day nr 6, 7 and 10, outliers are
-observed.\\
-The variance increases with an increase in days of sleep deprivation but
-the interquartile range appears to expand not as strongly as the minimum
-and maximum of the boxplot.
+To put together, some subjects deviate more from the mean with an increase in days of sleep deprivation (see outliers on both sides)  while most others stay around the mean (see slower increase in interquartile range). 
 
-To put together, some subjects deviate more from the mean with an
-increase in days of sleep deprivation (see outliers on both sides) while
-most others stay around the mean (see slower increase in interquartile
-range).
+The violin plot supports the above observations of the distribution of the data around the mean with outliers.
 
-The violin plot supports the above observations of the distribution of
-the data around the mean with outliers.
 
 \begin{center}\includegraphics[width=0.8\linewidth]{Common_sleep_files/figure-latex/boxplot-1} \end{center}
 
@@ -192,8 +195,6 @@ To further support our previous findings, we looked at the mean
 evolution. Here, an increasing trend of reaction time with increasing
 number of days is also observed, together with expanding standard
 deviations (see errorbars).
-
---\textgreater{} should we add anything more to this??
 
 \hypertarget{correlation}{%
 \subsection{Correlation}\label{correlation}}
@@ -307,28 +308,28 @@ Reaction.9\tabularnewline
 \end{verbatim}
 
 \begin{verbatim}
-##            Reaction.0 Reaction.1 Reaction.2 Reaction.3 Reaction.4
-## Reaction.0  1.0000000  0.6594427  0.5686275  0.4179567  0.4571723
-## Reaction.1  0.6594427  1.0000000  0.7461300  0.6367389  0.5562436
-## Reaction.2  0.5686275  0.7461300  1.0000000  0.8534572  0.7234262
-## Reaction.3  0.4179567  0.6367389  0.8534572  1.0000000  0.9133127
-## Reaction.4  0.4571723  0.5562436  0.7234262  0.9133127  1.0000000
-## Reaction.5  0.2239422  0.3581011  0.4344685  0.6553148  0.7296182
-## Reaction.6  0.2218782  0.2920537  0.4551084  0.6759546  0.7812178
-## Reaction.7  0.3457172  0.3312693  0.5087719  0.4509804  0.5789474
-## Reaction.8  0.1640867  0.1496388  0.2899897  0.4654283  0.5376677
-## Reaction.9  0.3106295  0.2899897  0.3168215  0.4633643  0.5933953
-##            Reaction.5 Reaction.6 Reaction.7 Reaction.8 Reaction.9
-## Reaction.0  0.2239422  0.2218782  0.3457172  0.1640867  0.3106295
-## Reaction.1  0.3581011  0.2920537  0.3312693  0.1496388  0.2899897
-## Reaction.2  0.4344685  0.4551084  0.5087719  0.2899897  0.3168215
-## Reaction.3  0.6553148  0.6759546  0.4509804  0.4654283  0.4633643
-## Reaction.4  0.7296182  0.7812178  0.5789474  0.5376677  0.5933953
-## Reaction.5  1.0000000  0.7667699  0.7254902  0.8121775  0.7378741
-## Reaction.6  0.7667699  1.0000000  0.7110423  0.6904025  0.6181631
-## Reaction.7  0.7254902  0.7110423  1.0000000  0.6573787  0.6243550
-## Reaction.8  0.8121775  0.6904025  0.6573787  1.0000000  0.8452012
-## Reaction.9  0.7378741  0.6181631  0.6243550  0.8452012  1.0000000
+##            Reaction.0 Reaction.1 Reaction.2 Reaction.3 Reaction.4 Reaction.5
+## Reaction.0  1.0000000  0.6594427  0.5686275  0.4179567  0.4571723  0.2239422
+## Reaction.1  0.6594427  1.0000000  0.7461300  0.6367389  0.5562436  0.3581011
+## Reaction.2  0.5686275  0.7461300  1.0000000  0.8534572  0.7234262  0.4344685
+## Reaction.3  0.4179567  0.6367389  0.8534572  1.0000000  0.9133127  0.6553148
+## Reaction.4  0.4571723  0.5562436  0.7234262  0.9133127  1.0000000  0.7296182
+## Reaction.5  0.2239422  0.3581011  0.4344685  0.6553148  0.7296182  1.0000000
+## Reaction.6  0.2218782  0.2920537  0.4551084  0.6759546  0.7812178  0.7667699
+## Reaction.7  0.3457172  0.3312693  0.5087719  0.4509804  0.5789474  0.7254902
+## Reaction.8  0.1640867  0.1496388  0.2899897  0.4654283  0.5376677  0.8121775
+## Reaction.9  0.3106295  0.2899897  0.3168215  0.4633643  0.5933953  0.7378741
+##            Reaction.6 Reaction.7 Reaction.8 Reaction.9
+## Reaction.0  0.2218782  0.3457172  0.1640867  0.3106295
+## Reaction.1  0.2920537  0.3312693  0.1496388  0.2899897
+## Reaction.2  0.4551084  0.5087719  0.2899897  0.3168215
+## Reaction.3  0.6759546  0.4509804  0.4654283  0.4633643
+## Reaction.4  0.7812178  0.5789474  0.5376677  0.5933953
+## Reaction.5  0.7667699  0.7254902  0.8121775  0.7378741
+## Reaction.6  1.0000000  0.7110423  0.6904025  0.6181631
+## Reaction.7  0.7110423  1.0000000  0.6573787  0.6243550
+## Reaction.8  0.6904025  0.6573787  1.0000000  0.8452012
+## Reaction.9  0.6181631  0.6243550  0.8452012  1.0000000
 \end{verbatim}
 
 \begin{center}\includegraphics[width=0.8\linewidth]{Common_sleep_files/figure-latex/spearman-1} \end{center}
@@ -340,16 +341,13 @@ The test revealed a non normal distribution of day 9. Thus, we performed
 the spearman correlation method instead of pearson to check for a
 correlation of the reaction times between days.
 
---\textgreater{} is this correct?
-
 Looking at the correlation matrix, there is a correlation higher then
 0.6 between subsequent days (e.g.~between Day 8 and 9, between Day 3 and
 4, \ldots). However, the further the days are apart, the lower the
 correlation (e.g.~low correlation between Day 1 and Day 8).
 
 Aligning nicely with our previous results, there is a linear trend
-between the number of Days and reaction time. --\textgreater{} isn't
-this another point?
+between the number of Days and reaction time.
 
 \hypertarget{regression-per-person}{%
 \subsection{Regression per person}\label{regression-per-person}}
@@ -364,13 +362,12 @@ of these subject-specific linear regression models.
 
 The graph suggests that the slope and intercept of each subject's linear
 model are independent of each other as there is no observable trend
-between the height of the intercept and the steepness of the slope.
+between the height of the intercept and the steepness of the slope. This
+is further supported by plotting the intercept against the slope.
 Overall, all subjects have a positive slope besides subject 335.
 
 The linear regression lines fit the datapoints closely, suggesting that
 a linear model is appropriate to represent this dataset.
-
-TO DISCUSS: correlation between slope/intercept?
 
 \hypertarget{between-subject-variability}{%
 \subsection{Between subject
@@ -433,8 +430,8 @@ REML}\label{fitting-the-model---with-reml}}
 \subsection{Values}\label{values}}
 
 \[\begin{align}
-\gamma_{00} \text{ or } \gamma_{0}  &= 251.405 \\
-\gamma_{10} \text{ or } \gamma_{1}  &= 10.467  \\
+\gamma_{0}  &= 251.405 \\
+\gamma_{1}  &= 10.467  \\
 \\
 \sigma_{\epsilon}^{2} &= 654.94 \\
 \sigma_{0}^{2} &= 611.90 \\
@@ -442,22 +439,84 @@ REML}\label{fitting-the-model---with-reml}}
 corr(b_{0i}, b_{1i}) &= 0.07
 \end{align}\]
 
-\hypertarget{testing-fixed-effects---with-wald}{%
+\#\#Mathematical description
+
+Level 1 model explains the evolution of Reaction time for each subject
+\(Y_{ij}\)= \(\pi_{0i}\) + \(\pi_{1i}\)* \(Days_{ij}\) -\textgreater{}
+how do individuals evolve + \(\epsilon_{ij}\) -\textgreater{} how the
+individuals deviate from their own evolution
+
+\[\begin{align}
+Y_{ij}&= \pi_{0i} + \pi_{1i}* \text{Days}_{ij} && \text{how do individuals evolve} \\
+          &+ \epsilon_{ij} &&\text{how the individuals deviate from their own evolution}
+\end{align}\]
+
+Level 2 model tries to explain why the Subjects differ from each other
+\(\pi_{0i}\) = \(\gamma_{0}\) + \(b_{0i}\) - model for explaining the
+intercept \(\pi_{1i}\) = \(\gamma_{1}\) + \(b_{1i}\) - model for
+explaining the slope
+
+\[\begin{align}
+π_{0i} &= γ_{0} + b_{0i} &&\text{model for explaining the intercept} \\
+π_{1i} &= γ_{1} + b_{1i} &&\text{model for explaining the slope}
+\end{align}\]
+
+\(\sigma_{0}^{2}\) - Level 2 residual variance in true intercept
+\(\pi_{0i}\) across all individuals in the population \(\sigma_{1}^{2}\)
+- Level 2 residual variance in true slope \(\pi_{1i}\) across all
+individuals in the population
+
+With level 2 model we are trying to see why there is variation between
+individuals by looking at the intercept and at the slope. \(b_{0i}\) and
+\(b_{1i}\) are the unexplained variability
+
+The full model describes the evolution observed in spaghetti plot:
+\(Y_{ij}\) = \(\gamma_{0}\) + \(b_{0i}\) + \(\gamma_{1}\)* \(Days_{ij}\)
+- fixed effects + \(b_{0i}\) + \(b_{1i}\)*\(Days_{ij}\) - random effects
++ \(\epsilon_{ij}\) - error
+
+\[\begin{align}
+Y_{ij} =& γ_{0} + b_{0i} + γ_{1}* \text{Days}_{ij} &&\text{fixed effects}\\
+          &+ b_{0i} + b_{1i}*\text{Days}_{ij} &&\text{random effect}\\
+          &+ \epsilon_{ij} &&\text{error}
+\end{align}\]
+
+\[
+\begin{cases}
+Y_{ij}&= π_{0i} + π_{1i}* \text{Days}_{ij} + ε_{ij} \\
+π_{0i} &= γ_{0} + b_{0i} &&\text{intercept} \\
+<!-- π_{1i} &= γ_{1} + b_{1i} &&\text{slope} -->
+\end{cases}
+\]
+
+Following is the average evolution of the population: E(\(Y_{ij}\)) =
+\(\gamma_{0}\) + \(\gamma_{1}\)* \(Days_{ij}\)
+
+The general liniar mixed model is given by:
+
+\(Y_{i}\) = \(X_{i}\beta\) + \(Z_{i}b_{i}\) + \(\epsilon_{i}\) \(b_{i}\)
+\textasciitilde{} N(0,D) , \(\epsilon_{i}\) \textasciitilde{}
+N(0,\(\Sigma{i}\)) \(b_{ 1}...,b_{N}\),\(\epsilon_{1}...,\epsilon_{N}\)
+independent
+
+\[Y_i \tilde{} N(X_i\beta, Z_iDZ_i'+\Sigma_i)\] \#\#\#todo:write the
+model with values given by R
+
+\[\begin{align}
+Y_i = X_i\beta + Z_i b_i + ε_i \\ 
+b_i \sim N(0,D)\text{, }ε_i \sim N(0,Σ_i) \\ 
+b_1\cdots,b_N, ε_1\cdots,ε_N \text{independent}
+\end{align}\]
+
+R uses the marginal model and our calcuation are based on that. Next
+step is to check if the values we retrieved are actually significant so
+does the number of days have a significant effect on the reaction time?
+We tested this with Bootstrap and Likelihood Ratio tests because th
+sample zise wasn't large enough(excluding Wald test).
+
+\hypertarget{testing-fixed-effects---with-bootstrap}{%
 \subsection{Testing fixed effects - with
-Wald}\label{testing-fixed-effects---with-wald}}
-
-\begin{verbatim}
-##                  2.5 %    97.5 %
-## (Intercept) 238.030755 264.77945
-## Days          7.437264  13.49731
-\end{verbatim}
-
-Both confidence intervals do not contain 0 =\textgreater{} Intercept !=
-0, Days effect != 0
-
-\hypertarget{testing-fixed-effects---with-bootstrap-and-profile-likelihood}{%
-\subsection{Testing fixed effects - with bootstrap and profile
-likelihood}\label{testing-fixed-effects---with-bootstrap-and-profile-likelihood}}
+bootstrap}\label{testing-fixed-effects---with-bootstrap}}
 
 \begin{verbatim}
 ## Computing bootstrap confidence intervals ...
@@ -465,59 +524,99 @@ likelihood}\label{testing-fixed-effects---with-bootstrap-and-profile-likelihood}
 
 \begin{verbatim}
 ## 
-## 6 message(s): boundary (singular) fit: see ?isSingular
-## 183 warning(s): Model failed to converge with max|grad| = 0.00201215 (tol = 0.002, component 1) (and others)
+## 8 message(s): boundary (singular) fit: see ?isSingular
+## 168 warning(s): Model failed to converge with max|grad| = 0.00201632 (tol = 0.002, component 1) (and others)
 \end{verbatim}
 
 \begin{verbatim}
 ##                                    2.5 %      97.5 %
-## sd_(Intercept)|Subject        12.7689931  35.5207699
-## cor_Days.(Intercept)|Subject  -0.5626843   0.9362242
-## sd_Days|Subject                3.3562426   8.1714729
-## sigma                         22.4567115  28.7293067
-## (Intercept)                  237.7833231 264.5845018
-## Days                           7.6114702  13.5341579
+## sd_(Intercept)|Subject        12.3506075  36.3544121
+## cor_Days.(Intercept)|Subject  -0.5587765   0.9522147
+## sd_Days|Subject                3.3040935   8.3389309
+## sigma                         22.3806780  28.4591688
+## (Intercept)                  235.8939882 265.4192442
+## Days                           7.2543970  13.2351602
 \end{verbatim}
 
-\begin{verbatim}
-## Computing profile confidence intervals ...
-\end{verbatim}
-
-\begin{verbatim}
-##                                    2.5 %      97.5 %
-## sd_(Intercept)|Subject        14.3816801  37.7159899
-## cor_Days.(Intercept)|Subject  -0.4815003   0.6849854
-## sd_Days|Subject                3.8011760   8.7533385
-## sigma                         22.8982726  28.8579967
-## (Intercept)                  237.6806976 265.1295148
-## Days                           7.3586541  13.5759163
-\end{verbatim}
-
-same result: Both confidence intervals do not contain 0 =\textgreater{}
-Intercept != 0, Days effect != 0
-
-TO BE CONTINUED\ldots.
+Confidence interval of the intercept and days does not include 0
+therefore both of them have a significant effect on reaction time.
 
 \hypertarget{likelihood-ratio-test-with-anova}{%
 \subsection{likelihood ratio test with
 anova}\label{likelihood-ratio-test-with-anova}}
 
-TODO: check if residuals are normally distributed
-
 \begin{verbatim}
-## 
-##  Shapiro-Wilk normality test
-## 
-## data:  residuals(sleep.reml)
-## W = 0.90146, p-value = 1.408e-09
+## Data: sleep
+## Models:
+## sleep.intercept: Reaction ~ 1 + (1 | Subject)
+## sleep.full: Reaction ~ 1 + Days + (1 + Days | Subject)
+##                 Df    AIC    BIC  logLik deviance Chisq Chi Df Pr(>Chisq)    
+## sleep.intercept  3 1916.5 1926.1 -955.27   1910.5                            
+## sleep.full       6 1763.9 1783.1 -875.97   1751.9 158.6      3  < 2.2e-16 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 \end{verbatim}
 
-\includegraphics{Common_sleep_files/figure-latex/unnamed-chunk-7-1.pdf}
+We compared an intercept only model with a model that includes days as
+well and we concluded that adding days as covariate it improves our
+model significantly. Days have have a significant effect on the reaction
+time with the p-value smaller than 0.05. The decrease in AIC value also
+supports this conclusion.
 
 \hypertarget{ols-vs-lmm-estimates}{%
 \subsubsection{OLS vs LMM estimates}\label{ols-vs-lmm-estimates}}
 
 \#plot random intercept and random slope
+
+\begin{verbatim}
+##             (Intercept)      Days
+## (Intercept)  611.897607  9.613886
+## Days           9.613886 35.081069
+## attr(,"stddev")
+## (Intercept)        Days 
+##   24.736564    5.922927 
+## attr(,"correlation")
+##             (Intercept)       Days
+## (Intercept)  1.00000000 0.06561803
+## Days         0.06561803 1.00000000
+\end{verbatim}
+
+\[\begin{pmatrix}
+b_{0i} \\
+b_{1i}
+\end{pmatrix}
+\sim
+N\begin{pmatrix}
+\begin{pmatrix}
+0 \\
+0
+\end{pmatrix},
+\begin{pmatrix}
+\sigma_{0}^2 & \sigma_{01} \\
+\sigma_{01} & \sigma_{1}^2 
+\end{pmatrix}
+\end{pmatrix}\\
+\begin{pmatrix}
+b_{0i} \\
+b_{1i}
+\end{pmatrix}
+\sim
+N\begin{pmatrix}
+\begin{pmatrix}
+0 \\
+0
+\end{pmatrix},
+\begin{pmatrix}
+611.9 & 9.61 \\
+9.61 & 35.08 
+\end{pmatrix}
+\end{pmatrix}
+\] D: Random effects covariance matrix The model is built on the
+assumption that the b's come from a normal distribution with mean 0 and
+the residual variance in true intercept \(\pi_{0i}\) across all
+individuals in the population of 611.9, the residual variance in true
+slope for all individuals is 35.08 and residual covariance between the
+intercept and the slope of 9.61.
 
 \begin{verbatim}
 ##     (Intercept)        Days
@@ -533,6 +632,9 @@ TODO: check if residuals are normally distributed
 ## 337  34.8865253   8.6290208
 \end{verbatim}
 
+This table preditcs the random effect for each subject.Almost all values
+lay within two standard devation from the mean.
+
 \includegraphics{Common_sleep_files/figure-latex/unnamed-chunk-8-1.pdf}
 
 \begin{verbatim}
@@ -547,6 +649,26 @@ TODO: check if residuals are normally distributed
 
 \includegraphics{Common_sleep_files/figure-latex/unnamed-chunk-8-2.pdf}
 \includegraphics{Common_sleep_files/figure-latex/unnamed-chunk-8-3.pdf}
-\#\#\# to do: compare the two models by creating the mean!
+
+\hypertarget{to-do-compare-the-two-models-by-creating-the-mean}{%
+\subsubsection{to do: compare the two models by creating the
+mean!}\label{to-do-compare-the-two-models-by-creating-the-mean}}
+
+\hypertarget{discussion}{%
+\subsubsection{Discussion ???}\label{discussion}}
+
+From our analysis on the effect of sleep deprivation on the reaction
+time of long distance truck drivers, we concluded that there is a
+significant positive correlation between them. More precisely, as the
+sleep deprivation proceeds, the time needed for a driver to respond to a
+visual stimulus is increasing. Several groups of drivers with different
+conditions of restricted sleep deprivation or a control group would
+additionally help us draw a more concrete conclusion. From the existing
+literature, mathematical models predicting alertness from preceding
+sleep-wake history typically involve four factors, sleep homeostasis,
+circadian rhythm, sleep inertia and neuromodulatory changes. Thus, we
+can conclude that there is a relation between reaction time and sleep
+deprivation, but it is not the only factor that can fully describe the
+relationship of sleep deprivation and the reaction time.
 
 \end{document}
