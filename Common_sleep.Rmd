@@ -48,7 +48,9 @@ average_reaction_time <- sleep %>%
   group_by(Days) %>%
   summarise(mean_reaction_time   = mean(Reaction),
             median_reaction_time = median(Reaction),
-            sd_reaction_time     = sd(Reaction))
+            sd_reaction_time     = sd(Reaction)) %>%
+  mutate(upper_reaction_time = mean_reaction_time + sd_reaction_time,
+         lower_reaction_time = mean_reaction_time - sd_reaction_time) 
 
 sleep_spag_plot <- ggplot(sleep) +
   geom_line(aes(Days, Reaction, colour = factor(Subject)),
@@ -82,10 +84,30 @@ ggplot(sleep) +
             colour = "black",
             size   = 0.5) +
   labs(title   = "Boxplot",
-       caption = "It seems as if there's a linear trend between the number of days of sleep deprivation and the reaction time. Also the variance of the reaction time seems to increase with increasing days of sleep deprivation. (at Day 9: 5 outliers)") +
+       caption = "It seems as if there's a linear trend between the number of days of sleep deprivation and the reaction time. Also the variance of the reaction time seems to increase with increasing days of sleep deprivation. (at Day 9: 5 outliers)",
+       x       = "Days of sleep deprivation",
+       y       = "Reaction time in ms") +
   scale_x_continuous(breaks = 0:9)
        
        ##TODO add violin plot, add axis      
+```
+
+## Violin plot
+```{r boxplot, fig.align="center", out.width="80%"}
+ggplot(sleep) + 
+  geom_violin(aes(Days, Reaction, colour = factor(Days)),
+              adjust = .5,
+              scale  = "count",
+              show.legend = FALSE) +
+  geom_line(data   = average_reaction_time,
+            aes(Days, mean_reaction_time),
+            colour = "black",
+            size   = 0.5) +
+  labs(title   = "Boxplot",
+       caption = "It seems as if there's a linear trend between the number of days of sleep deprivation\nand the reaction time. Also the variance of the reaction time seems to increase with\nincreasing days of sleep deprivation. (at Day 9: 5 outliers)",
+       x       = "Days of sleep deprivation",
+       y       = "Reaction time in ms") +
+  scale_x_continuous(breaks = 0:9)
 ```
 
 ## Summary
@@ -101,25 +123,8 @@ knitr::kable(round(overview, 2), "pandoc")
 ```
 The calculations of the mean, standard deviation and variance of the reaction time for each day of all subjects, further support our exploratory plots: we observe an increase in the mean and variance with more days of sleep deprivation.
 
-
 ## Mean evolution
 ```{r mean_err, fig.align="center", out.width="80%"}
-## TODO? change to ggplot instead of plot?
-## example:
-# sleep_descr_stats <- sleepf %>%
-#   dplyr::group_by(days) %>%
-#   dplyr::summarise(reaction_mean  = mean(reaction),
-#                    reaction_sd    = sd(reaction)) %>% 
-#   dplyr::mutate(reaction_upper_se = reaction_mean + reaction_sd,
-#                 reaction_lower_se = reaction_mean - reaction_sd) %>% 
-#   dplyr::ungroup()
-#
-# ggplot2::ggplot() +
-# geom_line(aes(x=days, y=reaction_mean, group=1),
-#          size=1) +
-# geom_errorbar(aes(x=days, ymin=reaction_lower_se, ymax=reaction_upper_se),
-#               size=.4,
-#              alpha=.6)
 
 # General function to plot error bars
 errbar <- function(x, y, height, width, lty=1, col="black"){
@@ -145,7 +150,7 @@ plot(c(0:9), overview[,2] ,
      axes = F,
      main = "Mean evolution (with 1 SE intervals)")
 
-axis(side = 1,at = c(0:9),labels=c(0:9))
+axis(side = 1,at = c(0:9),labels = c(0:9))
 axis(side = 2,at = seq(200,450,50))
 
 box()
