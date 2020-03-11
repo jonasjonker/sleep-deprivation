@@ -41,8 +41,6 @@ To visualise the individual reaction times and how they compare to the mean, a s
 This revealed that there was a variation in intercepts or starting reaction times on day 0 between subjects. 
 This variation increased with subsequent days. 
 
---> what is meant by variation? shouldnt we define it as the difference between the minimum and maximum??
-
 For most subjects, the reaction time increased with the amount of days of sleep deprivation. This increase is also visible in the mean.
 
 
@@ -161,7 +159,6 @@ errbar(c(0:9), overview[,2], sleep.sd, 0.1,
 To further support our previous findings, we looked at the mean evolution.
 Here, an increasing trend of reaction time with increasing number of days is also observed, together with expanding standard deviations (see errorbars).
 
---> should we add anything more to this??
 
 ## Correlation
 ```{r}
@@ -189,12 +186,10 @@ We used the Shapiro-Wilk test to check for normality of the reaction times per d
 
 The test revealed a non normal distribution of day 9. Thus, we performed the spearman correlation method instead of pearson to check for a correlation of the reaction times between days. 
 
---> is this correct? 
-
 Looking at the correlation matrix, there is a correlation higher then 0.6 between subsequent days (e.g. between Day 8 and 9, between Day 3 and 4, ...). However, the further the days are apart, the lower the correlation (e.g. low correlation between Day 1 and Day 8). 
 
 
-Aligning nicely with our previous results, there is a linear trend between the number of Days and reaction time. --> isn't this another point? 
+Aligning nicely with our previous results, there is a linear trend between the number of Days and reaction time.
 
 ## Regression per person
 ```{r trellis, fig.align="center", out.width="80%"}
@@ -214,17 +209,22 @@ xyplot(Reaction ~ Days|Sx,
        par.settings  = list(axis.text=list(cex=0.6),
                            fontsize=list(text=8, points=10)),
        scales=list(x = list(at = c(0:9), labels = c("0","1","2", "3", "4", "5", "6", "7", "8", "9"))))
+       
+#plot individual intercept and slope to compare 
+intercept.lin.reg.coef2 = lin.reg.coef2[,1]
+slope.lin.reg.coef2 = lin.reg.coef2[,2]
+plot(intercept.lin.reg.coef2, slope.lin.reg.coef2, main = "Individual regression intercept vs slope")
 ```
 We performed a linear regression model on each subject based on the function: reaction time = b0 + bi* Days. 
 
 We then created a trellis graph to visualise the intercepts and slopes of these subject-specific linear regression models.   
 
-The graph suggests that the slope and intercept of each subject's linear model are independent of each other as there is no observable trend between the height of the intercept and the steepness of the slope. 
+The graph suggests that the slope and intercept of each subject's linear model are independent of each other as there is no observable trend between the height of the intercept and the steepness of the slope. This is further supported by plotting the intercept against the slope.
 Overall, all subjects have a positive slope besides subject 335. 
+
 
 The linear regression lines fit the datapoints closely, suggesting that a linear model is appropriate to represent this dataset.
 
-TO DISCUSS: correlation between slope/intercept?
 
 ## Between subject variability
 
@@ -337,10 +337,7 @@ slope.coef = ind.coef[,2]
 plot(interc.coef,slope.coef, main = "Random intercept vs random slope 
      (including fixed effects)")
 
-#plot individual intercept and slope to compare 
-intercept.lin.reg.coef2 = lin.reg.coef2[,1]
-slope.lin.reg.coef2 = lin.reg.coef2[,2]
-plot(intercept.lin.reg.coef2, slope.lin.reg.coef2, main = "Individual regression intercept vs slope")
+
 
 ```
 ### to do: compare the two models by creating the mean!
