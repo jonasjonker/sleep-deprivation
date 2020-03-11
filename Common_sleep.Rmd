@@ -125,44 +125,17 @@ The calculations of the mean, standard deviation and variance of the reaction ti
 
 ## Mean evolution
 ```{r mean_err, fig.align="center", out.width="80%"}
-
-# General function to plot error bars
-errbar <- function(x, y, height, width, lty=1, col="black"){
-  arrows(x, y, x, y + height,
-         angle  = 90,
-         length = width,
-         lty    = lty,
-         col    = col)
-  arrows(x, y, x, y - height,
-         angle  = 90,
-         length = width,
-         lty    = lty,
-         col    = col)
-}
-
-## Plotting mean evolution
-plot(c(0:9), overview[,2] ,
-     type = "b",
-     xlim = c(0,10),
-     ylim = c(150,480),
-     xlab = "Days",
-     ylab = "Reaction",
-     axes = F,
-     main = "Mean evolution (with 1 SE intervals)")
-
-axis(side = 1,at = c(0:9),labels = c(0:9))
-axis(side = 2,at = seq(200,450,50))
-
-box()
-points(c(0:9), overview[,2],
-       type = "b",
-       col  = "red")
-errbar(c(0:9), overview[,2], sleep.sd, 0.1,
-       col  = "red")
+ggplot2::ggplot(average_reaction_time) +
+  geom_line(aes(Days, mean_reaction_time)) +
+  geom_errorbar(aes(Days, ymin = lower_reaction_time,
+                    ymax = upper_reaction_time),
+                size = .4, alpha = .6, color = "darkcyan") +
+    labs(title = "Errorbars",
+       caption = "Mean, with errobars 1 sd from the mean.",
+       x       = "Days of sleep deprivation",
+       y       = "Reaction time in ms")
 ```
-To further support our previous findings, we looked at the mean evolution.
-Here, an increasing trend of reaction time with increasing number of days is also observed, together with expanding standard deviations (see errorbars).
-
+To further support our previous findings, we looked at the mean evolution. Here, an increasing trend of reaction time with increasing number of days is also observed, together with expanding standard deviations (see errorbars).
 
 ## Correlation
 ```{r}
