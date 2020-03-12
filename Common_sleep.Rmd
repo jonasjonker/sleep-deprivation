@@ -2,11 +2,11 @@
 title: 'Patterns of performance degradation during sleep restriction of long distance
   truck drivers '
 output:
-  md_document:
-    variant: markdown_github
-  word_document: default
   html_document:
     df_print: paged
+  word_document: default
+  md_document:
+    variant: markdown_github
 ---
 
 ```{r setup, include=FALSE}
