@@ -410,6 +410,13 @@ intercept.lin.reg.coef2 = lin.reg.coef2[,1]
 slope.lin.reg.coef2 = lin.reg.coef2[,2]
 plot(intercept.lin.reg.coef2, slope.lin.reg.coef2, main = "Individual regression intercept vs slope")
 ```
+```{r}
+ggplot(sleep.o) +
+  geom_point(aes(`(Intercept)`, Days))
+
+ggplot(ind.coef) +
+  geom_point(aes(`(Intercept)`, Days))
+```
 
 ### to do: compare the two models by creating the mean!
 From our analysis on the effect of sleep deprivation on the reaction time of long distance truck drivers, we concluded that there is a significant positive correlation between them. More precisely, as the sleep deprivation proceeds, the time needed for a driver to respond to a visual stimulus is increasing. Several groups of drivers with different conditions of restricted sleep deprivation or a control group would additionally help us draw a more concrete conclusion. From the existing literature, mathematical models predicting alertness from preceding sleep-wake history typically involve four factors, sleep homeostasis, circadian rhythm, sleep inertia and neuromodulatory changes. Thus, we can conclude that there is a relation between reaction time and sleep deprivation, but it is not the only factor that can fully describe the relationship of sleep deprivation and the reaction time.
