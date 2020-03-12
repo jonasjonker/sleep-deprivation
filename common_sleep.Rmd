@@ -21,6 +21,8 @@ library(lme4)
 library(arm)
 library(ggplot2)
 library(reshape2)
+library(magrittr)
+library(tidyr)
 
 ggplot2::theme_set(theme_classic())
 ```
@@ -211,40 +213,42 @@ The graph suggests that the slope and intercept of each subject's linear model a
 The linear regression lines fit the datapoints closely, suggesting that a linear model is appropriate to represent this dataset.
 
 ## Between subject variability
-```{r histograms, fig.align="center"}
+```{r histograms, fig.align="center", message=FALSE, warning=FALSE}
 ## Linear regression per participant of Reaction on Days
+sleep_coefs <- sleep %>% 
+  dplyr::group_by(Subject) %>% 
+  dplyr::do(coefs = coef(lm(Reaction ~ Days, data = .))) %>% 
+  tidyr::unnest_wider(coefs) %>% 
+  magrittr::set_colnames(c("Subject","Intercept","Slope"))
 
-## Coefficients
-lin.reg.coef  <- by(sleep, sleep$Subject,
-                   function(data) coef(lm(Reaction ~ Days, data = data)))
-lin.reg.coef1 <- unlist(lin.reg.coef)
-names(lin.reg.coef1) <- NULL
-lin.reg.coef2 <- matrix(lin.reg.coef1,
-                        length(lin.reg.coef1)/2,
-                        2,
-                        byrow = TRUE)
+r2 <- sleep %>% 
+  dplyr::group_by(Subject) %>% 
+  dplyr::do(r2 = summary(lm(Reaction ~ Days, data = .))$r.squared) %>% 
+  tidyr::unnest_wider(r2) %>% 
+  magrittr::set_colnames(c("Subject", "R_squared"))
 
-## R squared
-lin.reg.r.squared  <- by(sleep, sleep$Subject,
-                        function(data) summary(lm(Reaction ~ Days, data = data))$r.squared )
-lin.reg.r.squared1 <- as.vector(unlist(lin.reg.r.squared))
+sleep_coefs <- sleep_coefs %>% left_join(r2)
+```
+```{r}
+hist_intercept <- ggplot(sleep_coefs) +
+  geom_histogram(aes(Intercept),
+                 bins = 6,
+                 fill = "darkcyan",
+                 color = "darkgrey")
+hist_slope <- ggplot(sleep_coefs) +
+  geom_histogram(aes(Slope),
+                 bins = 6,
+                 fill = "darkcyan",
+                 color = "darkgrey")
+hist_rsquared <- ggplot(sleep_coefs) +
+  geom_histogram(aes(R_squared),
+                 bins = 6,
+                 fill = "darkcyan",
+                 color = "darkgrey")
 
-## Histograms
-par(mfrow = c(3,1))
-hist(lin.reg.coef2[,1],
-     xlab = "Intercept",
-     col  = "lightblue",
-     main = "Histogram of individual intercepts")
-hist(lin.reg.coef2[,2],
-     xlab = "Slope",
-     col  = "lightblue",
-     main = "Histogram of individual slopes")
-hist(lin.reg.r.squared1,
-     xlab = "R squared",
-     col  = "lightblue",
-     main = "Histogram of individual R squared")
-
-#TODO? change to ggplot?
+cowplot::plot_grid(hist_intercept, hist_slope, hist_rsquared, 
+                   ncol = 1,
+                   labels = "AUTO")
 ```
 
 The individual intercepts shown in the first histogram correspond to the initial reaction time and are non normally distributed. Given the small data set, this is not surprising as it shows a variety of their initial reaction time. However, if this data came from a large dataset, it would be surprising that even the initial data points are not normally distributed and could suggest a wrong data sample compared to the population. 
@@ -255,9 +259,9 @@ Finally, looking at the histogram of R squared, we see that the majority of subj
 
 ## Fitting the model - with REML
 ```{r}
-sleep.reml <- lmer(formula = Reaction ~ 1 + Days + (1 + Days|Subject),
+sleep_reml <- lmer(formula = Reaction ~ 1 + Days + (1 + Days|Subject),
                    data = sleep)
-summary(sleep.reml)
+summary(sleep_reml)
 ```
 ## Values
 $$\begin{aligned}
@@ -323,7 +327,7 @@ We tested this with Bootstrap and Likelihood Ratio tests because th sample zise 
 
 ## Testing fixed effects - with bootstrap
 ```{r message=FALSE, warning=FALSE}
-pander::pander(confint(sleep.reml,
+pander::pander(confint(sleep_reml,
         method    = 'boot',
         boot.type = 'perc',
         oldNames  = F,
@@ -346,7 +350,7 @@ The decrease in AIC value also supports this conclusion.
 #plot random intercept and random slope
 
 ```{r}
-D.sleep = unclass(VarCorr(sleep.reml))$Subject 
+D.sleep = unclass(VarCorr(sleep_reml))$Subject 
 pander::pander(D.sleep)
 
 ```
@@ -386,37 +390,41 @@ $$
 D: Random effects covariance matrix
 The model is built on the assumption that the b's come from a normal distribution with mean 0 and the residual variance in true intercept $\pi_{0i}$ across all individuals in the population of 611.9, the residual variance in true slope for all individuals is 35.08 and residual covariance between the intercept and the slope of 9.61.
 
-
-
-```{r}
-sleep.o <- ranef(sleep.reml)$Subject
-head(sleep.o,10)
-```
-
 This table preditcs the random effect for each subject.Almost all values lay within two standard devation from the mean.
 
 ```{r}
+sleep_ranef <- ranef(sleep_reml)$Subject %>% 
+  magrittr::set_colnames(value = c("Intercept", "Slope")) %>% 
+  tibble::rownames_to_column("Subject")
 
-plot(sleep.o, main = "Random intercept (boi) vs random slope (b1i)")
-#plot modelled intercept and slope incl fixed effects
-ind.coef = coef(sleep.reml)$Subject
-head(ind.coef)
-interc.coef = ind.coef[,1]
-slope.coef = ind.coef[,2]
-plot(interc.coef,slope.coef, main = "Random intercept vs random slope 
-     (including fixed effects)")
+sleep_coef <- coef(sleep_reml)$Subject %>% 
+  magrittr::set_colnames(value = c("Intercept", "Days")) %>% 
+  tibble::rownames_to_column("Subject")
 
-#plot individual intercept and slope to compare 
-intercept.lin.reg.coef2 = lin.reg.coef2[,1]
-slope.lin.reg.coef2 = lin.reg.coef2[,2]
-plot(intercept.lin.reg.coef2, slope.lin.reg.coef2, main = "Individual regression intercept vs slope")
+sleep_estimate <- tibble::tibble("Intercept" = coef(summary(sleep_reml))[1,1],
+                                 "Slope"     = coef(summary(sleep_reml))[2,1])
 ```
 ```{r}
-ggplot(sleep.o) +
-  geom_point(aes(`(Intercept)`, Days))
+ggplot() +
+  geom_segment(aes(y    = sleep_coefs$Intercept + sleep_ranef$Intercept,
+                   x    = sleep_coefs$Slope     + sleep_ranef$Slope,
+                   yend = sleep_coefs$Intercept,
+                   xend = sleep_coefs$Slope),
+               alpha    = .2,
+               arrow    = arrow()) +
+  geom_point(aes(sleep_coefs$Slope, sleep_coefs$Intercept), 
+             color = "darkorange") +
+  geom_point(aes(sleep_coefs$Slope     + sleep_ranef$Slope,
+                 sleep_coefs$Intercept + sleep_ranef$Intercept),
+             color = "darkcyan") +
+  geom_point(aes(sleep_estimate$Slope, sleep_estimate$Intercept),
+             color = "purple",
+             size  = 3) +
+  labs(main = "Individual regression intercept vs slope",
+       y    = "intercept",
+       x    = "slope")
 
-ggplot(ind.coef) +
-  geom_point(aes(`(Intercept)`, Days))
+
 ```
 
 ### to do: compare the two models by creating the mean!
