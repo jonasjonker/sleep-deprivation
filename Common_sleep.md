@@ -232,7 +232,7 @@ variability
 
 The full model describes the evolution observed in spaghetti plot:
 $$\\begin{align}
-Y\_{ij} =& γ\_{0} + b\_{0i} + γ\_{1}\* \\text{Days}\_{ij} &&\\text{fixed effects}\\\\
+Y\_{ij} =& \\gamma\_{0} + b\_{0i} + \\gamma\_{1}\* \\text{Days}\_{ij} &&\\text{fixed effects}\\\\
           &+ b\_{0i} + b\_{1i}\*\\text{Days}\_{ij} &&\\text{random effect}\\\\
           &+ \\epsilon\_{ij} &&\\text{error}
 \\end{align}$$
@@ -267,18 +267,18 @@ Testing fixed effects - with bootstrap
 
 Computing bootstrap confidence intervals …
 
-4 message(s): boundary (singular) fit: see ?isSingular 179 warning(s):
-Model failed to converge with max\|grad\| = 0.00200787 (tol = 0.002,
+6 message(s): boundary (singular) fit: see ?isSingular 178 warning(s):
+Model failed to converge with max\|grad\| = 0.00200121 (tol = 0.002,
 component 1) (and others)
 
 |                                    |  2.5 %  | 97.5 % |
 |:----------------------------------:|:-------:|:------:|
-|    **sd\_(Intercept)\|Subject**    |  12.21  |  35.39 |
-| **cor\_Days.(Intercept)\|Subject** | -0.4942 | 0.9067 |
-|        **sd\_Days\|Subject**       |  3.493  |  8.315 |
-|              **sigma**             |  22.67  |  28.8  |
-|           **(Intercept)**          |  236.8  |  265.6 |
-|              **Days**              |  7.573  |  13.53 |
+|    **sd\_(Intercept)\|Subject**    |  12.13  |  35.62 |
+| **cor\_Days.(Intercept)\|Subject** | -0.5188 | 0.8943 |
+|        **sd\_Days\|Subject**       |  3.308  |  8.216 |
+|              **sigma**             |  22.75  |  28.47 |
+|           **(Intercept)**          |  238.1  |  264.9 |
+|              **Days**              |  7.533  |  13.33 |
 
 Confidence interval of the intercept and days does not include 0
 therefore both of them have a significant effect on reaction time.
