@@ -69,6 +69,7 @@ git pull
 - [Introduction to Markdown](https://r4ds.had.co.nz/r-markdown.html)
 - [markdown cheatsheet](https://guides.github.com/features/mastering-markdown/)
 - [paper on sleep deprivation](https://onlinelibrary.wiley.com/doi/epdf/10.1046/j.1365-2869.2003.00337.x)
+- [tutorial that uses lme4 and our dataset](https://rpubs.com/tjmahr/ggplot2-lme4-facet-plot)
 
 
 
