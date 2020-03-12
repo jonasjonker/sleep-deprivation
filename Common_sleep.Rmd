@@ -93,7 +93,7 @@ ggplot(sleep) +
 ```
 
 ## Violin plot
-```{r boxplot, fig.align="center", out.width="80%"}
+```{r violinplot, fig.align="center", out.width="80%"}
 ggplot(sleep) + 
   geom_violin(aes(Days, Reaction, colour = factor(Days)),
               adjust = .5,
@@ -127,8 +127,7 @@ The calculations of the mean, standard deviation and variance of the reaction ti
 ```{r mean_err, fig.align="center", out.width="80%"}
 ggplot2::ggplot(average_reaction_time) +
   geom_line(aes(Days, mean_reaction_time)) +
-  geom_errorbar(aes(Days, ymin = lower_reaction_time,
-                    ymax = upper_reaction_time),
+  geom_errorbar(aes(Days, ymin = lower_reaction_time,                     ymax = upper_reaction_time),
                 size = .4, alpha = .6, color = "darkcyan") +
     labs(title = "Errorbars",
        caption = "Mean, with errobars 1 sd from the mean.",
@@ -138,7 +137,7 @@ ggplot2::ggplot(average_reaction_time) +
 To further support our previous findings, we looked at the mean evolution. Here, an increasing trend of reaction time with increasing number of days is also observed, together with expanding standard deviations (see errorbars).
 
 ## Correlation
-```{r}
+```{r include=FALSE}
 ## Reshaping the data into a wide form
 sleep.resh <- reshape(sleep,
                       timevar   = "Days",
@@ -146,21 +145,20 @@ sleep.resh <- reshape(sleep,
                       direction = "wide")
 knitr::kable(sleep.resh, "pandoc")
 ```
-```{r}
+```{r include=FALSE}
 # check normality of variables Reaction.X
 for (i in c(2:11)) {
   print(shapiro.test(sleep.resh[,i]))
 }
 ```
-```{r spearman, fig.align="center", out.width="80%"}
+```{r spearman, include=FALSE, fig.align="center", out.width="80%"}
 ## Correlation between the Reaction scores at different days
 cor(sleep.resh[, 2:11], method = 'spearman')
 
 pairs(sleep.resh[, 2:11])
-##TODO add cor + colours fancy plot
 ```
 
-```{r spearman, fig.align="center", out.width="80%"}
+```{r spearman_tile, fig.align="center", out.width="80%"}
 ## Correlation between the Reaction scores at different days
 
 cors <- cor(sleep.resh[, 2:11], method = 'spearman')
@@ -189,33 +187,29 @@ Aligning nicely with our previous results, there is a linear trend between the n
 ## Displaying the linear regression per person
 
 cf <- sapply(sleep$Subject, 
-            function(x) coef(lm(Reaction~Days, data=subset(sleep, Subject == x))))
+            function(x) coef(lm(Reaction~Days, data = subset(sleep, Subject == x))))
 
 Sx <- reorder(sleep$Subject, cf[1,]) 
-# 
-xyplot(Reaction ~ Days|Sx,
-       data          = sleep,
-       type          = c('p', 'r'),
-       auto.key      = T,
-       aspect        = "xy",
-       par.settings  = list(axis.text = list(cex = 0.6),
+
+lattice::xyplot(Reaction ~ Days|Sx,
+                data          = sleep,
+                type          = c('p', 'r'),
+                auto.key      = T,
+                aspect        = "xy",
+                par.settings  = list(axis.text = list(cex = 0.6),
                            fontsize = list(text = 8, points = 10)),
-       scales = list(x = list(at = c(0:9), labels = c("0","1","2", "3", "4", "5", "6", "7", "8", "9"))))
-       
+                scales = list(x = list(at = c(0:9), labels = c("0","1","2", "3", "4", "5", "6", "7", "8", "9"))))
+ #TODO: change to ggplot with facet grid o.i.d.
 ```
-We performed a linear regression model on each subject based on the function: reaction time = b0 + bi* Days. 
+We performed a linear regression model on each subject based on the function: $\text{reaction time} = b_0 + b_i* \text{Days}$. 
 
 We then created a trellis graph to visualise the intercepts and slopes of these subject-specific linear regression models.   
 
-The graph suggests that the slope and intercept of each subject's linear model are independent of each other as there is no observable trend between the height of the intercept and the steepness of the slope. This is further supported by plotting the intercept against the slope.
-Overall, all subjects have a positive slope besides subject 335. 
-
+The graph suggests that the slope and intercept of each subject's linear model are independent of each other as there is no observable trend between the height of the intercept and the steepness of the slope. This is further supported by plotting the intercept against the slope. Overall, all subjects have a positive slope besides subject 335.
 
 The linear regression lines fit the datapoints closely, suggesting that a linear model is appropriate to represent this dataset.
 
-
 ## Between subject variability
-
 ```{r histograms, fig.align="center", out.width="80%"}
 ## Linear regression per participant of Reaction on Days
 
@@ -249,6 +243,7 @@ hist(lin.reg.r.squared1,
      col  = "lightblue",
      main = "Histogram of individual R squared")
 
+#TODO? change to ggplot?
 ```
 
 The individual intercepts shown in the first histogram correspond to the initial reaction time and are non normally distributed. Given the small data set, this is not surprising as it shows a variety of their initial reaction time. However, if this data came from a large dataset, it would be surprising that even the initial data points are not normally distributed and could suggest a wrong data sample compared to the population. 
@@ -257,12 +252,11 @@ Looking at the histogram of individual slopes, we see a normal distribution. As 
 
 Finally, looking at the histogram of R squared, we see that the majority of subjects have a R squared of above 0.6. This shows that the linear model is appropriate for this data set. However, sometimes the individual linear model does not fit the specific data of some subjects, specifically 7 of the 18 subjects.
 
-
 ## Fitting the model - with REML
 ```{r}
 sleep.reml <- lmer(formula = Reaction ~ 1 + Days + (1 + Days|Subject),
                    data = sleep)
-summary(sleep.reml) 
+summary(sleep.reml)
 ```
 ## Values
 $$\begin{align}
@@ -278,21 +272,15 @@ corr(b_{0i}, b_{1i}) &= 0.07
 ##Mathematical description
 
 Level 1 model explains the evolution of Reaction time for each subject
-$Y_{ij}$= $\pi_{0i}$ + $\pi_{1i}$* $Days_{ij}$  -> how do individuals evolve
-          + $\epsilon_{ij}$  -> how the individuals deviate from their own evolution
-
 $$\begin{align}
 Y_{ij}&= \pi_{0i} + \pi_{1i}* \text{Days}_{ij} && \text{how do individuals evolve} \\
           &+ \epsilon_{ij} &&\text{how the individuals deviate from their own evolution}
 \end{align}$$
 
 Level 2 model tries to explain why the Subjects differ from each other
-$\pi_{0i}$ = $\gamma_{0}$ + $b_{0i}$ - model for explaining the intercept
-$\pi_{1i}$ = $\gamma_{1}$ + $b_{1i}$ - model for explaining the slope
-
 $$\begin{align}
-π_{0i} &= γ_{0} + b_{0i} &&\text{model for explaining the intercept} \\
-π_{1i} &= γ_{1} + b_{1i} &&\text{model for explaining the slope}
+\pi_{0i} &= \gamma_{0} + b_{0i} &&\text{model for explaining the intercept} \\
+\pi_{1i} &= \gamma_{1} + b_{1i} &&\text{model for explaining the slope}
 \end{align}$$
 
 
@@ -303,10 +291,6 @@ With level 2 model we are trying to see why there is variation between individua
 $b_{0i}$ and $b_{1i}$ are the unexplained variability
 
 The full model describes the evolution observed in spaghetti plot:
-$Y_{ij}$ = $\gamma_{0}$ + $b_{0i}$ + $\gamma_{1}$* $Days_{ij}$ - fixed effects
-          + $b_{0i}$ + $b_{1i}$*$Days_{ij}$ - random effects
-          + $\epsilon_{ij}$ - error
-
 $$\begin{align}
 Y_{ij} =& γ_{0} + b_{0i} + γ_{1}* \text{Days}_{ij} &&\text{fixed effects}\\
           &+ b_{0i} + b_{1i}*\text{Days}_{ij} &&\text{random effect}\\
@@ -315,51 +299,42 @@ Y_{ij} =& γ_{0} + b_{0i} + γ_{1}* \text{Days}_{ij} &&\text{fixed effects}\\
 
 $$
 \begin{cases}
-Y_{ij}&= π_{0i} + π_{1i}* \text{Days}_{ij} + ε_{ij} \\
-π_{0i} &= γ_{0} + b_{0i} &&\text{intercept} \\
-<!-- π_{1i} &= γ_{1} + b_{1i} &&\text{slope} -->
+Y_{ij}&= \pi_{0i} + \pi_{1i}* \text{Days}_{ij} + \epsilon_{ij} \\
+\pi_{0i} &= \gamma_{0} + b_{0i} &&\text{intercept} \\
+\pi_{1i} &= \gamma_{1} + b_{1i} &&\text{slope}
 \end{cases}
 $$
 
 
 Following is the average evolution of the population:
-E($Y_{ij}$) = $\gamma_{0}$ + $\gamma_{1}$* $Days_{ij}$ 
+$E(Y_{ij}) = \gamma_{0} + \gamma_{1}* \text{Days}_{ij}$
 
 The general liniar mixed model is given by:
-
-$Y_{i}$ = $X_{i}\beta$ + $Z_{i}b_{i}$ + $\epsilon_{i}$ 
-$b_{i}$ ~ N(0,D) , $\epsilon_{i}$ ~ N(0,$\Sigma{i}$) 
-$b_{ 1}...,b_{N}$,$\epsilon_{1}...,\epsilon_{N}$ independent
+$Y_i &= X_i\beta + Z_i b_i + ε_i$
+with $b_i \sim N(0,D)$, $ε_i \sim N(0,Σ_i)$ 
+$b_1\cdots,b_N$, $ε_1\cdots,ε_N$ 
 
 $$Y_i \tilde{} N(X_i\beta, Z_iDZ_i'+\Sigma_i)$$
-###todo:write the model with values given by R
-
-$$\begin{align}
-Y_i = X_i\beta + Z_i b_i + ε_i \\ 
-b_i \sim N(0,D)\text{, }ε_i \sim N(0,Σ_i) \\ 
-b_1\cdots,b_N, ε_1\cdots,ε_N \text{independent}
-\end{align}$$
 
 R uses the marginal model and our calcuation are based on that.
 Next step is to check if the values we retrieved are actually significant so does the number of days have a significant effect on the reaction time?
 We tested this with Bootstrap and Likelihood Ratio tests because th sample zise wasn't large enough(excluding Wald test). 
 
 ## Testing fixed effects - with bootstrap
-```{r}
-confint(sleep.reml,
+```{r message=FALSE, warning=FALSE}
+pander::pander(confint(sleep.reml,
         method    = 'boot',
         boot.type = 'perc',
         oldNames  = F,
-        nsim      = 500)
+        nsim      = 500))
 ```
-
 Confidence interval of the intercept and days does not include 0 therefore both of them have a significant effect on reaction time.
 
 ## likelihood ratio test with anova
 ```{r}
 sleep.full      <- lmer(Reaction~1+Days+(1 + Days|Subject), REML = FALSE, data = sleep)
 sleep.intercept <- lmer(Reaction~1+(1|Subject), REML = FALSE, data = sleep)
-anova(sleep.full,sleep.intercept)
+pander::pander(anova(sleep.full,sleep.intercept))
 
 ```
 We compared an intercept only model with a model that includes days as well and we concluded that adding days as covariate it improves our model significantly.
@@ -371,7 +346,7 @@ The decrease in AIC value also supports this conclusion.
 
 ```{r}
 D.sleep = unclass(VarCorr(sleep.reml))$Subject 
-D.sleep
+pander::pander(D.sleep)
 
 ```
 
