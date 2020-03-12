@@ -1851,7 +1851,7 @@ Y_{ij}&amp;= \pi_{0i} + \pi_{1i}* \text{Days}_{ij} &amp;&amp; \text{how do indiv
 <p><span class="math inline">\(\sigma_{0}^{2}\)</span> - Level 2 residual variance in true intercept <span class="math inline">\(\pi_{0i}\)</span> across all individuals in the population <span class="math inline">\(\sigma_{1}^{2}\)</span> - Level 2 residual variance in true slope <span class="math inline">\(\pi_{1i}\)</span> across all individuals in the population</p>
 <p>With level 2 model we are trying to see why there is variation between individuals by looking at the intercept and at the slope. <span class="math inline">\(b_{0i}\)</span> and <span class="math inline">\(b_{1i}\)</span> are the unexplained variability</p>
 <p>The full model describes the evolution observed in spaghetti plot: <span class="math display">\[\begin{align}
-Y_{ij} =&amp; γ_{0} + b_{0i} + γ_{1}* \text{Days}_{ij} &amp;&amp;\text{fixed effects}\\
+Y_{ij} =&amp; \gamma_{0} + b_{0i} + \gamma_{1}* \text{Days}_{ij} &amp;&amp;\text{fixed effects}\\
           &amp;+ b_{0i} + b_{1i}*\text{Days}_{ij} &amp;&amp;\text{random effect}\\
           &amp;+ \epsilon_{ij} &amp;&amp;\text{error}
 \end{align}\]</span></p>
@@ -1870,7 +1870,7 @@ Y_{ij}&amp;= \pi_{0i} + \pi_{1i}* \text{Days}_{ij} + \epsilon_{ij} \\
 <div id="testing-fixed-effects---with-bootstrap" class="section level2">
 <h2>Testing fixed effects - with bootstrap</h2>
 <p>Computing bootstrap confidence intervals …</p>
-<p>8 message(s): boundary (singular) fit: see ?isSingular 190 warning(s): Model failed to converge with max|grad| = 0.00201793 (tol = 0.002, component 1) (and others)</p>
+<p>6 message(s): boundary (singular) fit: see ?isSingular 176 warning(s): Model failed to converge with max|grad| = 0.00201007 (tol = 0.002, component 1) (and others)</p>
 <table style="width:76%;">
 <colgroup>
 <col width="48%"></col>
@@ -1887,33 +1887,33 @@ Y_{ij}&amp;= \pi_{0i} + \pi_{1i}* \text{Days}_{ij} + \epsilon_{ij} \\
 <tbody>
 <tr class="odd">
 <td align="center"><strong>sd_(Intercept)|Subject</strong></td>
-<td align="center">11.58</td>
-<td align="center">35.35</td>
+<td align="center">12.24</td>
+<td align="center">36.17</td>
 </tr>
 <tr class="even">
 <td align="center"><strong>cor_Days.(Intercept)|Subject</strong></td>
-<td align="center">-0.5145</td>
-<td align="center">0.9633</td>
+<td align="center">-0.5441</td>
+<td align="center">0.8792</td>
 </tr>
 <tr class="odd">
 <td align="center"><strong>sd_Days|Subject</strong></td>
-<td align="center">3.33</td>
-<td align="center">8.362</td>
+<td align="center">3.487</td>
+<td align="center">8.108</td>
 </tr>
 <tr class="even">
 <td align="center"><strong>sigma</strong></td>
-<td align="center">22.83</td>
-<td align="center">28.35</td>
+<td align="center">22.46</td>
+<td align="center">28.53</td>
 </tr>
 <tr class="odd">
 <td align="center"><strong>(Intercept)</strong></td>
-<td align="center">237.6</td>
-<td align="center">264.9</td>
+<td align="center">237.3</td>
+<td align="center">264</td>
 </tr>
 <tr class="even">
 <td align="center"><strong>Days</strong></td>
-<td align="center">7.49</td>
-<td align="center">13.35</td>
+<td align="center">7.288</td>
+<td align="center">13.5</td>
 </tr>
 </tbody>
 </table>

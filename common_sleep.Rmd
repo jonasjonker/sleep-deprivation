@@ -44,7 +44,7 @@ To visualise the individual reaction times and how they compare to the mean, a s
 
 For most subjects, the reaction time increased with the amount of days of sleep deprivation. This increase is also visible in the mean.
 
-```{r spaghetti, echo=FALSE, fig.align="center", out.width="80%", out.height="60% "}
+```{r spaghetti, echo=FALSE, fig.align="center"}
 average_reaction_time <- sleep %>%
   group_by(Days) %>%
   summarise(mean_reaction_time   = mean(Reaction),
@@ -76,7 +76,7 @@ To put together, some subjects deviate more from the mean with an increase in da
 
 The violin plot supports the above observations of the distribution of the data around the mean with outliers.
 
-```{r boxplot, fig.align="center", out.width="80%"}
+```{r boxplot, fig.align="center"}
 ggplot(sleep) + 
   geom_boxplot(aes(Days, Reaction, colour = factor(Days)),
                show.legend = FALSE) +
@@ -94,7 +94,7 @@ ggplot(sleep) +
 ```
 
 ## Violin plot
-```{r violinplot, fig.align="center", out.width="80%"}
+```{r violinplot, fig.align="center"}
 ggplot(sleep) + 
   geom_violin(aes(Days, Reaction, colour = factor(Days)),
               adjust = .5,
@@ -125,7 +125,7 @@ knitr::kable(round(overview, 2), "pandoc")
 The calculations of the mean, standard deviation and variance of the reaction time for each day of all subjects, further support our exploratory plots: we observe an increase in the mean and variance with more days of sleep deprivation.
 
 ## Mean evolution
-```{r mean_err, fig.align="center", out.width="80%"}
+```{r mean_err, fig.align="center"}
 ggplot2::ggplot(average_reaction_time) +
   geom_line(aes(Days, mean_reaction_time)) +
   geom_errorbar(aes(Days, ymin = lower_reaction_time,                     ymax = upper_reaction_time),
@@ -152,14 +152,14 @@ for (i in c(2:11)) {
   print(shapiro.test(sleep.resh[,i]))
 }
 ```
-```{r spearman, include=FALSE, fig.align="center", out.width="80%"}
+```{r spearman, include=FALSE, fig.align="center"}
 ## Correlation between the Reaction scores at different days
 cor(sleep.resh[, 2:11], method = 'spearman')
 
 pairs(sleep.resh[, 2:11])
 ```
 
-```{r spearman_tile, fig.align="center", out.width="80%"}
+```{r spearman_tile, fig.align="center"}
 ## Correlation between the Reaction scores at different days
 
 cors <- cor(sleep.resh[, 2:11], method = 'spearman')
@@ -183,7 +183,7 @@ Looking at the correlation matrix, there is a correlation higher then 0.6 betwee
 Aligning nicely with our previous results, there is a linear trend between the number of Days and reaction time.
 
 ## Regression per person
-```{r trellis, fig.align="center", out.width="80%"}
+```{r trellis, fig.align="center"}
 ## Trellis graph
 ## Displaying the linear regression per person
 
@@ -211,7 +211,7 @@ The graph suggests that the slope and intercept of each subject's linear model a
 The linear regression lines fit the datapoints closely, suggesting that a linear model is appropriate to represent this dataset.
 
 ## Between subject variability
-```{r histograms, fig.align="center", out.width="80%"}
+```{r histograms, fig.align="center"}
 ## Linear regression per participant of Reaction on Days
 
 ## Coefficients
@@ -260,7 +260,7 @@ sleep.reml <- lmer(formula = Reaction ~ 1 + Days + (1 + Days|Subject),
 summary(sleep.reml)
 ```
 ## Values
-$$\begin{align}
+$$\begin{aligned}
 \gamma_{0}  &= 251.405 \\
 \gamma_{1}  &= 10.467  \\
 \\
@@ -268,21 +268,21 @@ $$\begin{align}
 \sigma_{0}^{2} &= 611.90 \\
 \sigma_{1}^{2} &= 35.08 \\
 corr(b_{0i}, b_{1i}) &= 0.07
-\end{align}$$
+\end{aligned}$$
 
 ##Mathematical description
 
 Level 1 model explains the evolution of Reaction time for each subject
-$$\begin{align}
+$$\begin{aligned}
 Y_{ij}&= \pi_{0i} + \pi_{1i}* \text{Days}_{ij} && \text{how do individuals evolve} \\
           &+ \epsilon_{ij} &&\text{how the individuals deviate from their own evolution}
-\end{align}$$
+\end{aligned}$$
 
 Level 2 model tries to explain why the Subjects differ from each other
-$$\begin{align}
-\pi_{0i} &= \gamma_{0} + b_{0i} &&\text{model for explaining the intercept} \\
-\pi_{1i} &= \gamma_{1} + b_{1i} &&\text{model for explaining the slope}
-\end{align}$$
+$$\begin{aligned}
+\pi_{0i} &= \gamma_{0} + b_{0i} && \text{model for explaining the intercept} \\
+\pi_{1i} &= \gamma_{1} + b_{1i} && \text{model for explaining the slope}
+\end{aligned}$$
 
 
 $\sigma_{0}^{2}$ - Level 2 residual variance in true intercept $\pi_{0i}$ across all individuals in the population
@@ -292,17 +292,17 @@ With level 2 model we are trying to see why there is variation between individua
 $b_{0i}$ and $b_{1i}$ are the unexplained variability
 
 The full model describes the evolution observed in spaghetti plot:
-$$\begin{align}
+$$\begin{aligned}
 Y_{ij} =& \gamma_{0} + b_{0i} + \gamma_{1}* \text{Days}_{ij} &&\text{fixed effects}\\
           &+ b_{0i} + b_{1i}*\text{Days}_{ij} &&\text{random effect}\\
           &+ \epsilon_{ij} &&\text{error}
-\end{align}$$
+\end{aligned}$$
 
 $$
 \begin{cases}
-Y_{ij}&= \pi_{0i} + \pi_{1i}* \text{Days}_{ij} + \epsilon_{ij} \\
-\pi_{0i} &= \gamma_{0} + b_{0i} &&\text{intercept} \\
-\pi_{1i} &= \gamma_{1} + b_{1i} &&\text{slope}
+Y_{ij} &= \pi_{0i} + \pi_{1i}* \text{Days}_{ij} + \epsilon_{ij} \\
+\pi_{0i} &= \gamma_{0} + b_{0i}  \\
+\pi_{1i} &= \gamma_{1} + b_{1i}
 \end{cases}
 $$
 
@@ -311,9 +311,9 @@ Following is the average evolution of the population:
 $E(Y_{ij}) = \gamma_{0} + \gamma_{1}* \text{Days}_{ij}$
 
 The general liniar mixed model is given by:
-$Y_i &= X_i\beta + Z_i b_i + ε_i$
-with $b_i \sim N(0,D)$, $ε_i \sim N(0,Σ_i)$ 
-$b_1\cdots,b_N$, $ε_1\cdots,ε_N$ 
+$Y_i = X_i\beta + Z_i b_i + \epsilon_i$
+with $b_i \sim N(0,D)$, $\epsilon_i \sim N(0,\Sigma_i)$ 
+$b_1\cdots,b_N$, $\epsilon_1\cdots,\epsilon_N$ 
 
 $$Y_i \tilde{} N(X_i\beta, Z_iDZ_i'+\Sigma_i)$$
 
