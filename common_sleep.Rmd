@@ -23,6 +23,7 @@ library(ggplot2)
 library(reshape2)
 library(magrittr)
 library(tidyr)
+library(pander)
 
 ggplot2::theme_set(theme_classic())
 ```
@@ -37,7 +38,7 @@ Is there any relation between reaction time and the number of days of sleep depr
 ## Exploratory analysis
 ```{r data_wrangling}
 sleep <- read.table('sleep.txt')
-head(sleep, 12)
+pander::pander(head(sleep, 12))
 ```
 This dataset contains multiple measurements for each subject on consecutive days, with as response variable the continuous variable reaction time and explanatory variable Days. Since there are 10 measurements for each subject, it is a longitudinal study. The dataset of 18 subjects is balanced with an equal amount of measurements for each subject.
 
@@ -124,6 +125,7 @@ overview   <- cbind(c(0:9), sleep.mean, sleep.sd, sleep.var, sleep.n)
 colnames(overview) <- c('Days', 'Mean', 'SD', 'Var', 'n')
 knitr::kable(round(overview, 2), "pandoc")
 ```
+
 The calculations of the mean, standard deviation and variance of the reaction time for each day of all subjects, further support our exploratory plots: we observe an increase in the mean and variance with more days of sleep deprivation.
 
 ## Mean evolution
@@ -204,7 +206,8 @@ lattice::xyplot(Reaction ~ Days|Sx,
                 scales = list(x = list(at = c(0:9), labels = c("0","1","2", "3", "4", "5", "6", "7", "8", "9"))))
  #TODO: change to ggplot with facet grid o.i.d.
 ```
-We performed a linear regression model on each subject based on the function: $\text{reaction time} = b_0 + b_i* \text{Days}$. 
+We performed a linear regression model on each subject based on the function:
+$$\text{reaction time} = b_0 + b_i* \text{Days} \tag{1}$$. 
 
 We then created a trellis graph to visualise the intercepts and slopes of these subject-specific linear regression models.   
 
@@ -261,6 +264,7 @@ Finally, looking at the histogram of R squared, we see that the majority of subj
 ```{r}
 sleep_reml <- lmer(formula = Reaction ~ 1 + Days + (1 + Days|Subject),
                    data = sleep)
+
 summary(sleep_reml)
 ```
 ## Values
@@ -272,7 +276,7 @@ $$\begin{aligned}
 \sigma_{0}^{2} &= 611.90 \\
 \sigma_{1}^{2} &= 35.08 \\
 corr(b_{0i}, b_{1i}) &= 0.07
-\end{aligned}$$
+\end{aligned} \tag{2}$$
 
 ##Mathematical description
 
@@ -280,13 +284,13 @@ Level 1 model explains the evolution of Reaction time for each subject
 $$\begin{aligned}
 Y_{ij}&= \pi_{0i} + \pi_{1i}* \text{Days}_{ij} && \text{how do individuals evolve} \\
           &+ \epsilon_{ij} &&\text{how the individuals deviate from their own evolution}
-\end{aligned}$$
+\end{aligned} \tag{3}$$
 
 Level 2 model tries to explain why the Subjects differ from each other
 $$\begin{aligned}
 \pi_{0i} &= \gamma_{0} + b_{0i} && \text{model for explaining the intercept} \\
 \pi_{1i} &= \gamma_{1} + b_{1i} && \text{model for explaining the slope}
-\end{aligned}$$
+\end{aligned} \tag{4}$$
 
 
 $\sigma_{0}^{2}$ - Level 2 residual variance in true intercept $\pi_{0i}$ across all individuals in the population
@@ -300,26 +304,27 @@ $$\begin{aligned}
 Y_{ij} =& \gamma_{0} + b_{0i} + \gamma_{1}* \text{Days}_{ij} &&\text{fixed effects}\\
           &+ b_{0i} + b_{1i}*\text{Days}_{ij} &&\text{random effect}\\
           &+ \epsilon_{ij} &&\text{error}
-\end{aligned}$$
+\end{aligned} \tag{5}$$
 
 $$
 \begin{cases}
 Y_{ij} &= \pi_{0i} + \pi_{1i}* \text{Days}_{ij} + \epsilon_{ij} \\
 \pi_{0i} &= \gamma_{0} + b_{0i}  \\
 \pi_{1i} &= \gamma_{1} + b_{1i}
-\end{cases}
+\end{cases} \tag{6}
 $$
 
-
 Following is the average evolution of the population:
-$E(Y_{ij}) = \gamma_{0} + \gamma_{1}* \text{Days}_{ij}$
+$$E(Y_{ij}) = \gamma_{0} + \gamma_{1}* \text{Days}_{ij} \tag{7}$$
 
 The general liniar mixed model is given by:
-$Y_i = X_i\beta + Z_i b_i + \epsilon_i$
-with $b_i \sim N(0,D)$, $\epsilon_i \sim N(0,\Sigma_i)$ 
-$b_1\cdots,b_N$, $\epsilon_1\cdots,\epsilon_N$ 
+$$\begin{cases}
+Y_i = X_i\beta + Z_i b_i + \epsilon_i \\
+b_i \sim N(0,D)\\
+\epsilon_i \sim N(0,\Sigma_i)
+\end{cases}\tag{8}$$
 
-$$Y_i \tilde{} N(X_i\beta, Z_iDZ_i'+\Sigma_i)$$
+$$Y_i \sim N(X_i\beta, Z_iDZ_i'+\Sigma_i) \tag{9}$$
 
 R uses the marginal model and our calcuation are based on that.
 Next step is to check if the values we retrieved are actually significant so does the number of days have a significant effect on the reaction time?
@@ -356,36 +361,27 @@ pander::pander(D.sleep)
 ```
 
 
-$$\begin{pmatrix}
-b_{0i} \\
-b_{1i}
-\end{pmatrix}
-\sim
-N\begin{pmatrix}
+$$
+\begin{pmatrix} b_{0i} \\ b_{1i} \end{pmatrix}
+\sim N
 \begin{pmatrix}
-0 \\
-0
-\end{pmatrix},
+\begin{pmatrix} 0 \\ 0 \end{pmatrix},
 \begin{pmatrix}
 \sigma_{0}^2 & \sigma_{01} \\
 \sigma_{01} & \sigma_{1}^2 
 \end{pmatrix}
-\end{pmatrix}\\
+\end{pmatrix} \tag{10}
+$$
+$$
+\begin{pmatrix} b_{0i} \\ b_{1i} \end{pmatrix}
+\sim N
 \begin{pmatrix}
-b_{0i} \\
-b_{1i}
-\end{pmatrix}
-\sim
-N\begin{pmatrix}
-\begin{pmatrix}
-0 \\
-0
-\end{pmatrix},
+\begin{pmatrix} 0 \\ 0 \end{pmatrix},
 \begin{pmatrix}
 611.9 & 9.61 \\
 9.61 & 35.08 
 \end{pmatrix}
-\end{pmatrix}
+\end{pmatrix} \tag{11}
 $$ 
 D: Random effects covariance matrix
 The model is built on the assumption that the b's come from a normal distribution with mean 0 and the residual variance in true intercept $\pi_{0i}$ across all individuals in the population of 611.9, the residual variance in true slope for all individuals is 35.08 and residual covariance between the intercept and the slope of 9.61.
@@ -466,5 +462,21 @@ cowplot::plot_grid(lm_indv, lm_min_ranef,
   nrow = 1, labels = "AUTO")
 ```
 
-### to do: compare the two models by creating the mean!
-From our analysis on the effect of sleep deprivation on the reaction time of long distance truck drivers, we concluded that there is a significant positive correlation between them. More precisely, as the sleep deprivation proceeds, the time needed for a driver to respond to a visual stimulus is increasing. Several groups of drivers with different conditions of restricted sleep deprivation or a control group would additionally help us draw a more concrete conclusion. From the existing literature, mathematical models predicting alertness from preceding sleep-wake history typically involve four factors, sleep homeostasis, circadian rhythm, sleep inertia and neuromodulatory changes. Thus, we can conclude that there is a relation between reaction time and sleep deprivation, but it is not the only factor that can fully describe the relationship of sleep deprivation and the reaction time.
+$$
+\begin{cases}
+Y_{ij}   &= \pi_{0i} + \pi_{1i}* Days_{ij} + \epsilon_{ij} \\
+\pi_{0i} &= 251.41 + b_{0i} \\
+\pi_{1i} &= 10.47 + b_{1i}
+\end{cases} \tag{12}
+$$
+$$
+\begin{pmatrix} b_{0i} \\ b_{1i} \end{pmatrix}
+\sim N 
+\begin{pmatrix}
+\begin{pmatrix} 0 \\ 0 \end{pmatrix},
+\begin{pmatrix} 24.74^2 \\ 5.92^2 \end{pmatrix}
+\end{pmatrix} \tag{13}
+$$
+$$\epsilon_{ij} \sim N(0,25.59^2) \tag{14}$$
+
+From our analysis on the effect of sleep deprivation on the reaction time of long distance truck drivers, we concluded that the reaction time of people before they were sleep deprived averages 251.41 ms (sd = 24.74). There is a significant positive correlation between the amount of days of sleep deprivation and the reaction time. More precisely, as the sleep deprivation proceeds, the time needed for a driver to respond to a visual stimulus is increasing by 10.47 ms (sd = 5.92) per day. Several groups of drivers with different conditions of restricted sleep deprivation or a control group would additionally help us draw a more concrete conclusion. From the existing literature, mathematical models predicting alertness from preceding sleep-wake history typically involve four factors, sleep homeostasis, circadian rhythm, sleep inertia and neuromodulatory changes. Thus, we can conclude that there is a relation between reaction time and sleep deprivation, but it is not the only factor that can fully describe the relationship of sleep deprivation and the reaction time.
