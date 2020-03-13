@@ -392,31 +392,34 @@ The model is built on the assumption that the b's come from a normal distributio
 
 This table preditcs the random effect for each subject.Almost all values lay within two standard devation from the mean.
 
+
+
+
 ```{r}
 sleep_ranef <- ranef(sleep_reml)$Subject %>% 
   magrittr::set_colnames(value = c("Intercept", "Slope")) %>% 
   tibble::rownames_to_column("Subject")
+  
 
-sleep_coef <- coef(sleep_reml)$Subject %>% 
-  magrittr::set_colnames(value = c("Intercept", "Days")) %>% 
+sleep_adj <- coef(sleep_reml)$Subject %>% 
+  magrittr::set_colnames(value = c("Intercept", "Slope")) %>% 
   tibble::rownames_to_column("Subject")
 
 sleep_estimate <- tibble::tibble("Intercept" = coef(summary(sleep_reml))[1,1],
                                  "Slope"     = coef(summary(sleep_reml))[2,1])
 ```
+
 ```{r}
 ggplot() +
-  geom_segment(aes(yend    = sleep_coefs$Intercept - sleep_ranef$Intercept,
-                   xend    = sleep_coefs$Slope     - sleep_ranef$Slope,
-                   y = sleep_coefs$Intercept,
-                   x = sleep_coefs$Slope),
+    geom_segment(aes(x = sleep_coefs$Slope,
+                     y = sleep_coefs$Intercept,
+                     xend    = sleep_adj$Slope,
+                     yend    = sleep_adj$Intercept),
+
                alpha    = .2,
                arrow    = arrow()) +
-  geom_point(aes(sleep_coefs$Slope, sleep_coefs$Intercept), 
-             color = "darkorange") +
-  geom_point(aes(sleep_coefs$Slope     - sleep_ranef$Slope,
-                 sleep_coefs$Intercept - sleep_ranef$Intercept),
-             color = "darkcyan") +
+  geom_point(data = sleep_coefs, aes(Slope, Intercept), color = "darkorange") + 
+  geom_point(data = sleep_adj, aes(Slope, Intercept), color = "darkcyan") +
   geom_point(aes(sleep_estimate$Slope, sleep_estimate$Intercept),
              color = "purple",
              size  = 3) +
@@ -440,9 +443,9 @@ lm_indv <- ggplot(sleep) +
 lm_min_ranef <- ggplot(sleep) +
   geom_point(aes(Days, Reaction, colour = factor(Subject)),
              show.legend = FALSE, alpha = 0 ) +
-  geom_abline(data = sleep_coefs,
-              aes(intercept = Intercept-sleep_ranef$Intercept,
-                  slope = Slope-sleep_ranef$Slope,
+  geom_abline(data = sleep_adj,
+              aes(intercept = Intercept,
+                  slope = Slope,
                   alpha = Slope,
                   show.legend = FALSE),
               color = "darkcyan") +
