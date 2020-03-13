@@ -438,7 +438,11 @@ lm_indv <- ggplot(sleep) +
   geom_abline(data = sleep_estimate,
               aes(intercept = Intercept, slope = Slope),
               color = "darkorange",
-              size = 2)
+              size = 2) +
+  scale_x_continuous(breaks = 0:9) +
+  labs(title = "Individual regresion line",
+       y     = "Intercept",
+       x     = "Slope")
   
 lm_min_ranef <- ggplot(sleep) +
   geom_point(aes(Days, Reaction, colour = factor(Subject)),
@@ -446,16 +450,20 @@ lm_min_ranef <- ggplot(sleep) +
   geom_abline(data = sleep_adj,
               aes(intercept = Intercept,
                   slope = Slope,
-                  alpha = Slope,
-                  show.legend = FALSE),
-              color = "darkcyan") +
+                  alpha = Slope),
+              color = "darkcyan",
+              show.legend = FALSE) +
   geom_abline(data = sleep_estimate,
               aes(intercept = Intercept, slope = Slope),
               color = "darkorange",
-              size = 2)
+              size = 2) +
+    scale_x_continuous(breaks = 0:9) +
+  labs(title = "Pooled regresion line",
+       y     = "Intercept",
+       x     = "Slope")
 
 cowplot::plot_grid(lm_indv, lm_min_ranef,
-  nrow = 1)
+  nrow = 1, labels = "AUTO")
 ```
 
 ### to do: compare the two models by creating the mean!
