@@ -406,16 +406,16 @@ sleep_estimate <- tibble::tibble("Intercept" = coef(summary(sleep_reml))[1,1],
 ```
 ```{r}
 ggplot() +
-  geom_segment(aes(y    = sleep_coefs$Intercept + sleep_ranef$Intercept,
-                   x    = sleep_coefs$Slope     + sleep_ranef$Slope,
-                   yend = sleep_coefs$Intercept,
-                   xend = sleep_coefs$Slope),
+  geom_segment(aes(yend    = sleep_coefs$Intercept - sleep_ranef$Intercept,
+                   xend    = sleep_coefs$Slope     - sleep_ranef$Slope,
+                   y = sleep_coefs$Intercept,
+                   x = sleep_coefs$Slope),
                alpha    = .2,
                arrow    = arrow()) +
   geom_point(aes(sleep_coefs$Slope, sleep_coefs$Intercept), 
              color = "darkorange") +
-  geom_point(aes(sleep_coefs$Slope     + sleep_ranef$Slope,
-                 sleep_coefs$Intercept + sleep_ranef$Intercept),
+  geom_point(aes(sleep_coefs$Slope     - sleep_ranef$Slope,
+                 sleep_coefs$Intercept - sleep_ranef$Intercept),
              color = "darkcyan") +
   geom_point(aes(sleep_estimate$Slope, sleep_estimate$Intercept),
              color = "purple",
@@ -423,8 +423,36 @@ ggplot() +
   labs(main = "Individual regression intercept vs slope",
        y    = "intercept",
        x    = "slope")
+```
+```{r}
+lm_indv <- ggplot(sleep) +
+  geom_point(aes(Days, Reaction, colour = factor(Subject)),
+             show.legend = FALSE, alpha = 0 ) +
+  geom_abline(data = sleep_coefs,
+              aes(intercept = Intercept, slope = Slope, alpha = Slope),
+              color = "darkcyan",
+              show.legend = FALSE) +
+  geom_abline(data = sleep_estimate,
+              aes(intercept = Intercept, slope = Slope),
+              color = "darkorange",
+              size = 2)
+  
+lm_min_ranef <- ggplot(sleep) +
+  geom_point(aes(Days, Reaction, colour = factor(Subject)),
+             show.legend = FALSE, alpha = 0 ) +
+  geom_abline(data = sleep_coefs,
+              aes(intercept = Intercept-sleep_ranef$Intercept,
+                  slope = Slope-sleep_ranef$Slope,
+                  alpha = Slope,
+                  show.legend = FALSE),
+              color = "darkcyan") +
+  geom_abline(data = sleep_estimate,
+              aes(intercept = Intercept, slope = Slope),
+              color = "darkorange",
+              size = 2)
 
-
+cowplot::plot_grid(lm_indv, lm_min_ranef,
+  nrow = 1)
 ```
 
 ### to do: compare the two models by creating the mean!
