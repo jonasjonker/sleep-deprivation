@@ -1,7 +1,7 @@
 ---
 title: 'Patterns of performance degradation during sleep restriction of long distance
   truck drivers '
-author: "Laura Bogeart, Ben De Maesschalck, Bianca Florenzi, Jonas Jonker, Nina Rank, Alexandra Stanciu, Maria Tsontaki, Dries Vrijens"
+author: 
 output:
   html_document:
     df_print: paged
@@ -28,6 +28,9 @@ library(pander)
 
 ggplot2::theme_set(theme_classic())
 ```
+
+Laura Bogeart, Ben De Maesschalck, Bianca Florenzi, Jonas Jonker, Nina Rank, Alexandra Stanciu, Maria Tsontaki, Dries Vrijens
+
 
 ## Presentation of the case study
 We are analysing the effect of sleep deprivation on reaction time of long distance truck drivers. There are 18 subjects in the dataset and for each subject, the reaction time was measured for 10 days. The subjects were allowed only a limited amount of sleep for these 10 subsequent days. Each subject's reaction time was measured several times on each day of the trial and an average was taken. 
