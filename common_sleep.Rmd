@@ -26,7 +26,7 @@ ggplot2::theme_set(theme_classic())
 ```
 
 ## Presentation of the case study
-We are analysing the effect of sleep deprivation on reaction time of long distance truck drivers. There are 18 subjects in the dataset and for each subject, the reaction time was measured for 10 days. The subjects were allowed only a limited amount of sleep for these 10 subsequent days.Each subject's reaction time was measured several times on each day of the trial and an average was taken. 
+We are analysing the effect of sleep deprivation on reaction time of long distance truck drivers. There are 18 subjects in the dataset and for each subject, the reaction time was measured for 10 days. The subjects were allowed only a limited amount of sleep for these 10 subsequent days. Each subject's reaction time was measured several times on each day of the trial and an average was taken. 
 
 Reaction time is measured with a psychomotor vigilance task (PVT), which measures the speed with which subjects respond to a visual stimulus.
 
@@ -37,10 +37,10 @@ Is there any relation between reaction time and the number of days of sleep depr
 sleep <- read.table('sleep.txt')
 head(sleep, 12)
 ```
-This dataset contains multiple measurements for each subject on consecutive days, with as response variable the continuous variable reaction time and explanatory variable Days. Since there are 10 measurements for each subject, it is a longitudinal study. The dataset of 18 subjects is balanced with an equal amount of measurements for each subject.
+This dataset contains multiple measurements for each subject on consecutive days, with as response variable the continuous variable reaction time (= 'Reaction') and explanatory variable 'Days'. Since there are 10 measurements for each subject, it is a longitudinal study. The dataset of 18 subjects is balanced and complete (i.e. there is no missing data) with an equal amount of measurements for each subject.
 
 ### Spaghetti Plot
-To visualise the individual reaction times and how they compare to the mean, a spaghetti plot was created. This revealed that there was a variation in intercepts or starting reaction times on day 0 between subjects. This variation increased with subsequent days. 
+To visualise the individual reaction times and how they compare to the mean, a spaghetti plot was created. This revealed that there was a variation in intercepts or starting reaction times on day 0 between subjects. This variation between subjects increased with subsequent days. 
 
 For most subjects, the reaction time increased with the amount of days of sleep deprivation. This increase is also visible in the mean.
 
@@ -61,7 +61,7 @@ sleep_spag_plot <- ggplot(sleep) +
             colour = "BLACK",
             size   = 1.4) + 
   labs(title   = "Spaghetti Plot",
-       caption = "Reactiontime seems to increase with each day of sleep deprivation",
+       caption = "Reaction time seems to increase with each day of sleep deprivation",
        x       = "Days of sleep deprivation",
        y       = "Reaction time in ms") +
   scale_colour_hue(h = c(180, 240), l = 60, c = 30) +
@@ -70,7 +70,8 @@ sleep_spag_plot
 ```
 
 ## Boxplot
-The following boxplot was created to get a quick summary of the dataset's characteristics. The mean and median seem to show a similar increase throughout the study. For day nr 6, 7 and 10, outliers are observed. The variance increases with an increase in days of sleep deprivation but the interquartile range appears to expand not as strongly as the minimum and maximum of the boxplot. 
+The following boxplot was created to get a quick summary of the dataset's characteristics. 
+The mean and median seem to show a similar increase throughout the study. For day nr 6, 7 and 10, outliers are observed. We can observe that the variance increases with an increase in days of sleep deprivation but the interquartile range appears to expand not as strongly as the minimum and maximum of the boxplot. 
 
 To put together, some subjects deviate more from the mean with an increase in days of sleep deprivation (see outliers on both sides)  while most others stay around the mean (see slower increase in interquartile range). 
 
@@ -85,12 +86,10 @@ ggplot(sleep) +
             colour = "black",
             size   = 0.5) +
   labs(title   = "Boxplot",
-       caption = "It seems as if there's a linear trend between the number of days of sleep deprivation and the reaction time. Also the variance of the reaction time seems to increase with increasing days of sleep deprivation. (at Day 9: 5 outliers)",
+       caption = "It seems as if there's a linear trend between the number of days of sleep deprivation\nand the reaction time. Also the variance of the reaction time seems to increase with\nincreasing days of sleep deprivation. (e.g. at day 9 there are 5 outliers)",
        x       = "Days of sleep deprivation",
        y       = "Reaction time in ms") +
-  scale_x_continuous(breaks = 0:9)
-       
-       ##TODO add violin plot, add axis      
+  scale_x_continuous(breaks = 0:9)     
 ```
 
 ## Violin plot
@@ -104,8 +103,8 @@ ggplot(sleep) +
             aes(Days, mean_reaction_time),
             colour = "black",
             size   = 0.5) +
-  labs(title   = "Boxplot",
-       caption = "It seems as if there's a linear trend between the number of days of sleep deprivation\nand the reaction time. Also the variance of the reaction time seems to increase with\nincreasing days of sleep deprivation. (at Day 9: 5 outliers)",
+  labs(title   = "Violin plot",
+       caption = "It seems as if there's a linear trend between the number of days of sleep deprivation\nand the reaction time. Also the variance of the reaction time seems to increase with\nincreasing days of sleep deprivation. (e.g. at day 9 there are 5 outliers)",
        x       = "Days of sleep deprivation",
        y       = "Reaction time in ms") +
   scale_x_continuous(breaks = 0:9)
