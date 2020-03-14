@@ -327,8 +327,41 @@ $$
 
 $$\epsilon_{ij} \sim N(0,25.59^2) \tag{11}$$
 
+$$
+\begin{pmatrix} b_{0i} \\ b_{1i} \end{pmatrix}
+\sim N
+\begin{pmatrix}
+\begin{pmatrix} 0 \\ 0 \end{pmatrix},
+\begin{pmatrix}
+\sigma_{0}^2 & \sigma_{01} \\
+\sigma_{01} & \sigma_{1}^2 
+\end{pmatrix}
+\end{pmatrix} \tag{12}
+$$
+$$
+\begin{pmatrix} b_{0i} \\ b_{1i} \end{pmatrix}
+\sim N
+\begin{pmatrix}
+\begin{pmatrix} 0 \\ 0 \end{pmatrix},
+\begin{pmatrix}
+611.9 & 9.61 \\
+9.61 & 35.08 
+\end{pmatrix}
+\end{pmatrix} \tag{13}
+$$ 
+
+```{r}
+D.sleep = unclass(VarCorr(sleep_reml))$Subject 
+pander::pander(D.sleep)
+
+```
+
+The model is built on the assumption that the b's come from a normal distribution with mean 0 and the residual variance in true intercept $\pi_{0i}$ across all individuals in the population of 611.9, the residual variance in true slope for all individuals is 35.08 and residual covariance between the intercept and the slope of 9.61.
+
+
 Next step is to check if the values we retrieved are actually significant so does the number of days have a significant effect on the reaction time?
-We tested this with Bootstrap and Likelihood Ratio tests because th sample zise wasn't large enough(excluding Wald test). 
+We tested this with Bootstrap and a likelihood ratio test because the sample size was very small (excluding Wald test). 
+
 
 ## Testing fixed effects - with bootstrap
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
@@ -427,38 +460,6 @@ cowplot::plot_grid(intercept_slope, lms,
 ```
 Figure A displays the shrinkage effect. When we a linear model for each individual subject separately without taking into account the data of the whole population (orange dots), intercepts and slopes vary largely. If we fit a linear model for each subject including the data of the other subjects (blue dots) the values for intercept and slope move more closely to the average population intercept and slope (purple dot).
 
-
-
-```{r}
-D.sleep = unclass(VarCorr(sleep_reml))$Subject 
-pander::pander(D.sleep)
-
-```
-
-$$
-\begin{pmatrix} b_{0i} \\ b_{1i} \end{pmatrix}
-\sim N
-\begin{pmatrix}
-\begin{pmatrix} 0 \\ 0 \end{pmatrix},
-\begin{pmatrix}
-\sigma_{0}^2 & \sigma_{01} \\
-\sigma_{01} & \sigma_{1}^2 
-\end{pmatrix}
-\end{pmatrix} \tag{12}
-$$
-$$
-\begin{pmatrix} b_{0i} \\ b_{1i} \end{pmatrix}
-\sim N
-\begin{pmatrix}
-\begin{pmatrix} 0 \\ 0 \end{pmatrix},
-\begin{pmatrix}
-611.9 & 9.61 \\
-9.61 & 35.08 
-\end{pmatrix}
-\end{pmatrix} \tag{13}
-$$ 
-
-The model is built on the assumption that the b's come from a normal distribution with mean 0 and the residual variance in true intercept $\pi_{0i}$ across all individuals in the population of 611.9, the residual variance in true slope for all individuals is 35.08 and residual covariance between the intercept and the slope of 9.61.
 
 
 ## Conclusion
