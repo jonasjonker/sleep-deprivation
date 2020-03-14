@@ -44,10 +44,10 @@ Is there any relation between reaction time and the number of days of sleep depr
 sleep <- read.table('sleep.txt')
 pander::pander(head(sleep, 12))
 ```
-This dataset contains multiple measurements for each subject on consecutive days, with as response variable the continuous variable reaction time and explanatory variable days. Since there are 10 measurements for each subject, it is a longitudinal study. The dataset of 18 subjects is balanced with an equal amount of measurements for each subject.
+This dataset contains multiple measurements for each subject on consecutive days, with as response variable the continuous variable reaction time and explanatory variable days. Since there are 10 measurements for each subject, it is a longitudinal study. The dataset of 18 subjects is balanced and complete with an equal amount of measurements for each subject (i.e. no missing data).
 
 ### Spaghetti Plot
-To visualise the individual reaction times and how they compare to the mean, a spaghetti plot was created. This revealed that there was variation in intercepts or starting reaction times on day 0 between subjects. This variation increased with subsequent days. 
+To visualise the individual reaction times and how they compare to the mean, a spaghetti plot was created. This revealed that there was variation in intercepts or starting reaction times on day 0 between subjects. This variation between subjects increased with subsequent days. 
 
 For most subjects, the reaction time increased with the amount of days of sleep deprivation. This increase is also visible in the mean.
 
@@ -75,15 +75,15 @@ sleep_spag_plot <- ggplot(sleep) +
 sleep_spag_plot
 ```
 
-## Boxplot, Violin plot and mean evolution
-The following boxplot (A) was created to get a quick summary of the dataset's characteristics. The mean and median seem to show a similar increase throughout the study. For day nr 5, 6 and 9, outliers are observed. The variance increases with an increase in days of sleep deprivation but the interquartile range appears to expand not as strongly as the minimum and maximum of the boxplot. 
+## Boxplot, Violin plot and Mean evolution
+The following boxplot (A) was created to get a quick summary of the dataset's characteristics. 
+The mean and median seem to show a similar increase throughout the study. For day nr 5, 6 and 9, outliers are observed. We observe that the variance increases with an increase in days of sleep deprivation but the interquartile range appears to expand not as strongly as the minimum and maximum of the boxplot. 
 
 To put together, some subjects deviate more from the mean with an increase in days of sleep deprivation (see outliers on both sides)  while most others stay around the mean (see slower increase in interquartile range). 
 
 The violin plot (B) supports the above observations of the distribution of the data around the mean with outliers.
 
-
-To further support our previous findings, we looked at the mean evolution (C). Here, an increasing trend of reaction time with increasing number of days is also observed, together with expanding standard deviations (see errorbars).
+To further support our previous findings, we looked at the mean evolution (C). Here, a trend of increasing reaction time with increasing number of days is also observed, together with an expanding standard deviation (see errorbars).
 
 
 ```{r boxplot, fig.height = 3, fig.width = 7, fig.align="center"}
@@ -108,7 +108,7 @@ viol <- ggplot(sleep) +
             aes(Days, mean_reaction_time),
             colour = "black",
             size   = 0.5) +
-  labs(title   = "Violinplot",
+  labs(title   = "Violin plot",
        x       = "Days of sleep deprivation",
        y       = NULL) +
   scale_x_continuous(breaks = 0:9)
@@ -118,7 +118,7 @@ errp <- ggplot2::ggplot(average_reaction_time) +
   geom_errorbar(aes(Days, ymin = lower_reaction_time, ymax = upper_reaction_time, colour = factor(Days)),
                 size  = .4,
                 show.legend = FALSE) +
-    labs(title = "Errorbarplot",
+    labs(title = "Mean evolution with errorbars",
        x       = "Days of sleep deprivation",
        y       =  NULL) +
   scale_x_continuous(breaks = 0:9)
@@ -127,7 +127,7 @@ cowplot::plot_grid(boxp, viol, errp,
                     nrow = 1, labels = "AUTO")
 ```
 
-## Summary
+## Descriptives
 ```{r descriptive_stats, fig.align="center"}
 sleep.mean <- tapply(sleep$Reaction, list(sleep$Days), mean)
 sleep.sd   <- tapply(sleep$Reaction, list(sleep$Days), sd)
@@ -139,7 +139,7 @@ colnames(overview) <- c('Days', 'Mean', 'SD', 'Var', 'n')
 knitr::kable(round(overview, 2), "pandoc")
 ```
 
-The calculations of the mean, standard deviation and variance of the reaction time for each day of all subjects, further support our exploratory plots: we observe an increase in the mean and variance with more days of sleep deprivation.
+The calculations of the mean, standard deviation and variance of the reaction time for each day of all subjects further support our exploratory plots: we observe an overall increase in the mean, variance and standard deviation with more days of sleep deprivation. (note that for day 2 and 7 the variance and standard deviation decrease compared to the day before. It continues to increase afterwards, however.) 
 
 
 ## Correlation
@@ -178,7 +178,9 @@ ggplot(melt(cors), aes(Var1,Var2, fill = value)) +
        y = "reaction on day #")
 ```
 
-We used the Shapiro-Wilk test to check for normality of the reaction times per day.  The test revealed a non normal distribution of day 9. Thus, we performed the spearman correlation method instead of pearson to check for a correlation of the reaction times between days. Looking at the correlation matrix, there is a correlation higher than 0.6 between subsequent days (e.g. between Day 8 and 9, between Day 3 and 4, ...). However, the further the days are apart, the lower the correlation (e.g. low correlation between Day 1 and Day 8). 
+We used the Shapiro - Wilk test to check for the normality of the reaction times per day. The test revealed a non normal distribution of day 9. Thus, we performed the spearman correlation method instead of pearson to check for a correlation of the reaction times between days. 
+
+Looking at the correlation matrix, there is a correlation higher than 0.6 between subsequent days (e.g. between Day 3 and 4, between Day 8 and 9, ...). However, the further the days are apart, the lower the correlation (e.g. low correlation between Day 1 and Day 8). 
 
 ## Regression per person
 ```{r trellis, fig.align="center"}
@@ -198,14 +200,13 @@ lattice::xyplot(Reaction ~ Days|Sx,
                 par.settings  = list(axis.text = list(cex = 0.6),
                            fontsize = list(text = 8, points = 10)),
                 scales = list(x = list(at = c(0:9), labels = c("0","1","2", "3", "4", "5", "6", "7", "8", "9"))))
- #TODO: change to ggplot with facet grid o.i.d.
 ```
 We performed a linear regression model on each subject based on the function:
-$$\text{reaction time} = b_0 + b_i* \text{Days} \tag{1}$$. 
+$$\text{reaction time (Reaction)} = b_0 + b_i* \text{Days} \tag{1}$$ 
 
 We then created a trellis graph to visualise the intercepts and slopes of these subject-specific linear regression models.   
 
-The graph suggests that the slope and intercept of each subject's linear model are independent of each other as there is no observable trend between the height of the intercept and the steepness of the slope. This is further supported by plotting the intercept against the slope (see "OLS vs. LMM", Fig. A (orange)). Overall, all subjects have a positive slope besides subject 335.
+The graph suggests that the slope and intercept of each subject's linear model are independent of each other as there is no observable trend between the height of the intercept and the steepness of the slope. This is further supported by plotting the intercept against the slope (see chapter "OLS vs. LMM", Fig. A (orange dots)). Overall, all subjects have a positive slope besides subject 335.
 
 The linear regression lines fit the datapoints closely, suggesting that a linear model is appropriate to represent this dataset.
 
@@ -248,26 +249,27 @@ cowplot::plot_grid(hist_intercept, hist_slope, hist_rsquared,
                    labels = "AUTO")
 ```
 
-The individual intercepts shown in the first histogram correspond to the initial reaction time and are non normally distributed. Given the small data set, this is not surprising as it shows a variety of their initial reaction time. However, if this data came from a large dataset, it would be surprising that even the initial data points are not normally distributed and could suggest a wrong data sample compared to the population. 
 
-Looking at the histogram of individual slopes, we see a normal distribution. As seen on the previous graph showcasing the individual linear regressions, only one slope is negative. This shows again that reaction time increases by days of sleep deprivation. 
+The individual intercepts shown in the first histogram (A) correspond to the initial reaction time at day zero and are non normally distributed. Given the small data set, this is not surprising as it shows a variety of the initial reaction time. However, if this data came from a large dataset, it would be surprising that the initial data points are not normally distributed and could suggest a wrong data sample compared to the population. 
 
-Finally, looking at the histogram of R squared, we see that the majority of subjects have a R squared of above 0.6. This shows that the linear model is appropriate for this data set. However, sometimes the individual linear model does not fit the specific data of some subjects, specifically 7 of the 18 subjects.
+Looking at the histogram of individual slopes (B), we see a normal distribution. As seen on the previous graph showcasing the individual linear regressions, only one slope is negative. This shows again that reaction time increases by days of sleep deprivation. 
+
+Finally, looking at the histogram of R squared (C), we see that the majority of subjects have a R squared of above 0.6. This shows that the linear model is appropriate for this data set. However, the individual linear model does not fit the specific data of some subjects, respectively 7 of the 18 subjects.
 
 ## Fitting the model - with REML
 
 ## Mathematical description
 
-Level 1 model explains the evolution of Reaction time for each subject
+Level 1 model explains the evolution of Reaction time for each subject:
 $$\begin{aligned}
 Y_{ij}&= \pi_{0i} + \pi_{1i}* \text{Days}_{ij} && \text{how do individuals evolve} \\
           &+ \epsilon_{ij} &&\text{how the individuals deviate from their own evolution}
 \end{aligned} \tag{2}$$
 
-Level 2 model tries to explain why the Subjects differ from each other
+Level 2 model explains why the Subjects differ from each other:
 $$\begin{aligned}
-\pi_{0i} &= \gamma_{0} + b_{0i} && \text{model for explaining the intercept} \\
-\pi_{1i} &= \gamma_{1} + b_{1i} && \text{model for explaining the slope}
+\pi_{0i} &= \gamma_{0} + b_{0i} && \text{explains the intercept} \\
+\pi_{1i} &= \gamma_{1} + b_{1i} && \text{explains the slope}
 \end{aligned} \tag{3}$$
 
 
@@ -275,10 +277,10 @@ $\sigma_{0}^{2}$ - Level 2 residual variance in true intercept $\pi_{0i}$ across
 
 $\sigma_{1}^{2}$ - Level 2 residual variance in true slope $\pi_{1i}$ across all individuals in the population
 
-With level 2 model we are trying to see why there is variation between individuals by looking at the intercept and at the slope.
-$b_{0i}$ and $b_{1i}$ are the unexplained variability
+With the level 2 model we are trying to explain the variation between individuals using the intercept and at the slope while
+$b_{0i}$ and $b_{1i}$ describe the unexplained variability between subjects.
 
-The full model describes the evolution observed in spaghetti plot:
+The full model describes the evolution observed in the spaghetti plot and other descriptive plots of the data:
 $$\begin{aligned}
 Y_{ij} =& \gamma_{0} + b_{0i} + \gamma_{1}* \text{Days}_{ij} &&\text{fixed effects}\\
           &+ b_{0i} + b_{1i}*\text{Days}_{ij} &&\text{random effect}\\
@@ -293,7 +295,7 @@ Y_{ij} &= \pi_{0i} + \pi_{1i}* \text{Days}_{ij} + \epsilon_{ij} \\
 \end{cases} \tag{5}
 $$
 
-Following is the average evolution of the population:
+Underneath is the average evolution of the whole population:
 $$E(Y_{ij}) = \gamma_{0} + \gamma_{1}* \text{Days}_{ij} \tag{6}$$
 
 The general linear mixed model is given by:
@@ -306,13 +308,16 @@ b_i \sim N(0,D)\\
 $$Y_i \sim N(X_i\beta, Z_iDZ_i'+\Sigma_i) \tag{8}$$
 
 R uses the marginal model and our calcuation are based on that.
+
 ```{r}
 sleep_reml <- lmer(formula = Reaction ~ 1 + Days + (1 + Days|Subject),
                    data = sleep)
 
 summary(sleep_reml)
 ```
-## Values
+## Values of the REML model
+Based on the above model, we find the following values: 
+
 $$\begin{aligned}
 \gamma_{0}  &= 251.405 \\
 \gamma_{1}  &= 10.467  \\
@@ -361,11 +366,11 @@ pander::pander(D.sleep)
 
 ```
 
-The model is built on the assumption that the b's come from a normal distribution with mean 0 and the residual variance in true intercept $\pi_{0i}$ across all individuals in the population of 611.9, the residual variance in true slope for all individuals is 35.08 and residual covariance between the intercept and the slope of 9.61.
+The model is built on the assumption that the b's come from a normal distribution with mean 0. The residual variance in true intercept $\pi_{0i}$ across all individuals in the population is 611.9, the residual variance in true slope $\pi_{1i}$ across all individuals in the population is 35.08 and the residual covariance between the true intercept $\pi_{0i}$ and the slope $\pi_{1i}$ is 9.61.
 
 
-Next step is to check if the values we retrieved are actually significant so does the number of days have a significant effect on the reaction time?
-We tested this with Bootstrap and a likelihood ratio test because the sample size was very small (excluding Wald test). 
+Next step is to check if the values we retrieved are actually significant. We therefore check if the number of days have a significant effect on the reaction time.
+We tested the fixed effects with Bootstrap and profile likelihood as the sample size was too small to use a Wald test. We checked different possible models using a likelihood ratio test.
 
 
 ## Testing fixed effects - with bootstrap
@@ -375,8 +380,13 @@ pander::pander(confint(sleep_reml,
         boot.type = 'perc',
         oldNames  = F,
         nsim      = 500))
+        
+        pander::pander(confint(sleep_reml,
+        method    = 'profile',
+        level     = 0.95,
+        oldNames  = F))
 ```
-Confidence interval of the intercept and days does not include 0 therefore both of them have a significant effect on reaction time.
+The confidence intervals of the intercept and Days do not include 0. Therefore, both of them have a significant effect on the Reaction time.
 
 ## Likelihood ratio test with Anova
 ```{r}
@@ -385,8 +395,7 @@ sleep.intercept <- lmer(Reaction~1+(1|Subject), REML = FALSE, data = sleep)
 pander::pander(anova(sleep.full,sleep.intercept))
 
 ```
-We compared an intercept only model with a model that includes days as well and we concluded that adding days as covariate improves our model significantly.
-Days have have a significant effect on the reaction time with the p-value smaller than 0.05.
+We compared an intercept-only model with a model that includes Days to find the best model using MLE. Looking at the outcome of the  likelihood ratio test with Anova, we can conclude that adding Days as covariate improves our model significantly as it has a significant effect on the Reaction time with a p-value much smaller than 0.05.
 The decrease in AIC value also supports this conclusion.
 
 ### OLS vs LMM estimates
@@ -468,4 +477,6 @@ Figure A displays the shrinkage effect. If we fit a linear model respectively fo
 
 
 ## Conclusion
-From our analysis on the effect of sleep deprivation on the reaction time of long distance truck drivers, we concluded that the reaction time of people before they were sleep deprived averages 251.41 ms (sd = 24.74). There is a linear relationship between the amount of days of sleep deprivation and the reaction time. More precisely, as the sleep deprivation proceeds, the time needed for a driver to respond to a visual stimulus is increasing by 10.47 ms (sd = 5.92) per day on average. Several groups of drivers with different conditions of restricted sleep deprivation or a control group would additionally help us draw a more concrete conclusion. From the existing literature, mathematical models predicting alertness from preceding sleep-wake history typically involve four factors, sleep homeostasis, circadian rhythm, sleep inertia and neuromodulatory changes. Thus, we can conclude that there is a relation between reaction time and sleep deprivation, but it is not the only factor that can fully describe the relationship of sleep deprivation and the reaction time.
+From our analysis on the effect of sleep deprivation on the reaction time of long distance truck drivers, we can conclude that there is a linear relationship between the amount of days of sleep deprivation and the reaction time. More precisely, as the sleep deprivation proceeds, the time needed for a driver to respond to a visual stimulus is increasing by 10.47 ms (sd = 5.92) per day on average. The reaction time of people before they were sleep deprived averages 251.41 ms (sd = 24.74). 
+
+Several groups of drivers with different conditions of restricted sleep deprivation or a control group would additionally help us draw a more concrete conclusion. From the existing literature, mathematical models predicting alertness from preceding sleep-wake history typically involve four factors: sleep homeostasis, circadian rhythm, sleep inertia and neuromodulatory changes. Thus, we can conclude that there is a relation between reaction time and sleep deprivation, but it is not the only factor that can fully describe the relationship of sleep deprivation and the reaction time.
