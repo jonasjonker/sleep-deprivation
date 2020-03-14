@@ -386,8 +386,8 @@ lm_indv <- ggplot(sleep) +
               size = 2) +
   scale_x_continuous(breaks = 0:9) +
   labs(title = "OLS",
-       y     = "Intercept",
-       x     = "Slope")
+       y     = "Reaction time in ms",
+       x     = "Days")
   
 lm_min_ranef <- ggplot(sleep) +
   geom_point(aes(Days, Reaction, colour = factor(Subject)),
@@ -404,8 +404,8 @@ lm_min_ranef <- ggplot(sleep) +
               size = 2) +
     scale_x_continuous(breaks = 0:9) +
   labs(title = "LMM",
-       y     = "Intercept",
-       x     = "Slope")
+       y     = "Reaction time in ms",
+       x     = "Days")
 
 lms <- cowplot::plot_grid(lm_indv, lm_min_ranef,
                           nrow = 1, labels = c("B", "C"))
