@@ -413,6 +413,9 @@ lms <- cowplot::plot_grid(lm_indv, lm_min_ranef,
 cowplot::plot_grid(intercept_slope, lms,
                    ncol = 1, labels = c("A", ""))
 ```
+Figure A displays the shrinkage effect. When we a linear model for each individual subject separately without taking into account the data of the whole population (orange dots), intercepts and slopes vary largely. If we fit a linear model for each subject including the data of the other subjects (blue dots) the values for intercept and slope move more closely to the average population intercept and slope (purple dot).
+
+
 
 ```{r}
 D.sleep = unclass(VarCorr(sleep_reml))$Subject 
