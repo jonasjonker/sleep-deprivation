@@ -1,6 +1,7 @@
 ---
 title: 'Patterns of performance degradation during sleep restriction of long distance
   truck drivers '
+author: "Laura Bogeart, Ben De Maesschalck, Bianca Florenzi, Jonas Jonker, Nina Rank,Alexandra Stanciu, Maria Tsontak, Dries Vrijens"
 output:
   pdf_document: default
   word_document: default
