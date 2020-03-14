@@ -72,7 +72,7 @@ sleep_spag_plot
 ```
 
 ## Boxplot
-The following boxplot was created to get a quick summary of the dataset's characteristics. The mean and median seem to show a similar increase throughout the study. For day nr 6, 7 and 10, outliers are observed. The variance increases with an increase in days of sleep deprivation but the interquartile range appears to expand not as strongly as the minimum and maximum of the boxplot. 
+The following boxplot was created to get a quick summary of the dataset's characteristics. The mean and median seem to show a similar increase throughout the study. For day nr 5, 6 and 9, outliers are observed. The variance increases with an increase in days of sleep deprivation but the interquartile range appears to expand not as strongly as the minimum and maximum of the boxplot. 
 
 To put together, some subjects deviate more from the mean with an increase in days of sleep deprivation (see outliers on both sides)  while most others stay around the mean (see slower increase in interquartile range). 
 
@@ -199,7 +199,7 @@ $$\text{reaction time} = b_0 + b_i* \text{Days} \tag{1}$$.
 
 We then created a trellis graph to visualise the intercepts and slopes of these subject-specific linear regression models.   
 
-The graph suggests that the slope and intercept of each subject's linear model are independent of each other as there is no observable trend between the height of the intercept and the steepness of the slope. This is further supported by plotting the intercept against the slope. Overall, all subjects have a positive slope besides subject 335.
+The graph suggests that the slope and intercept of each subject's linear model are independent of each other as there is no observable trend between the height of the intercept and the steepness of the slope. This is further supported by plotting the intercept against the slope (see "OLS vs. LMM", Fig. A (orange)). Overall, all subjects have a positive slope besides subject 335.
 
 The linear regression lines fit the datapoints closely, suggesting that a linear model is appropriate to represent this dataset.
 
@@ -244,7 +244,7 @@ cowplot::plot_grid(hist_intercept, hist_slope, hist_rsquared,
 
 The individual intercepts shown in the first histogram correspond to the initial reaction time and are non normally distributed. Given the small data set, this is not surprising as it shows a variety of their initial reaction time. However, if this data came from a large dataset, it would be surprising that even the initial data points are not normally distributed and could suggest a wrong data sample compared to the population. 
 
-Looking at the histogram of individual slopes, we see a normal distribution. As seen on the previous graph showcasing the individual linear regressions, very little slopes are negative. This shows again that reaction time increases by days of sleep deprivation. 
+Looking at the histogram of individual slopes, we see a normal distribution. As seen on the previous graph showcasing the individual linear regressions, only one slope is negative. This shows again that reaction time increases by days of sleep deprivation. 
 
 Finally, looking at the histogram of R squared, we see that the majority of subjects have a R squared of above 0.6. This shows that the linear model is appropriate for this data set. However, sometimes the individual linear model does not fit the specific data of some subjects, specifically 7 of the 18 subjects.
 
@@ -266,6 +266,7 @@ $$\begin{aligned}
 
 
 $\sigma_{0}^{2}$ - Level 2 residual variance in true intercept $\pi_{0i}$ across all individuals in the population
+
 $\sigma_{1}^{2}$ - Level 2 residual variance in true slope $\pi_{1i}$ across all individuals in the population
 
 With level 2 model we are trying to see why there is variation between individuals by looking at the intercept and at the slope.
@@ -455,13 +456,8 @@ Y_{ij}   &= \pi_{0i} + \pi_{1i}* Days_{ij} + \epsilon_{ij} \\
 \pi_{1i} &= 10.47 + b_{1i}
 \end{cases} \tag{12}
 $$
-$$
-\begin{pmatrix} b_{0i} \\ b_{1i} \end{pmatrix}
-\sim N 
-\begin{pmatrix}
-\begin{pmatrix} 0 \\ 0 \end{pmatrix},
-\begin{pmatrix} 24.74^2 \\ 5.92^2 \end{pmatrix}
-\end{pmatrix} \tag{13}
-$$
-$$\epsilon_{ij} \sim N(0,25.59^2) \tag{14}$$
+
+$$\epsilon_{ij} \sim N(0,25.59^2) \tag{13}$$
+
+## Conclusion
 From our analysis on the effect of sleep deprivation on the reaction time of long distance truck drivers, we concluded that the reaction time of people before they were sleep deprived averages 251.41 ms (sd = 24.74). There is a linear relationship between the amount of days of sleep deprivation and the reaction time. More precisely, as the sleep deprivation proceeds, the time needed for a driver to respond to a visual stimulus is increasing by 10.47 ms (sd = 5.92) per day. Several groups of drivers with different conditions of restricted sleep deprivation or a control group would additionally help us draw a more concrete conclusion. From the existing literature, mathematical models predicting alertness from preceding sleep-wake history typically involve four factors, sleep homeostasis, circadian rhythm, sleep inertia and neuromodulatory changes. Thus, we can conclude that there is a relation between reaction time and sleep deprivation, but it is not the only factor that can fully describe the relationship of sleep deprivation and the reaction time.
