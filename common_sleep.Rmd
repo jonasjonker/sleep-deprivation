@@ -72,12 +72,16 @@ sleep_spag_plot <- ggplot(sleep) +
 sleep_spag_plot
 ```
 
-## Boxplot
-The following boxplot was created to get a quick summary of the dataset's characteristics. The mean and median seem to show a similar increase throughout the study. For day nr 5, 6 and 9, outliers are observed. The variance increases with an increase in days of sleep deprivation but the interquartile range appears to expand not as strongly as the minimum and maximum of the boxplot. 
+## Boxplot, Violin plot and mean evolution
+The following boxplot (A) was created to get a quick summary of the dataset's characteristics. The mean and median seem to show a similar increase throughout the study. For day nr 5, 6 and 9, outliers are observed. The variance increases with an increase in days of sleep deprivation but the interquartile range appears to expand not as strongly as the minimum and maximum of the boxplot. 
 
 To put together, some subjects deviate more from the mean with an increase in days of sleep deprivation (see outliers on both sides)  while most others stay around the mean (see slower increase in interquartile range). 
 
-The violin plot supports the above observations of the distribution of the data around the mean with outliers.
+The violin plot (B) supports the above observations of the distribution of the data around the mean with outliers.
+
+
+To further support our previous findings, we looked at the mean evolution (C). Here, an increasing trend of reaction time with increasing number of days is also observed, together with expanding standard deviations (see errorbars).
+
 
 ```{r boxplot, fig.height = 3, fig.width = 7, fig.align="center"}
 boxp <- ggplot(sleep) + 
@@ -134,8 +138,6 @@ knitr::kable(round(overview, 2), "pandoc")
 
 The calculations of the mean, standard deviation and variance of the reaction time for each day of all subjects, further support our exploratory plots: we observe an increase in the mean and variance with more days of sleep deprivation.
 
-## Mean evolution
-To further support our previous findings, we looked at the mean evolution. Here, an increasing trend of reaction time with increasing number of days is also observed, together with expanding standard deviations (see errorbars).
 
 ## Correlation
 ```{r include=FALSE}
@@ -291,7 +293,7 @@ $$
 Following is the average evolution of the population:
 $$E(Y_{ij}) = \gamma_{0} + \gamma_{1}* \text{Days}_{ij} \tag{6}$$
 
-The general liniar mixed model is given by:
+The general linear mixed model is given by:
 $$\begin{cases}
 Y_i = X_i\beta + Z_i b_i + \epsilon_i \\
 b_i \sim N(0,D)\\
