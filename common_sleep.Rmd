@@ -47,7 +47,7 @@ To visualise the individual reaction times and how they compare to the mean, a s
 
 For most subjects, the reaction time increased with the amount of days of sleep deprivation. This increase is also visible in the mean.
 
-```{r spaghetti, echo=FALSE, fig.align="center"}
+```{r spaghetti, echo=FALSE, fig.height = 4, fig.width = 7, fig.align="center"}
 average_reaction_time <- sleep %>%
   group_by(Days) %>%
   summarise(mean_reaction_time   = mean(Reaction),
@@ -78,8 +78,8 @@ To put together, some subjects deviate more from the mean with an increase in da
 
 The violin plot supports the above observations of the distribution of the data around the mean with outliers.
 
-```{r boxplot, fig.align="center"}
-ggplot(sleep) + 
+```{r boxplot, fig.height = 3, fig.width = 7, fig.align="center"}
+boxp <- ggplot(sleep) + 
   geom_boxplot(aes(Days, Reaction, colour = factor(Days)),
                show.legend = FALSE) +
   geom_line(data   = average_reaction_time,
@@ -90,11 +90,8 @@ ggplot(sleep) +
        x       = "Days of sleep deprivation",
        y       = "Reaction time in ms") +
   scale_x_continuous(breaks = 0:9)     
-```
 
-## Violin plot
-```{r violinplot, fig.align="center"}
-ggplot(sleep) + 
+viol <- ggplot(sleep) + 
   geom_violin(aes(Days, Reaction, colour = factor(Days)),
               adjust = .5,
               scale  = "count",
@@ -103,10 +100,23 @@ ggplot(sleep) +
             aes(Days, mean_reaction_time),
             colour = "black",
             size   = 0.5) +
-  labs(title   = "Boxplot",
+  labs(title   = "Violinplot",
        x       = "Days of sleep deprivation",
-       y       = "Reaction time in ms") +
+       y       = NULL) +
   scale_x_continuous(breaks = 0:9)
+
+errp <- ggplot2::ggplot(average_reaction_time) +
+  geom_line(aes(Days, mean_reaction_time)) +
+  geom_errorbar(aes(Days, ymin = lower_reaction_time, ymax = upper_reaction_time, colour = factor(Days)),
+                size  = .4,
+                show.legend = FALSE) +
+    labs(title = "Errorbarplot",
+       x       = "Days of sleep deprivation",
+       y       =  NULL) +
+  scale_x_continuous(breaks = 0:9)
+
+cowplot::plot_grid(boxp, viol, errp,
+                    nrow = 1, labels = "AUTO")
 ```
 
 ## Summary
@@ -124,16 +134,6 @@ knitr::kable(round(overview, 2), "pandoc")
 The calculations of the mean, standard deviation and variance of the reaction time for each day of all subjects, further support our exploratory plots: we observe an increase in the mean and variance with more days of sleep deprivation.
 
 ## Mean evolution
-```{r mean_err, fig.align="center"}
-ggplot2::ggplot(average_reaction_time) +
-  geom_line(aes(Days, mean_reaction_time)) +
-  geom_errorbar(aes(Days, ymin = lower_reaction_time,                     ymax = upper_reaction_time),
-                size = .4, alpha = .6, color = "darkcyan") +
-    labs(title = "Errorbars",
-       caption = "Mean, with errobars 1 sd from the mean.",
-       x       = "Days of sleep deprivation",
-       y       = "Reaction time in ms")
-```
 To further support our previous findings, we looked at the mean evolution. Here, an increasing trend of reaction time with increasing number of days is also observed, together with expanding standard deviations (see errorbars).
 
 ## Correlation
@@ -158,7 +158,7 @@ cor(sleep.resh[, 2:11], method = 'spearman')
 pairs(sleep.resh[, 2:11])
 ```
 
-```{r spearman_tile, fig.align="center"}
+```{r spearman_tile, fig.height = 3.5, fig.width = 4, fig.align="center"}
 ## Correlation between the Reaction scores at different days
 
 cors <- cor(sleep.resh[, 2:11], method = 'spearman')
@@ -172,12 +172,7 @@ ggplot(melt(cors), aes(Var1,Var2, fill = value)) +
        y = "reaction on day #")
 ```
 
-We used the Shapiro-Wilk test to check for normality of the reaction times per day.  
-
-The test revealed a non normal distribution of day 9. Thus, we performed the spearman correlation method instead of pearson to check for a correlation of the reaction times between days. 
-
-Looking at the correlation matrix, there is a correlation higher then 0.6 between subsequent days (e.g. between Day 8 and 9, between Day 3 and 4, ...). However, the further the days are apart, the lower the correlation (e.g. low correlation between Day 1 and Day 8). 
-
+We used the Shapiro-Wilk test to check for normality of the reaction times per day.  The test revealed a non normal distribution of day 9. Thus, we performed the spearman correlation method instead of pearson to check for a correlation of the reaction times between days. Looking at the correlation matrix, there is a correlation higher then 0.6 between subsequent days (e.g. between Day 8 and 9, between Day 3 and 4, ...). However, the further the days are apart, the lower the correlation (e.g. low correlation between Day 1 and Day 8). 
 
 ## Regression per person
 ```{r trellis, fig.align="center"}
@@ -314,7 +309,6 @@ summary(sleep_reml)
 $$\begin{aligned}
 \gamma_{0}  &= 251.405 \\
 \gamma_{1}  &= 10.467  \\
-\\
 \sigma_{\epsilon}^{2} &= 654.94 \\
 \sigma_{0}^{2} &= 611.90 \\
 \sigma_{1}^{2} &= 35.08 \\
@@ -325,7 +319,7 @@ Next step is to check if the values we retrieved are actually significant so doe
 We tested this with Bootstrap and Likelihood Ratio tests because th sample zise wasn't large enough(excluding Wald test). 
 
 ## Testing fixed effects - with bootstrap
-```{r message=FALSE, warning=FALSE}
+```{r echo=FALSE, message=FALSE, warning=FALSE}
 pander::pander(confint(sleep_reml,
         method    = 'boot',
         boot.type = 'perc',
@@ -348,42 +342,6 @@ The decrease in AIC value also supports this conclusion.
 ### OLS vs LMM estimates
 ## D: Random effects covariance matrix
 ```{r}
-D.sleep = unclass(VarCorr(sleep_reml))$Subject 
-pander::pander(D.sleep)
-
-```
-
-
-$$
-\begin{pmatrix} b_{0i} \\ b_{1i} \end{pmatrix}
-\sim N
-\begin{pmatrix}
-\begin{pmatrix} 0 \\ 0 \end{pmatrix},
-\begin{pmatrix}
-\sigma_{0}^2 & \sigma_{01} \\
-\sigma_{01} & \sigma_{1}^2 
-\end{pmatrix}
-\end{pmatrix} \tag{10}
-$$
-$$
-\begin{pmatrix} b_{0i} \\ b_{1i} \end{pmatrix}
-\sim N
-\begin{pmatrix}
-\begin{pmatrix} 0 \\ 0 \end{pmatrix},
-\begin{pmatrix}
-611.9 & 9.61 \\
-9.61 & 35.08 
-\end{pmatrix}
-\end{pmatrix} \tag{11}
-$$ 
-
-The model is built on the assumption that the b's come from a normal distribution with mean 0 and the residual variance in true intercept $\pi_{0i}$ across all individuals in the population of 611.9, the residual variance in true slope for all individuals is 35.08 and residual covariance between the intercept and the slope of 9.61.
-
-
-
-
-
-```{r}
 sleep_ranef <- ranef(sleep_reml)$Subject %>% 
   magrittr::set_colnames(value = c("Intercept", "Slope")) %>% 
   tibble::rownames_to_column("Subject")
@@ -397,8 +355,8 @@ sleep_estimate <- tibble::tibble("Intercept" = coef(summary(sleep_reml))[1,1],
                                  "Slope"     = coef(summary(sleep_reml))[2,1])
 ```
 
-```{r}
-ggplot() +
+```{r fig.height = 9, fig.width = 7, fig.align="center"}
+intercept_slope <- ggplot() +
     geom_segment(aes(x = sleep_coefs$Slope,
                      y = sleep_coefs$Intercept,
                      xend    = sleep_adj$Slope,
@@ -414,8 +372,7 @@ ggplot() +
   labs(main = "Individual regression intercept vs slope",
        y    = "intercept",
        x    = "slope")
-```
-```{r}
+
 lm_indv <- ggplot(sleep) +
   geom_point(aes(Days, Reaction, colour = factor(Subject)),
              show.legend = FALSE, alpha = 0 ) +
@@ -450,9 +407,43 @@ lm_min_ranef <- ggplot(sleep) +
        y     = "Intercept",
        x     = "Slope")
 
-cowplot::plot_grid(lm_indv, lm_min_ranef,
-  nrow = 1, labels = "AUTO")
+lms <- cowplot::plot_grid(lm_indv, lm_min_ranef,
+                          nrow = 1, labels = c("B", "C"))
+
+cowplot::plot_grid(intercept_slope, lms,
+                   ncol = 1, labels = c("A", ""))
 ```
+
+```{r}
+D.sleep = unclass(VarCorr(sleep_reml))$Subject 
+pander::pander(D.sleep)
+
+```
+
+$$
+\begin{pmatrix} b_{0i} \\ b_{1i} \end{pmatrix}
+\sim N
+\begin{pmatrix}
+\begin{pmatrix} 0 \\ 0 \end{pmatrix},
+\begin{pmatrix}
+\sigma_{0}^2 & \sigma_{01} \\
+\sigma_{01} & \sigma_{1}^2 
+\end{pmatrix}
+\end{pmatrix} \tag{10}
+$$
+$$
+\begin{pmatrix} b_{0i} \\ b_{1i} \end{pmatrix}
+\sim N
+\begin{pmatrix}
+\begin{pmatrix} 0 \\ 0 \end{pmatrix},
+\begin{pmatrix}
+611.9 & 9.61 \\
+9.61 & 35.08 
+\end{pmatrix}
+\end{pmatrix} \tag{11}
+$$ 
+
+The model is built on the assumption that the b's come from a normal distribution with mean 0 and the residual variance in true intercept $\pi_{0i}$ across all individuals in the population of 611.9, the residual variance in true slope for all individuals is 35.08 and residual covariance between the intercept and the slope of 9.61.
 
 $$
 \begin{cases}
@@ -470,5 +461,4 @@ $$
 \end{pmatrix} \tag{13}
 $$
 $$\epsilon_{ij} \sim N(0,25.59^2) \tag{14}$$
-
 From our analysis on the effect of sleep deprivation on the reaction time of long distance truck drivers, we concluded that the reaction time of people before they were sleep deprived averages 251.41 ms (sd = 24.74). There is a linear relationship between the amount of days of sleep deprivation and the reaction time. More precisely, as the sleep deprivation proceeds, the time needed for a driver to respond to a visual stimulus is increasing by 10.47 ms (sd = 5.92) per day. Several groups of drivers with different conditions of restricted sleep deprivation or a control group would additionally help us draw a more concrete conclusion. From the existing literature, mathematical models predicting alertness from preceding sleep-wake history typically involve four factors, sleep homeostasis, circadian rhythm, sleep inertia and neuromodulatory changes. Thus, we can conclude that there is a relation between reaction time and sleep deprivation, but it is not the only factor that can fully describe the relationship of sleep deprivation and the reaction time.
