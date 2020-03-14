@@ -29,7 +29,7 @@ ggplot2::theme_set(theme_classic())
 ```
 
 ## Presentation of the case study
-We are analysing the effect of sleep deprivation on reaction time of long distance truck drivers. There are 18 subjects in the dataset and for each subject, the reaction time was measured for 10 days. The subjects were allowed only a limited amount of sleep for these 10 subsequent days.Each subject's reaction time was measured several times on each day of the trial and an average was taken. 
+We are analysing the effect of sleep deprivation on reaction time of long distance truck drivers. There are 18 subjects in the dataset and for each subject, the reaction time was measured for 10 days. The subjects were allowed only a limited amount of sleep for these 10 subsequent days. Each subject's reaction time was measured several times on each day of the trial and an average was taken. 
 
 Reaction time is measured with a psychomotor vigilance task (PVT), which measures the speed with which subjects respond to a visual stimulus.
 
@@ -40,10 +40,10 @@ Is there any relation between reaction time and the number of days of sleep depr
 sleep <- read.table('sleep.txt')
 pander::pander(head(sleep, 12))
 ```
-This dataset contains multiple measurements for each subject on consecutive days, with as response variable the continuous variable reaction time and explanatory variable Days. Since there are 10 measurements for each subject, it is a longitudinal study. The dataset of 18 subjects is balanced with an equal amount of measurements for each subject.
+This dataset contains multiple measurements for each subject on consecutive days, with as response variable the continuous variable reaction time and explanatory variable days. Since there are 10 measurements for each subject, it is a longitudinal study. The dataset of 18 subjects is balanced with an equal amount of measurements for each subject.
 
 ### Spaghetti Plot
-To visualise the individual reaction times and how they compare to the mean, a spaghetti plot was created. This revealed that there was a variation in intercepts or starting reaction times on day 0 between subjects. This variation increased with subsequent days. 
+To visualise the individual reaction times and how they compare to the mean, a spaghetti plot was created. This revealed that there was variation in intercepts or starting reaction times on day 0 between subjects. This variation increased with subsequent days. 
 
 For most subjects, the reaction time increased with the amount of days of sleep deprivation. This increase is also visible in the mean.
 
@@ -64,7 +64,6 @@ sleep_spag_plot <- ggplot(sleep) +
             colour = "BLACK",
             size   = 1.4) + 
   labs(title   = "Spaghetti Plot",
-       caption = "Reactiontime seems to increase with each day of sleep deprivation",
        x       = "Days of sleep deprivation",
        y       = "Reaction time in ms") +
   scale_colour_hue(h = c(180, 240), l = 60, c = 30) +
@@ -88,12 +87,9 @@ ggplot(sleep) +
             colour = "black",
             size   = 0.5) +
   labs(title   = "Boxplot",
-       caption = "It seems as if there's a linear trend between the number of days of sleep deprivation and the reaction time. Also the variance of the reaction time seems to increase with increasing days of sleep deprivation. (at Day 9: 5 outliers)",
        x       = "Days of sleep deprivation",
        y       = "Reaction time in ms") +
-  scale_x_continuous(breaks = 0:9)
-       
-       ##TODO add violin plot, add axis      
+  scale_x_continuous(breaks = 0:9)     
 ```
 
 ## Violin plot
@@ -108,7 +104,6 @@ ggplot(sleep) +
             colour = "black",
             size   = 0.5) +
   labs(title   = "Boxplot",
-       caption = "It seems as if there's a linear trend between the number of days of sleep deprivation\nand the reaction time. Also the variance of the reaction time seems to increase with\nincreasing days of sleep deprivation. (at Day 9: 5 outliers)",
        x       = "Days of sleep deprivation",
        y       = "Reaction time in ms") +
   scale_x_continuous(breaks = 0:9)
@@ -183,8 +178,6 @@ The test revealed a non normal distribution of day 9. Thus, we performed the spe
 
 Looking at the correlation matrix, there is a correlation higher then 0.6 between subsequent days (e.g. between Day 8 and 9, between Day 3 and 4, ...). However, the further the days are apart, the lower the correlation (e.g. low correlation between Day 1 and Day 8). 
 
-
-Aligning nicely with our previous results, there is a linear trend between the number of Days and reaction time.
 
 ## Regression per person
 ```{r trellis, fig.align="center"}
@@ -261,24 +254,8 @@ Looking at the histogram of individual slopes, we see a normal distribution. As 
 Finally, looking at the histogram of R squared, we see that the majority of subjects have a R squared of above 0.6. This shows that the linear model is appropriate for this data set. However, sometimes the individual linear model does not fit the specific data of some subjects, specifically 7 of the 18 subjects.
 
 ## Fitting the model - with REML
-```{r}
-sleep_reml <- lmer(formula = Reaction ~ 1 + Days + (1 + Days|Subject),
-                   data = sleep)
 
-summary(sleep_reml)
-```
-## Values
-$$\begin{aligned}
-\gamma_{0}  &= 251.405 \\
-\gamma_{1}  &= 10.467  \\
-\\
-\sigma_{\epsilon}^{2} &= 654.94 \\
-\sigma_{0}^{2} &= 611.90 \\
-\sigma_{1}^{2} &= 35.08 \\
-corr(b_{0i}, b_{1i}) &= 0.07
-\end{aligned} \tag{2}$$
-
-##Mathematical description
+## Mathematical description
 
 Level 1 model explains the evolution of Reaction time for each subject
 $$\begin{aligned}
@@ -327,6 +304,23 @@ b_i \sim N(0,D)\\
 $$Y_i \sim N(X_i\beta, Z_iDZ_i'+\Sigma_i) \tag{9}$$
 
 R uses the marginal model and our calcuation are based on that.
+```{r}
+sleep_reml <- lmer(formula = Reaction ~ 1 + Days + (1 + Days|Subject),
+                   data = sleep)
+
+summary(sleep_reml)
+```
+## Values
+$$\begin{aligned}
+\gamma_{0}  &= 251.405 \\
+\gamma_{1}  &= 10.467  \\
+\\
+\sigma_{\epsilon}^{2} &= 654.94 \\
+\sigma_{0}^{2} &= 611.90 \\
+\sigma_{1}^{2} &= 35.08 \\
+corr(b_{0i}, b_{1i}) &= 0.07
+\end{aligned} \tag{2}$$
+
 Next step is to check if the values we retrieved are actually significant so does the number of days have a significant effect on the reaction time?
 We tested this with Bootstrap and Likelihood Ratio tests because th sample zise wasn't large enough(excluding Wald test). 
 
@@ -347,13 +341,12 @@ sleep.intercept <- lmer(Reaction~1+(1|Subject), REML = FALSE, data = sleep)
 pander::pander(anova(sleep.full,sleep.intercept))
 
 ```
-We compared an intercept only model with a model that includes days as well and we concluded that adding days as covariate it improves our model significantly.
+We compared an intercept only model with a model that includes days as well and we concluded that adding days as covariate improves our model significantly.
 Days have have a significant effect on the reaction time with the p-value smaller than 0.05.
 The decrease in AIC value also supports this conclusion.
 
 ### OLS vs LMM estimates
-#plot random intercept and random slope
-
+## D: Random effects covariance matrix
 ```{r}
 D.sleep = unclass(VarCorr(sleep_reml))$Subject 
 pander::pander(D.sleep)
@@ -383,10 +376,9 @@ $$
 \end{pmatrix}
 \end{pmatrix} \tag{11}
 $$ 
-D: Random effects covariance matrix
+
 The model is built on the assumption that the b's come from a normal distribution with mean 0 and the residual variance in true intercept $\pi_{0i}$ across all individuals in the population of 611.9, the residual variance in true slope for all individuals is 35.08 and residual covariance between the intercept and the slope of 9.61.
 
-This table preditcs the random effect for each subject.Almost all values lay within two standard devation from the mean.
 
 
 
@@ -479,4 +471,4 @@ $$
 $$
 $$\epsilon_{ij} \sim N(0,25.59^2) \tag{14}$$
 
-From our analysis on the effect of sleep deprivation on the reaction time of long distance truck drivers, we concluded that the reaction time of people before they were sleep deprived averages 251.41 ms (sd = 24.74). There is a significant positive correlation between the amount of days of sleep deprivation and the reaction time. More precisely, as the sleep deprivation proceeds, the time needed for a driver to respond to a visual stimulus is increasing by 10.47 ms (sd = 5.92) per day. Several groups of drivers with different conditions of restricted sleep deprivation or a control group would additionally help us draw a more concrete conclusion. From the existing literature, mathematical models predicting alertness from preceding sleep-wake history typically involve four factors, sleep homeostasis, circadian rhythm, sleep inertia and neuromodulatory changes. Thus, we can conclude that there is a relation between reaction time and sleep deprivation, but it is not the only factor that can fully describe the relationship of sleep deprivation and the reaction time.
+From our analysis on the effect of sleep deprivation on the reaction time of long distance truck drivers, we concluded that the reaction time of people before they were sleep deprived averages 251.41 ms (sd = 24.74). There is a linear relationship between the amount of days of sleep deprivation and the reaction time. More precisely, as the sleep deprivation proceeds, the time needed for a driver to respond to a visual stimulus is increasing by 10.47 ms (sd = 5.92) per day. Several groups of drivers with different conditions of restricted sleep deprivation or a control group would additionally help us draw a more concrete conclusion. From the existing literature, mathematical models predicting alertness from preceding sleep-wake history typically involve four factors, sleep homeostasis, circadian rhythm, sleep inertia and neuromodulatory changes. Thus, we can conclude that there is a relation between reaction time and sleep deprivation, but it is not the only factor that can fully describe the relationship of sleep deprivation and the reaction time.
