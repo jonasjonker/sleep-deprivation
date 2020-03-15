@@ -183,6 +183,38 @@ We used the Shapiro - Wilk test to check for the normality of the reaction times
 Looking at the correlation matrix, there is a correlation higher than 0.6 between subsequent days (e.g. between Day 3 and 4, between Day 8 and 9, etc). However, the further the days are apart, the lower the correlation (e.g. low correlation between Day 1 and Day 8). 
 
 ## Regression per person
+```{r histograms, fig.align="center", message=FALSE, warning=FALSE}
+## Linear regression per participant of Reaction on Days
+sleep_coefs <- sleep %>% 
+  dplyr::group_by(Subject) %>% 
+  dplyr::do(coefs = coef(lm(Reaction ~ Days, data = .))) %>% 
+  tidyr::unnest_wider(coefs) %>% 
+  magrittr::set_colnames(c("Subject","Intercept","Slope"))
+
+r2 <- sleep %>% 
+  dplyr::group_by(Subject) %>% 
+  dplyr::do(r2 = summary(lm(Reaction ~ Days, data = .))$r.squared) %>% 
+  tidyr::unnest_wider(r2) %>% 
+  magrittr::set_colnames(c("Subject", "R_squared"))
+
+sleep_coefs <- sleep_coefs %>% left_join(r2)
+
+sleep_reml <- lmer(formula = Reaction ~ 1 + Days + (1 + Days|Subject),
+                   data = sleep)
+
+sleep_ranef <- ranef(sleep_reml)$Subject %>% 
+  magrittr::set_colnames(value = c("Intercept", "Slope")) %>% 
+  tibble::rownames_to_column("Subject")
+  
+
+sleep_adj <- coef(sleep_reml)$Subject %>% 
+  magrittr::set_colnames(value = c("Intercept", "Slope")) %>% 
+  tibble::rownames_to_column("Subject")
+
+sleep_estimate <- tibble::tibble("Intercept" = coef(summary(sleep_reml))[1,1],
+                                 "Slope"     = coef(summary(sleep_reml))[2,1])
+```
+
 ```{r trellis, fig.align="center"}
 ## Trellis graph
 ## Displaying the linear regression per person
@@ -201,6 +233,25 @@ lattice::xyplot(Reaction ~ Days|Sx,
                            fontsize = list(text = 8, points = 10)),
                 scales = list(x = list(at = c(0:9), labels = c("0","1","2", "3", "4", "5", "6", "7", "8", "9"))))
 ```
+
+```{r}
+ggplot() +
+  geom_abline(data = sleep_coefs,
+              aes(intercept = Intercept, slope = Slope),
+              color = "darkorange") +
+  geom_abline(data = sleep_adj,
+              aes(intercept = Intercept, slope = Slope),
+              color = "darkcyan") +
+  geom_point(data = sleep,
+             aes(Days, Reaction),
+             alpha = .5) +
+  geom_abline(data = sleep_estimate,
+              aes(intercept = Intercept, slope = Slope),
+              color = "purple",
+              lty = 2) +
+  facet_wrap(~Subject, nrow = 3) +
+  scale_x_continuous(breaks = 0:3 * 3)
+```
 We performed a linear regression model on each subject based on the function:
 $$\text{reaction time (Reaction)} = b_0 + b_i* \text{Days} \tag{1}$$ 
 
@@ -211,22 +262,6 @@ The graph suggests that the slope and intercept of each subject's linear model a
 The linear regression lines fit the datapoints closely, suggesting that a linear model is appropriate to represent this dataset.
 
 ## Between subject variability
-```{r histograms, fig.align="center", message=FALSE, warning=FALSE}
-## Linear regression per participant of Reaction on Days
-sleep_coefs <- sleep %>% 
-  dplyr::group_by(Subject) %>% 
-  dplyr::do(coefs = coef(lm(Reaction ~ Days, data = .))) %>% 
-  tidyr::unnest_wider(coefs) %>% 
-  magrittr::set_colnames(c("Subject","Intercept","Slope"))
-
-r2 <- sleep %>% 
-  dplyr::group_by(Subject) %>% 
-  dplyr::do(r2 = summary(lm(Reaction ~ Days, data = .))$r.squared) %>% 
-  tidyr::unnest_wider(r2) %>% 
-  magrittr::set_colnames(c("Subject", "R_squared"))
-
-sleep_coefs <- sleep_coefs %>% left_join(r2)
-```
 ```{r fig.height = 2.5, fig.width = 7, fig.align="center"}
 hist_intercept <- ggplot(sleep_coefs) +
   geom_histogram(aes(Intercept),
@@ -307,9 +342,6 @@ $$Y_i \sim N(X_i\beta, Z_iDZ_i'+\Sigma_i) \tag{8}$$
 R uses the marginal model and our calcuation are based on that.
 
 ```{r}
-sleep_reml <- lmer(formula = Reaction ~ 1 + Days + (1 + Days|Subject),
-                   data = sleep)
-
 summary(sleep_reml)
 ```
 ## Values of the REML model
@@ -397,19 +429,7 @@ The decrease in AIC value also supports this conclusion.
 
 ### OLS vs LMM estimates
 ## D: Random effects covariance matrix
-```{r}
-sleep_ranef <- ranef(sleep_reml)$Subject %>% 
-  magrittr::set_colnames(value = c("Intercept", "Slope")) %>% 
-  tibble::rownames_to_column("Subject")
-  
 
-sleep_adj <- coef(sleep_reml)$Subject %>% 
-  magrittr::set_colnames(value = c("Intercept", "Slope")) %>% 
-  tibble::rownames_to_column("Subject")
-
-sleep_estimate <- tibble::tibble("Intercept" = coef(summary(sleep_reml))[1,1],
-                                 "Slope"     = coef(summary(sleep_reml))[2,1])
-```
 
 ```{r fig.height = 9, fig.width = 7, fig.align="center"}
 intercept_slope <- ggplot() +
