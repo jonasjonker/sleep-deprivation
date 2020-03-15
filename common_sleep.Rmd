@@ -1,10 +1,9 @@
 ---
 title: 'Patterns of performance degradation during sleep restriction of long distance
   truck drivers '
-author: "Laura Bogeart, Ben De Maesschalck, Bianca Florenzi, Jonas Jonker, Nina Rank, Alexandra Stanciu, Maria Tsontaki, Dries Vrijens"
+author: 
 output:
-  pdf_document: 
-    keep_tex: yes
+  pdf_document: default
   word_document: default
   html_document:
     df_print: paged
@@ -29,6 +28,8 @@ library(pander)
 
 ggplot2::theme_set(theme_classic())
 ```
+
+Laura Bogeart, Ben De Maesschalck, Bianca Florenzi, Jonas Jonker, Nina Rank, Alexandra Stanciu, Maria Tsontaki, Dries Vrijens
 
 
 ## Presentation of the case study
@@ -313,7 +314,7 @@ $b_{0i}$ and $b_{1i}$ describe the unexplained variability between subjects.
 
 The full model describes the evolution observed in the spaghetti plot and other descriptive plots of the data:
 $$\begin{aligned}
-Y_{ij} =& \gamma_{0} + b_{0i} + \gamma_{1}* \text{Days}_{ij} &&\text{fixed effects}\\
+Y_{ij} =& \gamma_{0} + \gamma_{1}* \text{Days}_{ij} &&\text{fixed effects}\\
           &+ b_{0i} + b_{1i}*\text{Days}_{ij} &&\text{random effect}\\
           &+ \epsilon_{ij} &&\text{error}
 \end{aligned} \tag{4}$$
@@ -388,14 +389,6 @@ $$
 \end{pmatrix} \tag{13}
 $$ 
 
-```{r}
-D.sleep = unclass(VarCorr(sleep_reml))$Subject 
-pander::pander(D.sleep)
-
-```
-
-The model is built on the assumption that the b's come from a normal distribution with mean 0. The residual variance in true intercept $\pi_{0i}$ across all individuals in the population is 611.9, the residual variance in true slope $\pi_{1i}$ across all individuals in the population is 35.08 and the residual covariance between the true intercept $\pi_{0i}$ and the slope $\pi_{1i}$ is 9.61, as seen on the table above. 
-
 
 Next step is to check if the values retrieved are actually significant. We therefore check if the number of days have a significant effect on the reaction time.
 
@@ -427,11 +420,29 @@ pander::pander(anova(sleep.full,sleep.intercept))
 We compared an intercept-only model with a model that includes Days to find the best model using MLE. 
 
 Looking at the outcome of the  likelihood ratio test with Anova, we can conclude that adding Days as covariate improves our model significantly. Days has a significant effect on the Reaction time with a p-value much smaller than 0.05.
+
 The decrease in AIC value also supports this conclusion.
 
-### OLS vs LMM estimates
-## D: Random effects covariance matrix
+## Testing the random effects 
 
+```{r}
+D.sleep = unclass(VarCorr(sleep_reml))$Subject 
+pander::pander(D.sleep)
+
+```
+
+Firstly, we check the random effects covariance matrix. 
+
+The model is built on the assumption that the b's come from a normal distribution with mean 0. The residual variance in true intercept $\pi_{0i}$ across all individuals in the population is 611.9, the residual variance in true slope $\pi_{1i}$ across all individuals in the population is 35.08 and the residual covariance between the true intercept $\pi_{0i}$ and the slope $\pi_{1i}$ is 9.61, as seen on the matrix above. 
+
+```{r}
+sleep.o <- ranef(sleep.reml)$Subject
+plot (sleep.o, main = "Random intercept (boi) vs random slope (b1i)")
+
+```
+Next, we plot the predicted random effects of the intercept $\b_{0i}$ compared to the random effects of the slope $\b_{1i}$. These random effects reflect how the evolution of the ith Subject deviates from the expected evolution. 
+
+### OLS vs LMM estimates
 
 ```{r fig.height = 4, fig.width = 7, fig.align="center"}
 intercept_slope <- ggplot() +
@@ -461,7 +472,7 @@ lm_indv <- ggplot(sleep) +
   geom_abline(data = sleep_estimate,
               aes(intercept = Intercept, slope = Slope),
               color = "purple",
-              size = 2) +
+              size = 1) +
   scale_x_continuous(breaks = 0:9) +
   labs(title = "OLS",
        y     = "Reaction time in ms",
@@ -479,7 +490,7 @@ lm_min_ranef <- ggplot(sleep) +
   geom_abline(data = sleep_estimate,
               aes(intercept = Intercept, slope = Slope),
               color = "purple",
-              size = 2) +
+              size = 1) +
     scale_x_continuous(breaks = 0:9) +
   labs(title = "LMM",
        y     = "Reaction time in ms",
@@ -491,9 +502,12 @@ lms <- cowplot::plot_grid(lm_indv, lm_min_ranef,
 cowplot::plot_grid(intercept_slope, lms,
                    nrow = 1, labels = c("A", ""))
 ```
-Figure A displays the shrinkage effect. If we fit a linear model respectively for each individual subject separately without taking into account the data of the whole population (orange dots), intercepts and slopes vary largely. If we fit a linear model for each subject including the data of the other subjects (blue dots) the values for intercept and slope move more closely to the average population intercept and slope (purple dot).
+Having checked the fixed and random effects of the overall linear regression model, we now compare the original subject-specific regression model to the multilevel regression model we used for the full data set. (i.e. comparing the Ordinary Least Squares (OLS) model to the Linear Mixed Model (LMM))
+
+Figure A displays the shrinkage effect of the LMM compared to OLS. If we fit a linear model to each individual subject separately (OLS model) without taking into account the data of the whole population (orange dots), intercepts and slopes vary largely. However, if we fit one linear model to all subjects (LMM, blue dots) the values for intercept and slope move more closely to the average population intercept and slope (purple dot).
+
 
 ## Conclusion
-From our analysis on the effect of sleep deprivation on the reaction time of long distance truck drivers, we can conclude that there is a linear relationship between the amount of days of sleep deprivation and the reaction time. More precisely, as the sleep deprivation proceeds, the time needed for a driver to respond to a visual stimulus is increasing by 10.47 ms (sd = 5.92) per day on average. The reaction time of people before they were sleep deprived averages 251.41 ms (sd = 24.74). 
+From our analysis on the effect of sleep deprivation on the reaction time of long distance truck drivers, we can conclude that there is a linear relationship between the amount of days of sleep deprivation and the reaction time. More precisely, as the sleep deprivation proceeds, the time needed for a driver to respond to a visual stimulus is increasing by 10.47 ms (sd = 5.92) per day, on average. The reaction time of people before they were sleep deprived averages 251.41 ms (sd = 24.74). 
 
 Several groups of drivers with different conditions of restricted sleep deprivation or a control group would additionally help us draw a more concrete conclusion. From the existing literature, mathematical models predicting alertness from preceding sleep-wake history typically involve four factors: sleep homeostasis, circadian rhythm, sleep inertia and neuromodulatory changes. Thus, we can conclude that there is a relation between reaction time and sleep deprivation, but it is not the only factor that can fully describe the relationship of sleep deprivation and the reaction time.
