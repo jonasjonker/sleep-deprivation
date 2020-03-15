@@ -454,11 +454,11 @@ lm_indv <- ggplot(sleep) +
              show.legend = FALSE, alpha = 0 ) +
   geom_abline(data = sleep_coefs,
               aes(intercept = Intercept, slope = Slope, alpha = Slope),
-              color = "darkcyan",
+              color = "darkorange",
               show.legend = FALSE) +
   geom_abline(data = sleep_estimate,
               aes(intercept = Intercept, slope = Slope),
-              color = "darkorange",
+              color = "purple",
               size = 2) +
   scale_x_continuous(breaks = 0:9) +
   labs(title = "OLS",
@@ -476,7 +476,7 @@ lm_min_ranef <- ggplot(sleep) +
               show.legend = FALSE) +
   geom_abline(data = sleep_estimate,
               aes(intercept = Intercept, slope = Slope),
-              color = "darkorange",
+              color = "purple",
               size = 2) +
     scale_x_continuous(breaks = 0:9) +
   labs(title = "LMM",
