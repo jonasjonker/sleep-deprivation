@@ -1,9 +1,10 @@
 ---
 title: 'Patterns of performance degradation during sleep restriction of long distance
   truck drivers '
-author: 
+author: "Laura Bogeart, Ben De Maesschalck, Bianca Florenzi, Jonas Jonker, Nina Rank, Alexandra Stanciu, Maria Tsontaki, Dries Vrijens"
 output:
-  pdf_document: default
+  pdf_document: 
+    keep_tex: yes
   word_document: default
   html_document:
     df_print: paged
@@ -28,9 +29,6 @@ library(pander)
 
 ggplot2::theme_set(theme_classic())
 ```
-
-Laura Bogeart, Ben De Maesschalck, Bianca Florenzi, Jonas Jonker, Nina Rank, Alexandra Stanciu, Maria Tsontaki, Dries Vrijens
-
 
 ## Presentation of the case study
 We are analysing the effect of sleep deprivation on reaction time of long distance truck drivers. There are 18 subjects in the dataset and for each subject, the reaction time was measured for 10 days. The subjects were allowed only a limited amount of sleep for these 10 subsequent days. Each subject's reaction time was measured several times on each day of the trial and an average was taken. Reaction time is measured with a psychomotor vigilance task (PVT), which measures the speed with which subjects respond to a visual stimulus.
@@ -233,7 +231,7 @@ lattice::xyplot(Reaction ~ Days|Sx,
 ```
 
 We performed a linear regression model on each subject based on the function:
-$$\text{reaction time (Reaction)} = b_0 + b_i* \text{Days}
+$$\text{reaction time (Reaction)} = b_0 + b_i* \text{Days}$$
 
 We then created a trellis graph to visualise the intercepts and slopes of these subject-specific linear regression models.   
 
@@ -278,13 +276,13 @@ Level 1 model explains the evolution of Reaction time for each subject:
 $$\begin{aligned}
 Y_{ij}&= \pi_{0i} + \pi_{1i}* \text{Days}_{ij} && \text{how do individuals evolve} \\
           &+ \epsilon_{ij} &&\text{how the individuals deviate from their own evolution}
-\end{aligned}
+\end{aligned}$$
 
 Level 2 model explains why the Subjects differ from each other:
 $$\begin{aligned}
 \pi_{0i} &= \gamma_{0} + b_{0i} && \text{explains the intercept} \\
 \pi_{1i} &= \gamma_{1} + b_{1i} && \text{explains the slope}
-\end{aligned}
+\end{aligned}$$
 
 
 $\sigma_{0}^{2}$ - Level 2 residual variance in true intercept $\pi_{0i}$ across all individuals in the population
@@ -299,7 +297,7 @@ $$\begin{aligned}
 Y_{ij} =& \gamma_{0} + \gamma_{1}* \text{Days}_{ij} &&\text{fixed effects}\\
           &+ b_{0i} + b_{1i}*\text{Days}_{ij} &&\text{random effect}\\
           &+ \epsilon_{ij} &&\text{error}
-\end{aligned}
+\end{aligned}$$
 
 $$
 \begin{cases}
@@ -310,16 +308,16 @@ Y_{ij} &= \pi_{0i} + \pi_{1i}* \text{Days}_{ij} + \epsilon_{ij} \\
 $$
 
 Underneath is the average evolution of the whole population:
-$$E(Y_{ij}) = \gamma_{0} + \gamma_{1}* \text{Days}_{ij}
+$$E(Y_{ij}) = \gamma_{0} + \gamma_{1}* \text{Days}_{ij}$$
 
 The general linear mixed model is given by:
 $$\begin{cases}
 Y_i = X_i\beta + Z_i b_i + \epsilon_i \\
 b_i \sim N(0,D)\\
 \epsilon_i \sim N(0,\Sigma_i)
-\end{cases}
+\end{cases}$$
 
-$$Y_i \sim N(X_i\beta, Z_iDZ_i'+\Sigma_i)
+$$Y_i \sim N(X_i\beta, Z_iDZ_i'+\Sigma_i)$$
 
 R uses the marginal model and our calcuation are based on that.
 
@@ -336,7 +334,7 @@ $$\begin{aligned}
 \sigma_{0}^{2} &= 611.90 \\
 \sigma_{1}^{2} &= 35.08 \\
 corr(b_{0i}, b_{1i}) &= 0.07
-\end{aligned}
+\end{aligned}$$
 
 $$
 \begin{cases}
@@ -346,7 +344,7 @@ Y_{ij}   &= \pi_{0i} + \pi_{1i}* Days_{ij} + \epsilon_{ij} \\
 \end{cases}
 $$
 
-$$\epsilon_{ij} \sim N(0,25.59^2)
+$$\epsilon_{ij} \sim N(0,25.59^2)$$
 
 $$
 \begin{pmatrix} b_{0i} \\ b_{1i} \end{pmatrix}
@@ -418,11 +416,11 @@ Firstly, we check the random effects covariance matrix.
 The model is built on the assumption that the b's come from a normal distribution with mean 0. The residual variance in true intercept $\pi_{0i}$ across all individuals in the population is 611.9, the residual variance in true slope $\pi_{1i}$ across all individuals in the population is 35.08 and the residual covariance between the true intercept $\pi_{0i}$ and the slope $\pi_{1i}$ is 9.61, as seen on the matrix above. 
 
 ```{r}
-sleep.o <- ranef(sleep.reml)$Subject
+sleep.o <- ranef(sleep_reml)$Subject
 plot (sleep.o, main = "Random intercept (boi) vs random slope (b1i)")
 
 ```
-Next, we plot the predicted random effects of the intercept $\b_{0i}$ compared to the random effects of the slope $\b_{1i}$. These random effects reflect how the evolution of the ith Subject deviates from the expected evolution. 
+Next, we plot the predicted random effects of the intercept $b_{0i}$ compared to the random effects of the slope $b_{1i}$. These random effects reflect how the evolution of the ith Subject deviates from the expected evolution. 
 
 ### OLS vs LMM estimates
 
