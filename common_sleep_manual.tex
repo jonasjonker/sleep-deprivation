@@ -405,33 +405,47 @@ b_i \sim N(0,D)\\
 
 R uses the marginal model and our calcuation are based on that.
 
-\begin{verbatim}
-## Linear mixed model fit by REML ['lmerMod']
-## Formula: Reaction ~ 1 + Days + (1 + Days | Subject)
-##    Data: sleep
-## 
-## REML criterion at convergence: 1743.6
-## 
-## Scaled residuals: 
-##     Min      1Q  Median      3Q     Max 
-## -3.9536 -0.4634  0.0231  0.4633  5.1793 
-## 
-## Random effects:
-##  Groups   Name        Variance Std.Dev. Corr
-##  Subject  (Intercept) 611.90   24.737       
-##           Days         35.08    5.923   0.07
-##  Residual             654.94   25.592       
-## Number of obs: 180, groups:  Subject, 18
-## 
-## Fixed effects:
-##             Estimate Std. Error t value
-## (Intercept)  251.405      6.824  36.843
-## Days          10.467      1.546   6.771
-## 
-## Correlation of Fixed Effects:
-##      (Intr)
-## Days -0.138
-\end{verbatim}
+\begin{longtable}[]{@{}lrrrrr@{}}
+\toprule
+& \multicolumn{4}{c}{Linear mixed model fit by REML} \tabularnewline
+\midrule
+\tabularnewline
+formula: & \multicolumn{4}{c}{$Reaction \sim 1 + Days + (1 + Days | Subject)$} \tabularnewline
+\tabularnewline
+\multicolumn{3}{c}{REML criterion at convergence:} & 1743.6 \tabularnewline
+\tabularnewline
+\multicolumn{5}{c}{Scaled residuals}\tabularnewline
+\midrule
+Min & 1Q & Median & 3Q & Max \tabularnewline
+\midrule
+-3.9536 & -0.4634 & 0.0231 & 0.4633 & 5.1793 \tabularnewline
+\midrule
+\tabularnewline
+\multicolumn{5}{c}{Random effects}\tabularnewline
+\midrule
+Groups & Name & Variance & Std.Dev. & Corr \tabularnewline
+\midrule
+Subject & Intercept & 611.90 & 24.737 &        \tabularnewline
+        & Days      & 35.08  & 5.923  & 0.07   \tabularnewline
+        & Residual  &        & 654.94 & 25.592 \tabularnewline
+\midrule
+\tabularnewline
+\multicolumn{5}{c}{Fixed effects}\tabularnewline
+\midrule
+        & Estimate  & Std. Error & t value &  \tabularnewline
+\midrule
+   & Intercept & 251.405 & 6.824 &  36.843 \tabularnewline
+   & Days      & 10.467  & 1.546 & 6.771   \tabularnewline
+\midrule
+\tabularnewline
+\multicolumn{5}{c}{Correlation of Fixed Effects}\tabularnewline
+\midrule
+& Intr \tabularnewline
+\midrule
+Days & -0.138 \tabularnewline
+\bottomrule
+\end{longtable}
+
 
 \hypertarget{values-of-the-reml-model}{%
 \subsection{Values of the REML model}\label{values-of-the-reml-model}}
