@@ -38,7 +38,7 @@ Our research questions is: Is there any relation between reaction time and the n
 ## Exploratory analysis
 ```{r data_wrangling}
 sleep <- read.table('sleep.txt')
-pander::pander(head(sleep, 12))
+pander::pander(head(sleep, 10))
 ```
 This dataset contains multiple measurements for each subject on consecutive days, with as response variable the continuous variable reaction time and explanatory variable days. Since there are 10 measurements for each subject, it is a longitudinal study. The dataset of 18 subjects is balanced and complete with an equal amount of measurements for each subject (i.e. no missing data).
 
@@ -424,13 +424,12 @@ Next, we plot the predicted random effects of the intercept $b_{0i}$ compared to
 
 ### OLS vs LMM estimates
 
-```{r fig.height = 4, fig.width = 7, fig.align="center"}
-intercept_slope <- ggplot() +
+```{r fig.height = 3, fig.width = 4, fig.align="center"}
+ggplot() +
     geom_segment(aes(x = sleep_coefs$Slope,
                      y = sleep_coefs$Intercept,
                      xend    = sleep_adj$Slope,
                      yend    = sleep_adj$Intercept),
-
                alpha    = .2,
                arrow    = arrow()) +
   geom_point(data = sleep_coefs, aes(Slope, Intercept), color = "darkorange") + 
@@ -441,46 +440,6 @@ intercept_slope <- ggplot() +
   labs(main = "Individual regression intercept vs slope",
        y    = "Intercept",
        x    = "Slope")
-
-lm_indv <- ggplot(sleep) +
-  geom_point(aes(Days, Reaction, colour = factor(Subject)),
-             show.legend = FALSE, alpha = 0 ) +
-  geom_abline(data = sleep_coefs,
-              aes(intercept = Intercept, slope = Slope, alpha = Slope),
-              color = "darkorange",
-              show.legend = FALSE) +
-  geom_abline(data = sleep_estimate,
-              aes(intercept = Intercept, slope = Slope),
-              color = "purple",
-              size = 1) +
-  scale_x_continuous(breaks = 0:9) +
-  labs(title = "OLS",
-       y     = "Reaction time in ms",
-       x     = "Days")
-  
-lm_min_ranef <- ggplot(sleep) +
-  geom_point(aes(Days, Reaction, colour = factor(Subject)),
-             show.legend = FALSE, alpha = 0 ) +
-  geom_abline(data = sleep_adj,
-              aes(intercept = Intercept,
-                  slope = Slope,
-                  alpha = Slope),
-              color = "darkcyan",
-              show.legend = FALSE) +
-  geom_abline(data = sleep_estimate,
-              aes(intercept = Intercept, slope = Slope),
-              color = "purple",
-              size = 1) +
-    scale_x_continuous(breaks = 0:9) +
-  labs(title = "LMM",
-       y     = "Reaction time in ms",
-       x     = "Days")
-
-lms <- cowplot::plot_grid(lm_indv, lm_min_ranef,
-                          ncol = 1, labels = c("B", "C"))
-
-cowplot::plot_grid(intercept_slope, lms,
-                   nrow = 1, labels = c("A", ""))
 ```
 Having checked the fixed and random effects of the overall linear regression model, we now compare the original subject-specific regression model to the multilevel regression model we used for the full data set. (i.e. comparing the Ordinary Least Squares (OLS) model to the Linear Mixed Model (LMM))
 
