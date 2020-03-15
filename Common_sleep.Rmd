@@ -393,7 +393,7 @@ sleep.o <- ranef(sleep.reml)$Subject
 head(sleep.o,10)
 ```
 
-This table preditcs the random effect for each subject.Almost all values lay within two standard devation from the mean.
+This table preditcs the random effect for each subject. Almost all values lay within two standard devation from the mean.
 
 ```{r}
 
