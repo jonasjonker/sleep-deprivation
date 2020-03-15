@@ -1,9 +1,10 @@
 ---
 title: 'Patterns of performance degradation during sleep restriction of long distance
   truck drivers '
-author: 
+author: "Laura Bogeart, Ben De Maesschalck, Bianca Florenzi, Jonas Jonker, Nina Rank, Alexandra Stanciu, Maria Tsontaki, Dries Vrijens"
 output:
-  pdf_document: default
+  pdf_document: 
+    keep_tex: yes
   word_document: default
   html_document:
     df_print: paged
@@ -28,8 +29,6 @@ library(pander)
 
 ggplot2::theme_set(theme_classic())
 ```
-
-Laura Bogeart, Ben De Maesschalck, Bianca Florenzi, Jonas Jonker, Nina Rank, Alexandra Stanciu, Maria Tsontaki, Dries Vrijens
 
 
 ## Presentation of the case study
