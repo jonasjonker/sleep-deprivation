@@ -139,7 +139,7 @@ colnames(overview) <- c('Days', 'Mean', 'SD', 'Var', 'n')
 knitr::kable(round(overview, 2), "pandoc")
 ```
 
-The calculations of the mean, standard deviation and variance of the reaction time for each day of all subjects further support our exploratory plots: we observe an overall increase in the mean, variance and standard deviation with more days of sleep deprivation. (note that for day 2 and 7 the variance and standard deviation decrease compared to the day before. It continues to increase afterwards, however.) 
+The calculations of the mean, standard deviation and variance of the reaction time for each day of all subjects further support our exploratory plots: we observe an overall increase in the mean, variance and standard deviation with more days of sleep deprivation. (Note that for day 2 and 7 the variance and standard deviation decrease compared to the dprevious day. It continues to increase afterwards, however). 
 
 
 ## Correlation
@@ -180,7 +180,7 @@ ggplot(melt(cors), aes(Var1,Var2, fill = value)) +
 
 We used the Shapiro - Wilk test to check for the normality of the reaction times per day. The test revealed a non normal distribution of day 9. Thus, we performed the spearman correlation method instead of pearson to check for a correlation of the reaction times between days. 
 
-Looking at the correlation matrix, there is a correlation higher than 0.6 between subsequent days (e.g. between Day 3 and 4, between Day 8 and 9, ...). However, the further the days are apart, the lower the correlation (e.g. low correlation between Day 1 and Day 8). 
+Looking at the correlation matrix, there is a correlation higher than 0.6 between subsequent days (e.g. between Day 3 and 4, between Day 8 and 9, etc). However, the further the days are apart, the lower the correlation (e.g. low correlation between Day 1 and Day 8). 
 
 ## Regression per person
 ```{r trellis, fig.align="center"}
