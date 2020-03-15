@@ -118,7 +118,7 @@ errp <- ggplot2::ggplot(average_reaction_time) +
   geom_errorbar(aes(Days, ymin = lower_reaction_time, ymax = upper_reaction_time, colour = factor(Days)),
                 size  = .4,
                 show.legend = FALSE) +
-    labs(title = "Mean evolution with errorbars",
+    labs(title = "Mean evolution",
        x       = "Days of sleep deprivation",
        y       =  NULL) +
   scale_x_continuous(breaks = 0:9)
@@ -139,7 +139,7 @@ colnames(overview) <- c('Days', 'Mean', 'SD', 'Var', 'n')
 knitr::kable(round(overview, 2), "pandoc")
 ```
 
-The calculations of the mean, standard deviation and variance of the reaction time for each day of all subjects further support our exploratory plots: we observe an overall increase in the mean, variance and standard deviation with more days of sleep deprivation. (Note that for day 2 and 7 the variance and standard deviation decrease compared to the dprevious day. It continues to increase afterwards, however). 
+The calculations of the mean, standard deviation and variance of the reaction time for each day of all subjects further support our exploratory plots: we observe an overall increase in the mean, variance and standard deviation with more days of sleep deprivation. (Note that for day 2 and 7 the variance and standard deviation decrease compared to the previous day. It continues to increase afterwards, however). 
 
 
 ## Correlation
@@ -395,11 +395,12 @@ pander::pander(D.sleep)
 
 ```
 
-The model is built on the assumption that the b's come from a normal distribution with mean 0. The residual variance in true intercept $\pi_{0i}$ across all individuals in the population is 611.9, the residual variance in true slope $\pi_{1i}$ across all individuals in the population is 35.08 and the residual covariance between the true intercept $\pi_{0i}$ and the slope $\pi_{1i}$ is 9.61.
+The model is built on the assumption that the b's come from a normal distribution with mean 0. The residual variance in true intercept $\pi_{0i}$ across all individuals in the population is 611.9, the residual variance in true slope $\pi_{1i}$ across all individuals in the population is 35.08 and the residual covariance between the true intercept $\pi_{0i}$ and the slope $\pi_{1i}$ is 9.61, as seen on the table above. 
 
 
-Next step is to check if the values we retrieved are actually significant. We therefore check if the number of days have a significant effect on the reaction time.
-We tested the fixed effects with Bootstrap and profile likelihood as the sample size was too small to use a Wald test. We checked different possible models using a likelihood ratio test.
+Next step is to check if the values retrieved are actually significant. We therefore check if the number of days have a significant effect on the reaction time.
+
+In the next chapter, we tested the fixed effects with Bootstrap and profile likelihood as the sample size was too small to use a Wald test. Next, we checked and compared different possible models using a likelihood ratio test.
 
 
 ## Testing fixed effects - with bootstrap
@@ -415,7 +416,7 @@ pander::pander(confint(sleep_reml,
         level     = 0.95,
         oldNames  = F))
 ```
-The confidence intervals of the intercept and Days do not include 0. Therefore, both of them have a significant effect on the Reaction time.
+The confidence intervals of the intercept and Days do not include 0. Therefore, both have a significant effect on the Reaction time.
 
 ## Likelihood ratio test with Anova
 ```{r}
@@ -424,7 +425,9 @@ sleep.intercept <- lmer(Reaction~1+(1|Subject), REML = FALSE, data = sleep)
 pander::pander(anova(sleep.full,sleep.intercept))
 
 ```
-We compared an intercept-only model with a model that includes Days to find the best model using MLE. Looking at the outcome of the  likelihood ratio test with Anova, we can conclude that adding Days as covariate improves our model significantly as it has a significant effect on the Reaction time with a p-value much smaller than 0.05.
+We compared an intercept-only model with a model that includes Days to find the best model using MLE. 
+
+Looking at the outcome of the  likelihood ratio test with Anova, we can conclude that adding Days as covariate improves our model significantly. Days has a significant effect on the Reaction time with a p-value much smaller than 0.05.
 The decrease in AIC value also supports this conclusion.
 
 ### OLS vs LMM estimates
