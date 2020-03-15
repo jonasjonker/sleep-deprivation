@@ -264,15 +264,17 @@ The linear regression lines fit the datapoints closely, suggesting that a linear
 hist_intercept <- ggplot(sleep_coefs) +
   geom_histogram(aes(Intercept),
                  bins = 6,
-                 fill = "darkcyan")
+                 fill = "darkcyan") 
 hist_slope <- ggplot(sleep_coefs) +
   geom_histogram(aes(Slope),
                  bins = 6,
-                 fill = "darkcyan")
+                 fill = "darkcyan") +
+    scale_x_continuous(breaks = -1:4 * 5)
 hist_rsquared <- ggplot(sleep_coefs) +
   geom_histogram(aes(R_squared),
-                 bins = 6,
-                 fill = "darkcyan")
+                 bins = 5,
+                 fill = "darkcyan") +
+  scale_x_continuous(breaks = 0:5 / 5)
 
 cowplot::plot_grid(hist_intercept, hist_slope, hist_rsquared, 
                    nrow = 1,
@@ -432,7 +434,7 @@ The decrease in AIC value also supports this conclusion.
 ## D: Random effects covariance matrix
 
 
-```{r fig.height = 9, fig.width = 7, fig.align="center"}
+```{r fig.height = 4, fig.width = 7, fig.align="center"}
 intercept_slope <- ggplot() +
     geom_segment(aes(x = sleep_coefs$Slope,
                      y = sleep_coefs$Intercept,
@@ -485,14 +487,12 @@ lm_min_ranef <- ggplot(sleep) +
        x     = "Days")
 
 lms <- cowplot::plot_grid(lm_indv, lm_min_ranef,
-                          nrow = 1, labels = c("B", "C"))
+                          ncol = 1, labels = c("B", "C"))
 
 cowplot::plot_grid(intercept_slope, lms,
-                   ncol = 1, labels = c("A", ""))
+                   nrow = 1, labels = c("A", ""))
 ```
 Figure A displays the shrinkage effect. If we fit a linear model respectively for each individual subject separately without taking into account the data of the whole population (orange dots), intercepts and slopes vary largely. If we fit a linear model for each subject including the data of the other subjects (blue dots) the values for intercept and slope move more closely to the average population intercept and slope (purple dot).
-
-
 
 ## Conclusion
 From our analysis on the effect of sleep deprivation on the reaction time of long distance truck drivers, we can conclude that there is a linear relationship between the amount of days of sleep deprivation and the reaction time. More precisely, as the sleep deprivation proceeds, the time needed for a driver to respond to a visual stimulus is increasing by 10.47 ms (sd = 5.92) per day on average. The reaction time of people before they were sleep deprived averages 251.41 ms (sd = 24.74). 
