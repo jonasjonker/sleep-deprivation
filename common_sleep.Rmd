@@ -3,10 +3,10 @@ title: 'Patterns of performance degradation during sleep restriction of long dis
   truck drivers '
 author: 
 output:
+  pdf_document: default
+  word_document: default
   html_document:
     df_print: paged
-  word_document: default
-  pdf_document: default
   md_document:
     variant: markdown_github
 ---
@@ -227,25 +227,22 @@ r2 <- sleep %>%
 
 sleep_coefs <- sleep_coefs %>% left_join(r2)
 ```
-```{r}
+```{r fig.height = 2.5, fig.width = 7, fig.align="center"}
 hist_intercept <- ggplot(sleep_coefs) +
   geom_histogram(aes(Intercept),
                  bins = 6,
-                 fill = "darkcyan",
-                 color = "darkgrey")
+                 fill = "darkcyan")
 hist_slope <- ggplot(sleep_coefs) +
   geom_histogram(aes(Slope),
                  bins = 6,
-                 fill = "darkcyan",
-                 color = "darkgrey")
+                 fill = "darkcyan")
 hist_rsquared <- ggplot(sleep_coefs) +
   geom_histogram(aes(R_squared),
                  bins = 6,
-                 fill = "darkcyan",
-                 color = "darkgrey")
+                 fill = "darkcyan")
 
 cowplot::plot_grid(hist_intercept, hist_slope, hist_rsquared, 
-                   ncol = 1,
+                   nrow = 1,
                    labels = "AUTO")
 ```
 
