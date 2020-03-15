@@ -505,14 +505,14 @@ bootstrap}\label{testing-fixed-effects---with-bootstrap}}
 \midrule
 \endhead
 \begin{minipage}[t]{0.44\columnwidth}\centering
-\textbf{sd\_(Intercept)\textbar Subject}\strut
+\textbf{sd\_Intercept\textbar Subject}\strut
 \end{minipage} & \begin{minipage}[t]{0.13\columnwidth}\centering
 11.32\strut
 \end{minipage} & \begin{minipage}[t]{0.13\columnwidth}\centering
 35.79\strut
 \end{minipage}\tabularnewline
 \begin{minipage}[t]{0.44\columnwidth}\centering
-\textbf{cor\_Days.(Intercept)\textbar Subject}\strut
+\textbf{cor\_Days.Intercept\textbar Subject}\strut
 \end{minipage} & \begin{minipage}[t]{0.13\columnwidth}\centering
 -0.4786\strut
 \end{minipage} & \begin{minipage}[t]{0.13\columnwidth}\centering
@@ -533,7 +533,7 @@ bootstrap}\label{testing-fixed-effects---with-bootstrap}}
 28.51\strut
 \end{minipage}\tabularnewline
 \begin{minipage}[t]{0.44\columnwidth}\centering
-\textbf{(Intercept)}\strut
+\textbf{Intercept}\strut
 \end{minipage} & \begin{minipage}[t]{0.13\columnwidth}\centering
 239\strut
 \end{minipage} & \begin{minipage}[t]{0.13\columnwidth}\centering
@@ -561,14 +561,14 @@ bootstrap}\label{testing-fixed-effects---with-bootstrap}}
 \midrule
 \endhead
 \begin{minipage}[t]{0.44\columnwidth}\centering
-\textbf{sd\_(Intercept)\textbar Subject}\strut
+\textbf{sd\_Intercept\textbar Subject}\strut
 \end{minipage} & \begin{minipage}[t]{0.13\columnwidth}\centering
 14.38\strut
 \end{minipage} & \begin{minipage}[t]{0.13\columnwidth}\centering
 37.72\strut
 \end{minipage}\tabularnewline
 \begin{minipage}[t]{0.44\columnwidth}\centering
-\textbf{cor\_Days.(Intercept)\textbar Subject}\strut
+\textbf{cor\_Days.Intercept\textbar Subject}\strut
 \end{minipage} & \begin{minipage}[t]{0.13\columnwidth}\centering
 -0.4815\strut
 \end{minipage} & \begin{minipage}[t]{0.13\columnwidth}\centering
@@ -589,7 +589,7 @@ bootstrap}\label{testing-fixed-effects---with-bootstrap}}
 28.86\strut
 \end{minipage}\tabularnewline
 \begin{minipage}[t]{0.44\columnwidth}\centering
-\textbf{(Intercept)}\strut
+\textbf{Intercept}\strut
 \end{minipage} & \begin{minipage}[t]{0.13\columnwidth}\centering
 237.7\strut
 \end{minipage} & \begin{minipage}[t]{0.13\columnwidth}\centering
@@ -608,12 +608,7 @@ bootstrap}\label{testing-fixed-effects---with-bootstrap}}
 The confidence intervals of the intercept and Days do not include 0.
 Therefore, both have a significant effect on the Reaction time.
 
-\hypertarget{likelihood-ratio-test-with-anova}{%
-\subsection{Likelihood ratio test with
-Anova}\label{likelihood-ratio-test-with-anova}}
-
 \begin{longtable}[]{@{}cccccccc@{}}
-\caption{Data: sleep (continued below)}\tabularnewline
 \toprule
 \begin{minipage}[b]{0.22\columnwidth}\centering
 ~\strut
@@ -713,6 +708,10 @@ NA\strut
 \bottomrule
 \end{longtable}
 
+\hypertarget{likelihood-ratio-test-with-anova}{%
+\subsection{Likelihood ratio test with
+Anova}\label{likelihood-ratio-test-with-anova}}
+
 We compared an intercept-only model with a model that includes Days to
 find the best model using MLE.
 
@@ -723,23 +722,19 @@ smaller than 0.05.
 
 The decrease in AIC value also supports this conclusion.
 
-\hypertarget{testing-the-random-effects}{%
-\subsection{Testing the random
-effects}\label{testing-the-random-effects}}
-
 \begin{longtable}[]{@{}ccc@{}}
 \toprule
 \begin{minipage}[b]{0.23\columnwidth}\centering
 ~\strut
 \end{minipage} & \begin{minipage}[b]{0.18\columnwidth}\centering
-(Intercept)\strut
+Intercept\strut
 \end{minipage} & \begin{minipage}[b]{0.10\columnwidth}\centering
 Days\strut
 \end{minipage}\tabularnewline
 \midrule
 \endhead
 \begin{minipage}[t]{0.23\columnwidth}\centering
-\textbf{(Intercept)}\strut
+\textbf{Intercept}\strut
 \end{minipage} & \begin{minipage}[t]{0.18\columnwidth}\centering
 611.9\strut
 \end{minipage} & \begin{minipage}[t]{0.10\columnwidth}\centering
@@ -755,6 +750,10 @@ Days\strut
 \bottomrule
 \end{longtable}
 
+\hypertarget{testing-the-random-effects}{%
+\subsection{Testing the random
+effects}\label{testing-the-random-effects}}
+
 Firstly, we check the random effects covariance matrix.
 
 The model is built on the assumption that the b's come from a normal
@@ -765,7 +764,7 @@ the population is 35.08 and the residual covariance between the true
 intercept \(\pi_{0i}\) and the slope \(\pi_{1i}\) is 9.61, as seen on
 the matrix above.
 
-\includegraphics{common_sleep_files/figure-latex/unnamed-chunk-8-1.pdf}
+
 Next, we plot the predicted random effects of the intercept \(b_{0i}\)
 compared to the random effects of the slope \(b_{1i}\). These random
 effects reflect how the evolution of the ith Subject deviates from the
@@ -773,8 +772,6 @@ expected evolution.
 
 \hypertarget{ols-vs-lmm-estimates}{%
 \subsubsection{OLS vs LMM estimates}\label{ols-vs-lmm-estimates}}
-
-\begin{center}\includegraphics{common_sleep_files/figure-latex/unnamed-chunk-9-1} \end{center}
 
 Having checked the fixed and random effects of the overall linear
 regression model, we now compare the original subject-specific
@@ -789,6 +786,10 @@ dots), intercepts and slopes vary largely. However, if we fit one linear
 model to all subjects (LMM, blue dots) the values for intercept and
 slope move more closely to the average population intercept and slope
 (purple dot).
+
+\begin{center}
+\includegraphics[width=0.8\textwidth]{common_sleep_files/figure-latex/unnamed-chunk-8-1.pdf}
+\end{center}
 
 \hypertarget{conclusion}{%
 \subsection{Conclusion}\label{conclusion}}
@@ -811,5 +812,7 @@ neuromodulatory changes. Thus, we can conclude that there is a relation
 between reaction time and sleep deprivation, but it is not the only
 factor that can fully describe the relationship of sleep deprivation and
 the reaction time.
+
+\begin{center}\includegraphics{common_sleep_files/figure-latex/unnamed-chunk-9-1} \end{center}
 
 \end{document}
