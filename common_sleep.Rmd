@@ -31,6 +31,7 @@ ggplot2::theme_set(theme_classic())
 ```
 
 ## Presentation of the case study
+
 We are analysing the effect of sleep deprivation on reaction time of long distance truck drivers. There are 18 subjects in the dataset and for each subject, the reaction time was measured for 10 days. The subjects were allowed only a limited amount of sleep for these 10 subsequent days. Each subject's reaction time was measured several times on each day of the trial and an average was taken. Reaction time is measured with a psychomotor vigilance task (PVT), which measures the speed with which subjects respond to a visual stimulus.
 
 Our research questions is: Is there any relation between reaction time and the number of days of sleep deprivation?
@@ -94,6 +95,8 @@ boxp <- ggplot(sleep) +
        x       = "Days of sleep deprivation",
        y       = "Reaction time in ms") +
   scale_x_continuous(breaks = 0:9)     
+```
+
 
 viol <- ggplot(sleep) + 
   geom_violin(aes(Days, Reaction, colour = factor(Days)),

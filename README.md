@@ -69,3 +69,39 @@ git pull
 - [Introduction to Markdown](https://r4ds.had.co.nz/r-markdown.html)
 - [markdown cheatsheet](https://guides.github.com/features/mastering-markdown/)
 - [paper on sleep deprivation](https://onlinelibrary.wiley.com/doi/epdf/10.1046/j.1365-2869.2003.00337.x)
+- [tutorial that uses lme4 and our dataset](https://rpubs.com/tjmahr/ggplot2-lme4-facet-plot)
+
+
+
+
+Taks on lasta meeting:
+1.Dris
+Spaghetti plot
+Box plot
+Summary
+
+2.Maria
+Mean Evolution
+Correlation
+Regression per person
+
+3.Biana
+Between subject variability
+
+4.Alexandra
+Fitting the model - with REML
+
+5.Nina
+Testing fixed effects - with bootstrap
+likelihood ratio test with anova
+
+6.Laura/Nina
+OLS vs LMM estimates
+
+7.Ben 
+Full model + conclusion
+
+8. Jonas
+In the report: fix the TODOS and make it fit in 10 pages max
+
+
