@@ -33,11 +33,9 @@ Laura Bogeart, Ben De Maesschalck, Bianca Florenzi, Jonas Jonker, Nina Rank, Ale
 
 
 ## Presentation of the case study
-We are analysing the effect of sleep deprivation on reaction time of long distance truck drivers. There are 18 subjects in the dataset and for each subject, the reaction time was measured for 10 days. The subjects were allowed only a limited amount of sleep for these 10 subsequent days. Each subject's reaction time was measured several times on each day of the trial and an average was taken. 
+We are analysing the effect of sleep deprivation on reaction time of long distance truck drivers. There are 18 subjects in the dataset and for each subject, the reaction time was measured for 10 days. The subjects were allowed only a limited amount of sleep for these 10 subsequent days. Each subject's reaction time was measured several times on each day of the trial and an average was taken. Reaction time is measured with a psychomotor vigilance task (PVT), which measures the speed with which subjects respond to a visual stimulus.
 
-Reaction time is measured with a psychomotor vigilance task (PVT), which measures the speed with which subjects respond to a visual stimulus.
-
-Is there any relation between reaction time and the number of days of sleep deprivation?
+Our research questions is: Is there any relation between reaction time and the number of days of sleep deprivation?
 
 ## Exploratory analysis
 ```{r data_wrangling}
