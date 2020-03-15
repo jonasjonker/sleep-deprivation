@@ -168,7 +168,7 @@ pairs(sleep.resh[, 2:11])
 cors <- cor(sleep.resh[, 2:11], method = 'spearman')
 
 ggplot(melt(cors), aes(Var1,Var2, fill = value)) +
-  geom_raster() +
+  geom_tile() +
   scale_x_discrete(labels = 0:9) +
   scale_y_discrete(labels = 0:9) +
   labs(title = "reaction correlation between days",
