@@ -1,0 +1,41 @@
+---
+title: "R Notebook"
+output: rmarkdown::github_document
+---
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Ctrl+Shift+Enter*. 
+
+```{r project setup, include=FALSE}
+library(knitr)     # convert notebooks to other formats like html and markdown
+library(cowplot)   # for plotting multiple plots in one figure
+library(tidyverse) # for tidy r code and data
+
+```
+
+
+```{r data wrangling, echo=TRUE, paged.print=TRUE}
+sleep <- readr::read_tsv("sleep.txt",
+                         col_names    = c("id", "reaction", "days", "subject"),
+                         col_types    = cols(
+                             reaction = col_double(),
+                             days     = col_factor(),
+                             subject  = col_factor()),
+                         skip         = 1) %>%
+        dplyr::select(reaction, days, subject)
+```
+
+```{r echo=FALSE}
+knitr::kable(sleep[1:5,], caption = "first 5 entries sleep dataset. ")
+```
+
+```{r first plot, echo=FALSE}
+plt1 <- ggplot(sleep) + 
+          geom_line(aes(x=days, y=reaction, group=subject, color=subject))
+plt2 <- ggplot(sleep) + 
+          geom_boxplot(aes(x=days, y=reaction))
+
+cowplot::plot_grid(plt1, plt2, labels = c('A', 'B'))
+```
+
+

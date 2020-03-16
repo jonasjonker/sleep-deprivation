@@ -37,7 +37,7 @@
 \IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
 \hypersetup{
   pdftitle={Patterns of performance degradation during sleep restriction of long distance truck drivers},
-  pdfauthor={Laura Bogeart (r0781002), Ben De Maesschalck - r0624449, Bianca Florenzi - r0777934, Jonas Jonker - r0781766, Nina Rank - r0779474, Alexandra Stanciu - r0776676, Maria Tsontaki - r0771195, Dries Vrijens - r0624449},
+  pdfauthor={Laura Bogeart, Ben De Maesschalck, Bianca Florenzi, Jonas Jonker, Nina Rank, Alexandra Stanciu, Maria Tsontaki, Dries Vrijens},
   hidelinks,
   pdfcreator={LaTeX via pandoc}}
 \urlstyle{same} % disable monospaced font for URLs
@@ -87,7 +87,8 @@
 
 \title{Patterns of performance degradation during sleep restriction of
 long distance truck drivers}
-\author{Laura Bogeart (r0781002), Ben De Maesschalck (r0624449), Bianca Florenzi (r0777934), Jonas Jonker (r0781766), Nina Rank (r0779474), Alexandra Stanciu (r0776676), Maria Tsontaki (r0771195), Dries Vrijens ( r0624449)}
+\author{Laura Bogeart, Ben De Maesschalck, Bianca Florenzi, Jonas
+Jonker, Nina Rank, Alexandra Stanciu, Maria Tsontaki, Dries Vrijens}
 \date{}
 
 \begin{document}
@@ -241,10 +242,13 @@ evolution (C). Here, a trend of increasing reaction time with increasing
 number of days is also observed, together with an expanding standard
 deviation (see errorbars).
 
+\begin{center}\includegraphics{common_sleep_files/figure-latex/boxplot-1} \end{center}
+
+\hypertarget{descriptives}{%
+\subsection{Descriptives}\label{descriptives}}
+
 \begin{longtable}[]{@{}lrrrrr@{}}
 \toprule
-\multicolumn{5}{c}{descriptive stats}\tabularnewline
-\midrule
 & Days & Mean & SD & Var & n\tabularnewline
 \midrule
 \endhead
@@ -261,11 +265,6 @@ deviation (see errorbars).
 \bottomrule
 \end{longtable}
 
-\begin{center}\includegraphics{common_sleep_files/figure-latex/boxplot-1} \end{center}
-
-\hypertarget{descriptives}{%
-\subsection{Descriptives}\label{descriptives}}
-
 The calculations of the mean, standard deviation and variance of the
 reaction time for each day of all subjects further support our
 exploratory plots: we observe an overall increase in the mean, variance
@@ -276,6 +275,8 @@ the previous day. It continues to increase afterwards, however).
 \hypertarget{correlation}{%
 \subsection{Correlation}\label{correlation}}
 
+\begin{center}\includegraphics{common_sleep_files/figure-latex/spearman_tile-1} \end{center}
+
 We used the Shapiro - Wilk test to check for the normality of the
 reaction times per day. The test revealed a non normal distribution of
 day 9. Thus, we performed the spearman correlation method instead of
@@ -285,9 +286,6 @@ Looking at the correlation matrix, there is a correlation higher than
 0.6 between subsequent days (e.g.~between Day 3 and 4, between Day 8 and
 9, etc). However, the further the days are apart, the lower the
 correlation (e.g.~low correlation between Day 1 and Day 8).
-
-
-\begin{center}\includegraphics{common_sleep_files/figure-latex/spearman_tile-1} \end{center}
 
 \hypertarget{regression-per-person}{%
 \subsection{Regression per person}\label{regression-per-person}}
@@ -361,7 +359,7 @@ Level 2 model explains why the Subjects differ from each other:
 \(\pi_{1i}\) across all individuals in the population
 
 With the level 2 model we are trying to explain the variation between
-individuals using the intercept and the slope while \(b_{0i}\) and
+individuals using the intercept and at the slope while \(b_{0i}\) and
 \(b_{1i}\) describe the unexplained variability between subjects.
 
 The full model describes the evolution observed in the spaghetti plot
@@ -390,50 +388,35 @@ b_i \sim N(0,D)\\
 
 \[Y_i \sim N(X_i\beta, Z_iDZ_i'+\Sigma_i)\]
 
-R uses the marginal model and our calculation are based on that.
+R uses the marginal model and our calcuation are based on that.
 
-\begin{longtable}[]{@{}lrrrrr@{}}
-                                                 \toprule
- & \multicolumn{4}{c}{Linear mixed model fit by REML} \tabularnewline
-                                                 \midrule
-                                                 \tabularnewline
-formula: & \multicolumn{4}{c}{$Reaction \sim 1 + Days + (1 + Days | Subject)$} \tabularnewline
-                                                 \tabularnewline
-\multicolumn{3}{c}{REML criterion at convergence:} & 1743.6                                                                                                                                                    \tabularnewline
-                                                 \tabularnewline
-\multicolumn{5}{c}{Scaled residuals}             \tabularnewline
-                                                 \midrule
-Min & 1Q & Median & 3Q & Max                     \tabularnewline
-                                                 \midrule
--3.9536 & -0.4634 & 0.0231 & 0.4633 & 5.1793     \tabularnewline
-                                                 \midrule
-                                                 \tabularnewline
-\multicolumn{5}{c}{Random effects}               \tabularnewline
-                                                 \midrule
-Groups & Name & Variance & Std.Dev. & Corr       \tabularnewline
-\midrule
-Subject & Intercept & 611.90 & 24.737 &          \tabularnewline
-        & Days      & 35.08  & 5.923  & 0.07     \tabularnewline
-        & Residual  &        & 654.94 & 25.592   \tabularnewline
-                                                 \midrule
-                                                 \tabularnewline
-\multicolumn{5}{c}{Fixed effects}                \tabularnewline
-                                                 \midrule
-        & Estimate  & Std. Error & t value &     \tabularnewline
-                                                 \midrule
-   & Intercept & 251.405 & 6.824 &  36.843       \tabularnewline
-   & Days      & 10.467  & 1.546 &  6.771        \tabularnewline
-                                                 \midrule
-                                                 \tabularnewline
-\multicolumn{5}{c}{Correlation of Fixed Effects} \tabularnewline
-                                                 \midrule
-& Intr                                           \tabularnewline
-                                                 \midrule
-Days & -0.138                                    \tabularnewline
-                                                 \bottomrule
-\end{longtable} 
-
-\pagebreak
+\begin{verbatim}
+## Linear mixed model fit by REML ['lmerMod']
+## Formula: Reaction ~ 1 + Days + (1 + Days | Subject)
+##    Data: sleep
+## 
+## REML criterion at convergence: 1743.6
+## 
+## Scaled residuals: 
+##     Min      1Q  Median      3Q     Max 
+## -3.9536 -0.4634  0.0231  0.4633  5.1793 
+## 
+## Random effects:
+##  Groups   Name        Variance Std.Dev. Corr
+##  Subject  (Intercept) 611.90   24.737       
+##           Days         35.08    5.923   0.07
+##  Residual             654.94   25.592       
+## Number of obs: 180, groups:  Subject, 18
+## 
+## Fixed effects:
+##             Estimate Std. Error t value
+## (Intercept)  251.405      6.824  36.843
+## Days          10.467      1.546   6.771
+## 
+## Correlation of Fixed Effects:
+##      (Intr)
+## Days -0.138
+\end{verbatim}
 
 \hypertarget{values-of-the-reml-model}{%
 \subsection{Values of the REML model}\label{values-of-the-reml-model}}
@@ -494,10 +477,14 @@ likelihood ratio test.
 \subsection{Testing fixed effects - with
 bootstrap}\label{testing-fixed-effects---with-bootstrap}}
 
+Computing bootstrap confidence intervals \ldots{}
+
+6 message(s): boundary (singular) fit: see ?isSingular 147 warning(s):
+Model failed to converge with max\textbar grad\textbar{} = 0.00200417
+(tol = 0.002, component 1) (and others)
+
 \begin{longtable}[]{@{}ccc@{}}
 \toprule
-\multicolumn{3}{c}{Bootstrap}\tabularnewline
-\midrule
 \begin{minipage}[b]{0.44\columnwidth}\centering
 ~\strut
 \end{minipage} & \begin{minipage}[b]{0.13\columnwidth}\centering
@@ -508,54 +495,54 @@ bootstrap}\label{testing-fixed-effects---with-bootstrap}}
 \midrule
 \endhead
 \begin{minipage}[t]{0.44\columnwidth}\centering
-\textbf{sd\_Intercept\textbar Subject}\strut
+\textbf{sd\_(Intercept)\textbar Subject}\strut
 \end{minipage} & \begin{minipage}[t]{0.13\columnwidth}\centering
-11.32\strut
+11.76\strut
 \end{minipage} & \begin{minipage}[t]{0.13\columnwidth}\centering
-35.79\strut
+34.95\strut
 \end{minipage}\tabularnewline
 \begin{minipage}[t]{0.44\columnwidth}\centering
-\textbf{cor\_Days.Intercept\textbar Subject}\strut
+\textbf{cor\_Days.(Intercept)\textbar Subject}\strut
 \end{minipage} & \begin{minipage}[t]{0.13\columnwidth}\centering
--0.4786\strut
+-0.4596\strut
 \end{minipage} & \begin{minipage}[t]{0.13\columnwidth}\centering
-0.828\strut
+0.8595\strut
 \end{minipage}\tabularnewline
 \begin{minipage}[t]{0.44\columnwidth}\centering
 \textbf{sd\_Days\textbar Subject}\strut
 \end{minipage} & \begin{minipage}[t]{0.13\columnwidth}\centering
-3.238\strut
+3.415\strut
 \end{minipage} & \begin{minipage}[t]{0.13\columnwidth}\centering
-8.352\strut
+8.295\strut
 \end{minipage}\tabularnewline
 \begin{minipage}[t]{0.44\columnwidth}\centering
 \textbf{sigma}\strut
 \end{minipage} & \begin{minipage}[t]{0.13\columnwidth}\centering
-22.49\strut
+22.5\strut
 \end{minipage} & \begin{minipage}[t]{0.13\columnwidth}\centering
-28.51\strut
+28.56\strut
 \end{minipage}\tabularnewline
 \begin{minipage}[t]{0.44\columnwidth}\centering
-\textbf{Intercept}\strut
+\textbf{(Intercept)}\strut
 \end{minipage} & \begin{minipage}[t]{0.13\columnwidth}\centering
-239\strut
+237.7\strut
 \end{minipage} & \begin{minipage}[t]{0.13\columnwidth}\centering
-265.6\strut
+265.3\strut
 \end{minipage}\tabularnewline
 \begin{minipage}[t]{0.44\columnwidth}\centering
 \textbf{Days}\strut
 \end{minipage} & \begin{minipage}[t]{0.13\columnwidth}\centering
-7.607\strut
+7.681\strut
 \end{minipage} & \begin{minipage}[t]{0.13\columnwidth}\centering
-13.52\strut
+13.62\strut
 \end{minipage}\tabularnewline
 \bottomrule
 \end{longtable}
 
+Computing profile confidence intervals \ldots{}
+
 \begin{longtable}[]{@{}ccc@{}}
 \toprule
-\multicolumn{3}{c}{Likelihood}\tabularnewline
-\midrule
 \begin{minipage}[b]{0.44\columnwidth}\centering
 ~\strut
 \end{minipage} & \begin{minipage}[b]{0.13\columnwidth}\centering
@@ -566,14 +553,14 @@ bootstrap}\label{testing-fixed-effects---with-bootstrap}}
 \midrule
 \endhead
 \begin{minipage}[t]{0.44\columnwidth}\centering
-\textbf{sd\_Intercept\textbar Subject}\strut
+\textbf{sd\_(Intercept)\textbar Subject}\strut
 \end{minipage} & \begin{minipage}[t]{0.13\columnwidth}\centering
 14.38\strut
 \end{minipage} & \begin{minipage}[t]{0.13\columnwidth}\centering
 37.72\strut
 \end{minipage}\tabularnewline
 \begin{minipage}[t]{0.44\columnwidth}\centering
-\textbf{cor\_Days.Intercept\textbar Subject}\strut
+\textbf{cor\_Days.(Intercept)\textbar Subject}\strut
 \end{minipage} & \begin{minipage}[t]{0.13\columnwidth}\centering
 -0.4815\strut
 \end{minipage} & \begin{minipage}[t]{0.13\columnwidth}\centering
@@ -594,7 +581,7 @@ bootstrap}\label{testing-fixed-effects---with-bootstrap}}
 28.86\strut
 \end{minipage}\tabularnewline
 \begin{minipage}[t]{0.44\columnwidth}\centering
-\textbf{Intercept}\strut
+\textbf{(Intercept)}\strut
 \end{minipage} & \begin{minipage}[t]{0.13\columnwidth}\centering
 237.7\strut
 \end{minipage} & \begin{minipage}[t]{0.13\columnwidth}\centering
@@ -613,7 +600,12 @@ bootstrap}\label{testing-fixed-effects---with-bootstrap}}
 The confidence intervals of the intercept and Days do not include 0.
 Therefore, both have a significant effect on the Reaction time.
 
+\hypertarget{likelihood-ratio-test-with-anova}{%
+\subsection{Likelihood ratio test with
+Anova}\label{likelihood-ratio-test-with-anova}}
+
 \begin{longtable}[]{@{}cccccccc@{}}
+\caption{Data: sleep (continued below)}\tabularnewline
 \toprule
 \begin{minipage}[b]{0.22\columnwidth}\centering
 ~\strut
@@ -713,10 +705,6 @@ NA\strut
 \bottomrule
 \end{longtable}
 
-\hypertarget{likelihood-ratio-test-with-anova}{%
-\subsection{Likelihood ratio test with
-Anova}\label{likelihood-ratio-test-with-anova}}
-
 We compared an intercept-only model with a model that includes Days to
 find the best model using MLE.
 
@@ -727,19 +715,23 @@ smaller than 0.05.
 
 The decrease in AIC value also supports this conclusion.
 
+\hypertarget{testing-the-random-effects}{%
+\subsection{Testing the random
+effects}\label{testing-the-random-effects}}
+
 \begin{longtable}[]{@{}ccc@{}}
 \toprule
 \begin{minipage}[b]{0.23\columnwidth}\centering
 ~\strut
 \end{minipage} & \begin{minipage}[b]{0.18\columnwidth}\centering
-Intercept\strut
+(Intercept)\strut
 \end{minipage} & \begin{minipage}[b]{0.10\columnwidth}\centering
 Days\strut
 \end{minipage}\tabularnewline
 \midrule
 \endhead
 \begin{minipage}[t]{0.23\columnwidth}\centering
-\textbf{Intercept}\strut
+\textbf{(Intercept)}\strut
 \end{minipage} & \begin{minipage}[t]{0.18\columnwidth}\centering
 611.9\strut
 \end{minipage} & \begin{minipage}[t]{0.10\columnwidth}\centering
@@ -755,14 +747,6 @@ Days\strut
 \bottomrule
 \end{longtable}
 
-\hypertarget{testing-the-random-effects}{%
-\subsection{Testing the random
-effects}\label{testing-the-random-effects}}
-
-\begin{center}
-\includegraphics[width=0.8\textwidth]{common_sleep_files/figure-latex/unnamed-chunk-8-1.pdf}
-\end{center}
-
 Firstly, we check the random effects covariance matrix.
 
 The model is built on the assumption that the b's come from a normal
@@ -773,7 +757,7 @@ the population is 35.08 and the residual covariance between the true
 intercept \(\pi_{0i}\) and the slope \(\pi_{1i}\) is 9.61, as seen on
 the matrix above.
 
-
+\includegraphics{common_sleep_files/figure-latex/unnamed-chunk-8-1.pdf}
 Next, we plot the predicted random effects of the intercept \(b_{0i}\)
 compared to the random effects of the slope \(b_{1i}\). These random
 effects reflect how the evolution of the ith Subject deviates from the
@@ -782,16 +766,15 @@ expected evolution.
 \hypertarget{ols-vs-lmm-estimates}{%
 \subsubsection{OLS vs LMM estimates}\label{ols-vs-lmm-estimates}}
 
-
 \begin{center}\includegraphics{common_sleep_files/figure-latex/unnamed-chunk-9-1} \end{center}
-
 
 Having checked the fixed and random effects of the overall linear
 regression model, we now compare the original subject-specific
 regression model to the multilevel regression model we used for the full
 data set. (i.e.~comparing the Ordinary Least Squares (OLS) model to the
 Linear Mixed Model (LMM))
-The figure above displays the shrinkage effect of the LMM compared to OLS. If we
+
+Figure A displays the shrinkage effect of the LMM compared to OLS. If we
 fit a linear model to each individual subject separately (OLS model)
 without taking into account the data of the whole population (orange
 dots), intercepts and slopes vary largely. However, if we fit one linear
