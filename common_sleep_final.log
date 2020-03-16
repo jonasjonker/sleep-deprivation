@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.14159265-2.6-0.999991 (TeX Live 2019) (preloaded format=xelatex 2020.3.12)  16 MAR 2020 14:34
+This is XeTeX, Version 3.14159265-2.6-0.999991 (TeX Live 2019) (preloaded format=xelatex 2020.3.12)  16 MAR 2020 14:40
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -894,29 +894,32 @@ pdf)
 Underfull \vbox (badness 10000) detected at line 427
  []
 
-[6] [7]
+[6] [7] [8]
 File: common_sleep_files/figure-latex/unnamed-chunk-8-1.pdf Graphic file (type 
 pdf)
 <use common_sleep_files/figure-latex/unnamed-chunk-8-1.pdf>
- [8]
 File: common_sleep_files/figure-latex/unnamed-chunk-9-1.pdf Graphic file (type 
 pdf)
 <use common_sleep_files/figure-latex/unnamed-chunk-9-1.pdf>
  [9]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 822.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 829.
  [10]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 822.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 829.
  (./common_sleep_final.aux)
-Package atveryend Info: Empty hook `AtVeryEndDocument' on input line 822.
-Package atveryend Info: Empty hook `AtEndAfterFileList' on input line 822.
+Package atveryend Info: Empty hook `AtVeryEndDocument' on input line 829.
+Package atveryend Info: Empty hook `AtEndAfterFileList' on input line 829.
+
+
+LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
+
  ) 
 Here is how much of TeX's memory you used:
  18665 strings out of 479805
  331298 string characters out of 5871380
- 781732 words of memory out of 5000000
+ 776732 words of memory out of 5000000
  35538 multiletter control sequences out of 15000+600000
  535859 words of font info for 54 fonts, out of 8000000 for 9000
  1348 hyphenation exceptions out of 8191
- 54i,13n,115p,817b,441s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 54i,13n,115p,817b,391s stack positions out of 5000i,500n,10000p,200000b,80000s
 
 Output written on common_sleep_final.pdf (10 pages).
