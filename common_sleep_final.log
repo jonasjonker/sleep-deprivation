@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.14159265-2.6-0.999991 (TeX Live 2019) (preloaded format=xelatex 2020.3.12)  16 MAR 2020 11:26
+This is XeTeX, Version 3.14159265-2.6-0.999991 (TeX Live 2019) (preloaded format=xelatex 2020.3.12)  16 MAR 2020 14:34
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -849,27 +849,27 @@ File: common_sleep_files/figure-latex/trellis-1.pdf Graphic file (type pdf)
 <use common_sleep_files/figure-latex/trellis-1.pdf>
  [3]
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(1)/m/n' will be
-(Font)              scaled to size 7.0pt on input line 298.
+(Font)              scaled to size 7.0pt on input line 299.
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(1)/m/n' will be
-(Font)              scaled to size 5.0pt on input line 298.
+(Font)              scaled to size 5.0pt on input line 299.
 LaTeX Font Info:    Trying to load font information for OML+lmm on input line 2
-98.
+99.
  (/opt/texlive/2020/texmf-dist/tex/latex/lm/omllmm.fd
 File: omllmm.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(2)/m/n' will be
-(Font)              scaled to size 10.00092pt on input line 298.
+(Font)              scaled to size 10.00092pt on input line 299.
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(2)/m/n' will be
-(Font)              scaled to size 7.00064pt on input line 298.
+(Font)              scaled to size 7.00064pt on input line 299.
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(2)/m/n' will be
-(Font)              scaled to size 5.00046pt on input line 298.
+(Font)              scaled to size 5.00046pt on input line 299.
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(3)/m/n' will be
-(Font)              scaled to size 9.99893pt on input line 298.
+(Font)              scaled to size 9.99893pt on input line 299.
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(3)/m/n' will be
-(Font)              scaled to size 6.99925pt on input line 298.
+(Font)              scaled to size 6.99925pt on input line 299.
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(3)/m/n' will be
-(Font)              scaled to size 4.99947pt on input line 298.
-LaTeX Font Info:    Trying to load font information for U+msa on input line 298
+(Font)              scaled to size 4.99947pt on input line 299.
+LaTeX Font Info:    Trying to load font information for U+msa on input line 299
 .
 
 (/opt/texlive/2020/texmf-dist/tex/latex/amsfonts/umsa.fd
@@ -878,7 +878,7 @@ File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 (/opt/texlive/2020/texmf-dist/tex/latex/microtype/mt-msa.cfg
 File: mt-msa.cfg 2006/02/04 v1.1 microtype config. file: AMS symbols (a) (RS)
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 298
+LaTeX Font Info:    Trying to load font information for U+msb on input line 299
 .
 
 (/opt/texlive/2020/texmf-dist/tex/latex/amsfonts/umsb.fd
@@ -891,7 +891,7 @@ File: common_sleep_files/figure-latex/unnamed-chunk-3-1.pdf Graphic file (type
 pdf)
 <use common_sleep_files/figure-latex/unnamed-chunk-3-1.pdf>
  [4] [5]
-Underfull \vbox (badness 10000) detected at line 426
+Underfull \vbox (badness 10000) detected at line 427
  []
 
 [6] [7]
@@ -903,20 +903,20 @@ File: common_sleep_files/figure-latex/unnamed-chunk-9-1.pdf Graphic file (type
 pdf)
 <use common_sleep_files/figure-latex/unnamed-chunk-9-1.pdf>
  [9]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 824.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 822.
  [10]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 824.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 822.
  (./common_sleep_final.aux)
-Package atveryend Info: Empty hook `AtVeryEndDocument' on input line 824.
-Package atveryend Info: Empty hook `AtEndAfterFileList' on input line 824.
+Package atveryend Info: Empty hook `AtVeryEndDocument' on input line 822.
+Package atveryend Info: Empty hook `AtEndAfterFileList' on input line 822.
  ) 
 Here is how much of TeX's memory you used:
  18665 strings out of 479805
  331298 string characters out of 5871380
- 778733 words of memory out of 5000000
+ 781732 words of memory out of 5000000
  35538 multiletter control sequences out of 15000+600000
  535859 words of font info for 54 fonts, out of 8000000 for 9000
  1348 hyphenation exceptions out of 8191
- 54i,13n,115p,817b,445s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 54i,13n,115p,817b,441s stack positions out of 5000i,500n,10000p,200000b,80000s
 
 Output written on common_sleep_final.pdf (10 pages).

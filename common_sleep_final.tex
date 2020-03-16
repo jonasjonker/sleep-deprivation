@@ -215,7 +215,7 @@ days.
 For most subjects, the reaction time increased with the amount of days
 of sleep deprivation. This increase is also visible in the mean.
 
-\begin{center}\includegraphics{common_sleep_files/figure-latex/spaghetti-1} \end{center}
+\begin{center}\includegraphics[width=0.8\textwidth]{common_sleep_files/figure-latex/spaghetti-1} \end{center}
 
 \hypertarget{boxplot-violin-plot-and-mean-evolution}{%
 \subsection{Boxplot, Violin plot and Mean
@@ -241,6 +241,12 @@ evolution (C). Here, a trend of increasing reaction time with increasing
 number of days is also observed, together with an expanding standard
 deviation (see errorbars).
 
+\begin{center}\includegraphics{common_sleep_files/figure-latex/boxplot-1} \end{center}
+
+\pagebreak
+
+\hypertarget{descriptives}{%
+\subsection{Descriptives}\label{descriptives}}
 \begin{longtable}[]{@{}lrrrrr@{}}
 \toprule
 \multicolumn{5}{c}{descriptive stats}\tabularnewline
@@ -260,11 +266,6 @@ deviation (see errorbars).
 9 & 9 & 350.85 & 66.99 & 4487.15 & 18\tabularnewline
 \bottomrule
 \end{longtable}
-
-\begin{center}\includegraphics{common_sleep_files/figure-latex/boxplot-1} \end{center}
-
-\hypertarget{descriptives}{%
-\subsection{Descriptives}\label{descriptives}}
 
 The calculations of the mean, standard deviation and variance of the
 reaction time for each day of all subjects further support our
@@ -292,7 +293,7 @@ correlation (e.g.~low correlation between Day 1 and Day 8).
 \hypertarget{regression-per-person}{%
 \subsection{Regression per person}\label{regression-per-person}}
 
-\begin{center}\includegraphics{common_sleep_files/figure-latex/trellis-1} \end{center}
+\begin{center}\includegraphics[width=0.8\textwidth]{common_sleep_files/figure-latex/trellis-1} \end{center}
 
 We performed a linear regression model on each subject based on the
 function: \[\text{reaction time (Reaction)} = b_0 + b_i* \text{Days}\]
@@ -433,7 +434,6 @@ Days & -0.138                                    \tabularnewline
                                                  \bottomrule
 \end{longtable} 
 
-\pagebreak
 
 \hypertarget{values-of-the-reml-model}{%
 \subsection{Values of the REML model}\label{values-of-the-reml-model}}
@@ -448,6 +448,42 @@ Based on the above model, we find the following values:
 \sigma_{1}^{2} &= 35.08 \\
 corr(b_{0i}, b_{1i}) &= 0.07
 \end{aligned}\]
+
+\begin{longtable}[]{@{}ccc@{}}
+\toprule
+\begin{minipage}[b]{0.23\columnwidth}\centering
+~\strut
+\end{minipage} & \begin{minipage}[b]{0.18\columnwidth}\centering
+Intercept\strut
+\end{minipage} & \begin{minipage}[b]{0.10\columnwidth}\centering
+Days\strut
+\end{minipage}\tabularnewline
+\midrule
+\endhead
+\begin{minipage}[t]{0.23\columnwidth}\centering
+\textbf{Intercept}\strut
+\end{minipage} & \begin{minipage}[t]{0.18\columnwidth}\centering
+611.9\strut
+\end{minipage} & \begin{minipage}[t]{0.10\columnwidth}\centering
+9.614\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.23\columnwidth}\centering
+\textbf{Days}\strut
+\end{minipage} & \begin{minipage}[t]{0.18\columnwidth}\centering
+9.614\strut
+\end{minipage} & \begin{minipage}[t]{0.10\columnwidth}\centering
+35.08\strut
+\end{minipage}\tabularnewline
+\bottomrule
+\end{longtable}
+
+The model is built on the assumption that the b's come from a normal
+distribution with mean 0. The residual variance in true intercept
+\(\pi_{0i}\) across all individuals in the population is 611.9, the
+residual variance in true slope \(\pi_{1i}\) across all individuals in
+the population is 35.08 and the residual covariance between the true
+intercept \(\pi_{0i}\) and the slope \(\pi_{1i}\) is 9.61, as seen on
+the matrix above.
 
 \[
 \begin{cases}
@@ -613,6 +649,11 @@ bootstrap}\label{testing-fixed-effects---with-bootstrap}}
 The confidence intervals of the intercept and Days do not include 0.
 Therefore, both have a significant effect on the Reaction time.
 
+
+\hypertarget{likelihood-ratio-test-with-anova}{%
+\subsection{Likelihood ratio test with
+Anova}\label{likelihood-ratio-test-with-anova}}
+
 \begin{longtable}[]{@{}cccccccc@{}}
 \toprule
 \begin{minipage}[b]{0.22\columnwidth}\centering
@@ -713,9 +754,6 @@ NA\strut
 \bottomrule
 \end{longtable}
 
-\hypertarget{likelihood-ratio-test-with-anova}{%
-\subsection{Likelihood ratio test with
-Anova}\label{likelihood-ratio-test-with-anova}}
 
 We compared an intercept-only model with a model that includes Days to
 find the best model using MLE.
@@ -727,58 +765,18 @@ smaller than 0.05.
 
 The decrease in AIC value also supports this conclusion.
 
-\begin{longtable}[]{@{}ccc@{}}
-\toprule
-\begin{minipage}[b]{0.23\columnwidth}\centering
-~\strut
-\end{minipage} & \begin{minipage}[b]{0.18\columnwidth}\centering
-Intercept\strut
-\end{minipage} & \begin{minipage}[b]{0.10\columnwidth}\centering
-Days\strut
-\end{minipage}\tabularnewline
-\midrule
-\endhead
-\begin{minipage}[t]{0.23\columnwidth}\centering
-\textbf{Intercept}\strut
-\end{minipage} & \begin{minipage}[t]{0.18\columnwidth}\centering
-611.9\strut
-\end{minipage} & \begin{minipage}[t]{0.10\columnwidth}\centering
-9.614\strut
-\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.23\columnwidth}\centering
-\textbf{Days}\strut
-\end{minipage} & \begin{minipage}[t]{0.18\columnwidth}\centering
-9.614\strut
-\end{minipage} & \begin{minipage}[t]{0.10\columnwidth}\centering
-35.08\strut
-\end{minipage}\tabularnewline
-\bottomrule
-\end{longtable}
-
 \hypertarget{testing-the-random-effects}{%
 \subsection{Testing the random
 effects}\label{testing-the-random-effects}}
-
-\begin{center}
-\includegraphics[width=0.8\textwidth]{common_sleep_files/figure-latex/unnamed-chunk-8-1.pdf}
-\end{center}
-
-Firstly, we check the random effects covariance matrix.
-
-The model is built on the assumption that the b's come from a normal
-distribution with mean 0. The residual variance in true intercept
-\(\pi_{0i}\) across all individuals in the population is 611.9, the
-residual variance in true slope \(\pi_{1i}\) across all individuals in
-the population is 35.08 and the residual covariance between the true
-intercept \(\pi_{0i}\) and the slope \(\pi_{1i}\) is 9.61, as seen on
-the matrix above.
-
 
 Next, we plot the predicted random effects of the intercept \(b_{0i}\)
 compared to the random effects of the slope \(b_{1i}\). These random
 effects reflect how the evolution of the ith Subject deviates from the
 expected evolution.
 
+\begin{center}
+\includegraphics[width=0.8\textwidth]{common_sleep_files/figure-latex/unnamed-chunk-8-1.pdf}
+\end{center}
 \hypertarget{ols-vs-lmm-estimates}{%
 \subsubsection{OLS vs LMM estimates}\label{ols-vs-lmm-estimates}}
 
