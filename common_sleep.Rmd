@@ -292,7 +292,7 @@ $\sigma_{0}^{2}$ - Level 2 residual variance in true intercept $\pi_{0i}$ across
 
 $\sigma_{1}^{2}$ - Level 2 residual variance in true slope $\pi_{1i}$ across all individuals in the population
 
-With the level 2 model we are trying to explain the variation between individuals using the intercept and at the slope while
+With the level 2 model we are trying to explain the variation between individuals using the intercept and the slope while
 $b_{0i}$ and $b_{1i}$ describe the unexplained variability between subjects.
 
 The full model describes the evolution observed in the spaghetti plot and other descriptive plots of the data:
@@ -420,7 +420,7 @@ The model is built on the assumption that the b's come from a normal distributio
 
 ```{r}
 sleep.o <- ranef(sleep_reml)$Subject
-plot (sleep.o, main = "Random intercept (boi) vs random slope (b1i)")
+plot (sleep.o, main = "Random intercept (b0i) vs random slope (b1i)")
 
 ```
 Next, we plot the predicted random effects of the intercept $b_{0i}$ compared to the random effects of the slope $b_{1i}$. These random effects reflect how the evolution of the ith Subject deviates from the expected evolution. 
